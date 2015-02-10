@@ -17,8 +17,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-  require 'InjaderPage.php';
-  $IJP = new InjaderPage;
+  require 'InstallPage.php';
+  $IJP = new InstallPage;
   
   require '../sys/header.php';
   

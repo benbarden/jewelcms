@@ -17,29 +17,28 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-  require 'InjaderPage.php';
-  $IJP = new InjaderPage;
-  $strHTML = <<<PageContent
-<h1 style="text-align: center;">Jewel CMS Installer</h1>
-<table>
-  <tr>
-    <td style="padding: 8px; vertical-align: top; width: 48%;">
-      <h2 style="background-color: #000; color: #fff; margin-top: 0px; padding: 4px;">New installs</h2>
-      <p><b>IMPORTANT: If you install over an existing site, all of your content will be deleted - so be careful!</b></p>
-      <ol>
-      <li>First, read the install guide. This can be found in the release download, under guides/INSTALL.md.</li>
-      <li><a href="install.php">Start the installation wizard</a>. Follow the on-screen prompts and you'll be up and running in no time.</li>
-      </ol>
-    </td>
-    <td style="border-left: 2px solid #000; padding: 8px; vertical-align: top; width: 48%;">
-      <h2 style="background-color: #000; color: #fff; margin-top: 0px; padding: 4px;">Upgrades</h2>
-      <ol>
-      <li>First, read the upgrade guide. This can be found in the release download, under guides/UPGRADE.md.</li>
-      <li><a href="upgrade-intro.php">Run the upgrade</a>.</li>
-      </ol>
-    </td>
-  </tr>
-</table>
+    require 'InstallPage.php';
+    $IJP = new InstallPage;
+    $hasConfigIni = file_exists('../data/secure/config.ini');
+
+    if ($hasConfigIni) {
+        $pageIntro = "WARNING: You have an existing install. Don't click New Install unless you want to start again.";
+        $guidesText = "Read the install/upgrade guides in the upload/guides folder for help on getting started.";
+        $buttons  = '<a class="btn btn-lg btn-success" href="upgrade-intro.php" role="button">Upgrade</a>&nbsp;&nbsp;';
+        $buttons .= '<a class="btn btn-lg btn-danger" href="install.php" role="button">New Install</a>';
+    } else {
+        $pageIntro = '';
+        $guidesText = "Read the install guide in the upload/guides folder for help on getting started.";
+        $buttons = '<a class="btn btn-lg btn-success" href="install.php" role="button">New Install</a>';
+    }
+
+    $strHTML = <<<PageContent
+<p class="lead">$pageIntro</p>
+<p>$guidesText</p>
+<p>When you're ready:</p>
+<p>
+    $buttons
+</p>
 
 PageContent;
-  $IJP->Display($strHTML, "Jewel CMS Installer");
+  $IJP->Display($strHTML, "Installer");

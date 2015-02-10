@@ -1,11 +1,10 @@
-# Injader changelog
+# Jewel CMS changelog
 
-## 3.0.0
+## 1.0.0
 
-Notes:
-To simplify things, several legacy features have been removed in v3. Check the list below for details.
-Old themes cannot be migrated to the new theme system. This won't matter if you haven't used Injader before.
-It is currently not possible to install Injader in a subfolder.
+Initial fork of Injader 2.5.0.
+
+Changes since then:
 
 * New: Revamped Control Panel and navigation
 * New: Manual editing of content URLs
@@ -35,41 +34,3 @@ It is currently not possible to install Injader in a subfolder.
 * Code: Major framework changes and code cleanup (ongoing)
 * Code: RSS feeds now use full headers
 * Code: Renamed all database tables
-
-## 2.5.0
-
-Note: You must be on version 2.4.4 or above to upgrade to 2.5.0.
-
-* New: Simplified Control Panel layout
-* Guides: Created new install guide under /guides/
-* Guides: Created new upgrade guide under /guides/
-* Bug: Fixed an issue where the custom order field wasn't getting set, causing a database error
-* Bug: Fixed an issue with the default timezone not being set
-* Bug: Fixed several notices in the installer
-* Upgrades: Upgraded jQuery from 1.3.2 to 1.11.1
-* Upgrades: Upgraded TinyMCE from 3.0.1 to 3.5.11
-* Maintenance: Manage Content no longer uses AJAX pagination
-* Maintenance: Moved jQuery and TinyMCE to a new assets folder
-* Maintenance: Added support for a /private/ folder for storing files outside of Git but within your project
-* Maintenance: Cleaned up old version upgrade code. Upgrades prior to 2.4.4 are no longer supported.
-* Maintenance: Updated .gitignore
-* Maintenance: Tidied up the installer
-* Deletions: Removed unreleased interface changes (images and CSS)
-* Deletions: Removed CodePress (doesn't work in Chrome, and I prefer plaintext)
-* Deletions: Removed MagpieRSS (no feed to import anymore - check Github for news)
-* Deletions: Removed Tablesorter plugin (doesn't work with latest jQuery)
-
-## 2.4.5
-
-* New: Certain file types are now restricted when uploading files.
-* Fixed notices in PHP 5.3 relating to the split() function.
-* Fixed undefined variable notice in View.php.
-* Removed SQL query screen.
-
-## 2.4.4.P2
-
-* Fixed XSS exploits
-
-## 2.4.4.P1
-
-* Fixed XSS exploits

@@ -1,4 +1,4 @@
-# Injader upgrade guide
+# Jewel CMS upgrade guide
 
 ## Get the files onto your site
 

@@ -1,4 +1,4 @@
-# Injader install guide
+# Jewel CMS install guide
 
 ## Get the files onto your site
 

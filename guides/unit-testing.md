@@ -1,4 +1,4 @@
-# Setting up Injader for unit testing
+# Setting up Jewel CMS for unit testing
 
 Copy tests/test-config-sample.ini to tests/test-config.ini
 

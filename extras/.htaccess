@@ -1,4 +1,4 @@
-# BEGIN Injader
+# BEGIN Jewel CMS
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -8,4 +8,4 @@ RewriteRule ^(.*)$ index.php/$1 [QSA,L]
 
 Options -Indexes
 
-# END Injader
+# END Jewel CMS

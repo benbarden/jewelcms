@@ -1,5 +1,5 @@
 CKEDITOR.replace(ckEditorElem, {
-    customConfig: '/assets/js/injader/ckeditor_config.js',
+    customConfig: '/assets/js/jewelcms/ckeditor_config.js',
     toolbar: [
         { name: 'styles', groups: [ 'styles' ], items: [ 'Format'] },
         { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Strike', '-', 'BulletedList', 'NumberedList', 'Blockquote' ] },

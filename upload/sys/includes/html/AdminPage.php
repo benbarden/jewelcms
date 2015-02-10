@@ -18,7 +18,7 @@
 */
 
   class AdminPage extends Helper {
-    var $strTitle = "Injader";
+    var $strTitle = "Jewel CMS";
     var $strContent;
     // Main functions
     function SetTitle($strNewTitle) {
@@ -171,8 +171,8 @@ AdminLinks;
     <!-- Custom styles for this template -->
     <link href="{URL_ROOT}assets/css/bootstrap/dashboard.css" rel="stylesheet">
 
-    <!-- Custom Injader styles -->
-    <link href="{URL_ROOT}assets/css/injader-cp/injader-cp.css" rel="stylesheet">
+    <!-- Custom Jewel CMS styles -->
+    <link href="{URL_ROOT}assets/css/jewelcms-cp/jewelcms-cp.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>

@@ -95,7 +95,7 @@ class Engine
             ABS_ROOT.'themes/system',
         );
         $this->cPanelPathsArray = array(
-            ABS_ROOT.'themes/cpanel/injader',
+            ABS_ROOT.'themes/cpanel/jewelcms',
         );
 
         // Set up caching

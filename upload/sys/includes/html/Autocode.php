@@ -374,7 +374,7 @@ SearchForm;
      */
     function ReadMorePublic() {
         
-        $strHTML = "<!-- Injader: Read More -->";
+        $strHTML = "<!-- Jewel CMS: Read More -->";
         
         return $strHTML;
         

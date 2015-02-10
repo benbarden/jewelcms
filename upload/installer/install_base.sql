@@ -74,13 +74,13 @@ CREATE TABLE IF NOT EXISTS {IFW_TBL_SETTINGS} (
 );
 
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_CMS_VERSION}', '{C_SYS_LATEST_VERSION}');
-INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_TITLE}', 'Injader test site');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_TITLE}', 'Jewel CMS demo site');
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_DESCRIPTION}', '');
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_KEYWORDS}', '');
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_HEADER}', '');
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_EMAIL}', 'you@yoursite.com');
 
-INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DEFAULT_THEME}', 'injader');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DEFAULT_THEME}', 'jewelcms');
 
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DATE_FORMAT}', '1');
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_TIME_FORMAT}', '0');

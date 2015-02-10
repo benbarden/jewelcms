@@ -88,7 +88,7 @@ CMSHeader;
     function GetFooter() {
       $dteStartTime = $this->MicrotimeFloat();
       $strFooter = <<<Footer
-<p style="text-align: center;">Powered by <a href="http://www.injader.com">Injader</a></p>
+<p style="text-align: center;">Powered by <a href="http://www.jewelcms.com">Jewel CMS</a></p>
 </div>
 </body>
 </html>

@@ -23,7 +23,7 @@
   if (!$intStep) {
     $intStep = 1;
   }
-  $strPageTitle = "Injader Installer - Step $intStep";
+  $strPageTitle = "Jewel CMS Installer - Step $intStep";
   // Initially, some external files will be missing
   switch ($intStep) {
     case 1:
@@ -110,14 +110,14 @@ switch ($intStep) {
             if (!$blnCreatedFile) {
                 $IJP->Display("<h1>Installation Error</h1>
                 <p>Cannot write to file: .htaccess</p>
-                <p>Please check the permissions on the Injader installation directory.</p>
+                <p>Please check the permissions on the Jewel CMS installation directory.</p>
                 <p><i>Source: &lt;install.php, step $intStep&gt;</i></p>
                 ", "Error");
             }
             
             // Default .htaccess data
             $strHtaccessDefault = <<<htaccess
-# BEGIN Injader
+# BEGIN Jewel CMS
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -125,7 +125,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php/$1 [QSA,L]
 </IfModule>
 
-# END Injader
+# END Jewel CMS
 
 Options -Indexes
 
@@ -137,10 +137,10 @@ htaccess;
                 $strOutput = $strHtaccessDefault;
                 $strPathInfo = "Path 1";
             } else {
-                if ((strpos($strHtaccessData, "# BEGIN Injader") !== false) &&
-                    (strpos($strHtaccessData, "# END Injader")   !== false)) {
-                    $arrStart = explode("# BEGIN Injader", $strHtaccessData);
-                    $arrEnd   = explode("# END Injader",   $strHtaccessData);
+                if ((strpos($strHtaccessData, "# BEGIN Jewel CMS") !== false) &&
+                    (strpos($strHtaccessData, "# END Jewel CMS")   !== false)) {
+                    $arrStart = explode("# BEGIN Jewel CMS", $strHtaccessData);
+                    $arrEnd   = explode("# END Jewel CMS",   $strHtaccessData);
                     $strOutput = $arrStart[0].$strHtaccessDefault.$arrEnd[1];
                     $strPathInfo = "Path 2";
                 } else {
@@ -158,13 +158,13 @@ htaccess;
             // Only allow installation into a top-level domain
             if ($strInstallRelURL != "/") {
                 $IJP->Display("<h1>Installation Error</h1>
-                <p>Injader does not support installation in a subfolder.</p>
+                <p>Jewel CMS does not support installation in a subfolder.</p>
                 <p><i>Source: &lt;install.php, step $intStep&gt;</i></p>
                 ", "Error");
             }
             // Confirm folder is ok
             $IJP->Display("<h1>Installation - Step 1</h1>
-            <p>The installer has detected where Injader has been uploaded.
+            <p>The installer has detected where Jewel CMS has been uploaded.
             <a href=\"?step=2\">Proceed to step 2</a>.</p>
             ", $strPageTitle);
             break;
@@ -179,7 +179,7 @@ htaccess;
       $strErrorStyles = "background-color: transparent; color: #f00; display: none; font-size: 100%; font-style: italic;";
       $strHTML = <<<STEP2
 <h1>Installation - Step 2</h1>
-<p>Prior to running the installer, you need to set up a MySQL database on your web site. Enter the details below. The Injader username and password will allow you to log in once Injader has been installed. Don&apos;t forget the password, as this account will give you admin access.</p>
+<p>Prior to running the installer, you need to set up a MySQL database on your web site. Enter the details below. The Jewel CMS username and password will allow you to log in once Jewel CMS has been installed. Don&apos;t forget the password, as this account will give you admin access.</p>
 <form name="frmInstall2" action="?step=2" method="post">
 <table style="background-color: #000; border: 1px solid #000; color: #fff;" cellspacing="1">
   <tr>
@@ -211,16 +211,16 @@ htaccess;
     </td>
   </tr>
   <tr>
-    <td style="$strTDStyles">Injader Username:</td>
+    <td style="$strTDStyles">Jewel CMS Username:</td>
     <td style="$strTDStyles">
-      <span id="strMissingMajesticUser" style="$strErrorStyles">Please enter the Injader username.</span>
+      <span id="strMissingMajesticUser" style="$strErrorStyles">Please enter the Jewel CMS username.</span>
       <input id="txtMajesticUser" name="txtMajesticUser" style="$strInputStyles" type="text" size="20" maxlength="50" value="$strMajesticUser" />
     </td>
   </tr>
   <tr>
-    <td style="$strTDStyles">Injader Password:</td>
+    <td style="$strTDStyles">Jewel CMS Password:</td>
     <td style="$strTDStyles">
-      <span id="strMissingMajesticPass" style="$strErrorStyles">Please enter the Injader password.</span>
+      <span id="strMissingMajesticPass" style="$strErrorStyles">Please enter the Jewel CMS password.</span>
       <input id="txtMajesticPass" name="txtMajesticPass" style="$strInputStyles" type="text" size="20" maxlength="50" value="$strMajesticPass" />
     </td>
   </tr>
@@ -292,7 +292,7 @@ User = $strDBAdminUser
 Pass = $strDBAdminPass
 
 [Theme]
-Current = injader
+Current = jewelcms
 Cache = Off
 
 [CP]

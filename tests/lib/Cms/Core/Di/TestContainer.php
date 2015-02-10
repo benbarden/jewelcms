@@ -4,7 +4,7 @@ class TestContainer extends ContainerBase
 {
     public function testGetTemplateVarHeadTitle()
     {
-        $varExpected = 'Injader Test Site';
+        $varExpected = 'Jewel CMS demo site';
         $themeBinding = $this->container->getService('Theme.Binding');
         $themeBinding->set('Head.Title', $varExpected);
         $varActual = $themeBinding->get('Head.Title');

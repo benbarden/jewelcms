@@ -20,7 +20,7 @@
   require 'InjaderPage.php';
   $IJP = new InjaderPage;
   $strHTML = <<<PageContent
-<h1 style="text-align: center;">Injader Install Wizard</h1>
+<h1 style="text-align: center;">Jewel CMS Installer</h1>
 <table>
   <tr>
     <td style="padding: 8px; vertical-align: top; width: 48%;">
@@ -42,5 +42,4 @@
 </table>
 
 PageContent;
-  $IJP->Display($strHTML, "Injader Install Wizard");
-?>
+  $IJP->Display($strHTML, "Jewel CMS Installer");

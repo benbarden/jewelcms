@@ -17,12 +17,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-  // Latest version of Injader
-  define('C_SYS_LATEST_VERSION', '3.0.0');
+  // Latest version
+  define('C_SYS_LATEST_VERSION', '1.0.0');
 
   // Product
-  define('PRD_PRODUCT_NAME', 'Injader');
-  define('PRD_PRODUCT_URL',  'http://www.injader.com');
+  define('PRD_PRODUCT_NAME', 'Jewel CMS');
+  define('PRD_PRODUCT_URL',  'http://www.jewelcms.com');
   define('PRD_COMPANY_NAME', 'Ben Barden');
   define('PRD_COMPANY_URL',  'http://www.benbarden.com');
 

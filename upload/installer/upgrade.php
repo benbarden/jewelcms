@@ -22,7 +22,7 @@
   
     // Default .htaccess data
     $strHtaccessDefault = <<<htaccess
-# BEGIN Injader
+# BEGIN Jewel CMS
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -30,7 +30,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php/$1 [QSA,L]
 </IfModule>
 
-# END Injader
+# END Jewel CMS
 htaccess;
 
     // Build htaccess file
@@ -39,10 +39,10 @@ htaccess;
         $strOutput = $strHtaccessDefault;
         $strPathInfo = "Path 1";
     } else {
-        if ((strpos($strHtaccessData, "# BEGIN Injader") !== false) &&
-            (strpos($strHtaccessData, "# END Injader")   !== false)) {
-            $arrStart = explode("# BEGIN Injader", $strHtaccessData);
-            $arrEnd   = explode("# END Injader",   $strHtaccessData);
+        if ((strpos($strHtaccessData, "# BEGIN Jewel CMS") !== false) &&
+            (strpos($strHtaccessData, "# END Jewel CMS")   !== false)) {
+            $arrStart = explode("# BEGIN Jewel CMS", $strHtaccessData);
+            $arrEnd   = explode("# END Jewel CMS",   $strHtaccessData);
             $strOutput = $arrStart[0].$strHtaccessDefault.$arrEnd[1];
             $strPathInfo = "Path 2";
         } else {
@@ -63,12 +63,12 @@ htaccess;
   // Default title to use if no error occurred
   $strVersion = $CMS->SYS->GetSysPref(C_PREF_CMS_VERSION);
   $strMaxVersion = C_SYS_LATEST_VERSION;
-  $strPageTitle = "Injader - Upgrade to version $strMaxVersion";
+  $strPageTitle = "Jewel CMS - Upgrade to version $strMaxVersion";
 
   // Prevent upgrade to max version
   if ($strVersion == $strMaxVersion) {
     $IJP->Display("<h1>Upgrade Error</h1>\n\n<p>The upgrade script could not start because your site is already
-    using Injader $strMaxVersion.</p>\n\n
+    using Jewel CMS $strMaxVersion.</p>\n\n
     <p><i>Source: &lt;upgrade.php, version $strMaxVersion&gt;</i></p>", "Error");
   }
 
@@ -81,8 +81,7 @@ htaccess;
     default:
       // Not a supported upgrade route
       $IJP->Display("<h1>Upgrade Error</h1>
-        <p>You cannot upgrade from Injader $strVersion to Injader $strMaxVersion. 
-        Please contact us for help.</p>
+        <p>You cannot upgrade from Jewel CMS $strVersion to Jewel CMS $strMaxVersion.</p>
         <p><i>Source: &lt;upgrade.php, version $strMaxVersion&gt;</i></p>", "Error");
       break;
   }
@@ -123,7 +122,7 @@ htaccess;
   if ($strUpgradeTo == $strMaxVersion) {
     // Complete
     $strHTML = "<h1>Upgrade Complete!</h1>\n\n
-    <p>You are now running Injader $strUpgradeTo.</p>\n\n
+    <p>You are now running Jewel CMS $strUpgradeTo.</p>\n\n
     <p><b>IMPORTANT:</b> Delete the installer folder from your site, 
     and unlock the system.</p>\n\n
     <p><a href=\"".FN_INDEX."\">Go to your site</a>.</p>";

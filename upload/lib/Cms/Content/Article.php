@@ -54,7 +54,7 @@ class Article
      */
     public function getReadMorePublic()
     {
-        return "<!-- Injader: Read More -->";
+        return "<!-- Jewel CMS: Read More -->";
     }
 
     public function getBodyExcerpt()

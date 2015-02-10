@@ -18,7 +18,7 @@
 */
 
   /**
-   * Combines other caching classes to build the Injader cache
+   * Combines other caching classes to build the cache
    * @author Ben Barden
    */
   class ICacheBuild extends Helper {

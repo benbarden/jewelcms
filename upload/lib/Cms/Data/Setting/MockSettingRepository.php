@@ -26,7 +26,7 @@ class MockSettingRepository implements ISettingRepository
             return new Setting(array(
                 'id' => 1,
                 'preference' => $this->settingName,
-                'content' => 'Injader Unit Test Site'
+                'content' => 'Jewel CMS Unit Test Site'
             ));
         } else {
             throw new DataException(sprintf('Setting %s does not exist.', $settingName));

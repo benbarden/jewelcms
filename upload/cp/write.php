@@ -517,7 +517,7 @@ END;
     });
 </script>
 <script type="text/javascript" src="{URL_ROOT}assets/js/ckeditor/ckeditor.js"></script>
-<script type="text/javascript" src="{URL_ROOT}assets/js/injader/editor.js"></script>
+<script type="text/javascript" src="{URL_ROOT}assets/js/jewelcms/editor.js"></script>
 
 FooterScript;
 

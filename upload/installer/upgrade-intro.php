@@ -26,17 +26,16 @@
   
   $strVersion = $CMS->SYS->GetSysPref(C_PREF_CMS_VERSION);
   $strMaxVersion = C_SYS_LATEST_VERSION;
-  $strPageTitle = "Injader - Upgrade to version $strMaxVersion";
+  $strPageTitle = "Jewel CMS - Upgrade to version $strMaxVersion";
 
   // Prevent upgrade to max version
   if ($strVersion == $strMaxVersion) {
-    $IJP->Display("<h1>Upgrade Aborted</h1>\n\n<p>Your site cannot be upgraded because you're already running Injader $strMaxVersion.</p>\n\n<ul>\n<li>Target version: $strMaxVersion</li>\n<li>Your site: $strVersion</li>\n</ul>", $strPageTitle);
+    $IJP->Display("<h1>Upgrade Aborted</h1>\n\n<p>Your site cannot be upgraded because you're already running Jewel CMS $strMaxVersion.</p>\n\n<ul>\n<li>Target version: $strMaxVersion</li>\n<li>Your site: $strVersion</li>\n</ul>", $strPageTitle);
   } else {
     $strWarning = "";
     if ($strMaxVersion == "x.x.x") {
         //
     }
-    $IJP->Display("<h1>System Upgrade</h1>\n\n<p>You are about to upgrade your site from Injader $strVersion to Injader $strMaxVersion.</p>\n\n$strWarning<p><a href=\"upgrade.php\">Run the upgrade script</a>.</p>", $strPageTitle);
+    $IJP->Display("<h1>System Upgrade</h1>\n\n<p>You are about to upgrade your site from Jewel CMS $strVersion to Jewel CMS $strMaxVersion.</p>\n\n$strWarning<p><a href=\"upgrade.php\">Run the upgrade script</a>.</p>", $strPageTitle);
   }
   
-?>

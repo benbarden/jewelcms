@@ -1,0 +1,9 @@
+{% if Nav.TopLevelAreas %}
+    <ul>
+        {% for Item in Nav.TopLevelAreas %}
+            <li>
+                {{ Item.Name }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -31,15 +31,11 @@
   }
   
   $strAction = $_POST['optBulk'];
-  $blnMove       = false; $blnLock   = false; $blnUnlock = false;
+  $blnMove       = false;
   $blnPublish    = false; $blnDelete = false;
   $blnEditAuthor = false;
   if ($strAction == "move") {
     $blnMove = true;
-  } elseif ($strAction == "lock") {
-    $blnLock = true;
-  } elseif ($strAction == "unlock") {
-    $blnUnlock = true;
   } elseif ($strAction == "editauthor") {
     $blnEditAuthor = true;
   } elseif ($strAction == "publish") {
@@ -64,12 +60,6 @@
       }
       $CMS->ART->BulkMove($intAreaID, $strArticleIDs);
       $strDidWhat = "moved";
-    } elseif ($blnLock) {
-      $CMS->ART->BulkLock($strArticleIDs);
-      $strDidWhat = "locked";
-    } elseif ($blnUnlock) {
-      $CMS->ART->BulkUnlock($strArticleIDs);
-      $strDidWhat = "unlocked";
     } elseif ($blnEditAuthor) {
       $intUserID = $CMS->FilterNumeric($_POST['optUser']);
       if (!$intUserID) {
@@ -89,7 +79,7 @@
     }
     $strArticleText = $intArticleCount == 1 ? "article" : "articles";
     $strHTML = <<<ConfPage
-<h1>$strPageTitle</h1>
+<h1 class="page-header">$strPageTitle</h1>
 <p>$intArticleCount $strArticleText $strDidWhat. <a href="{FN_ADM_CONTENT_MANAGE}">Manage Content</a></p>
 
 ConfPage;
@@ -131,31 +121,33 @@ ConfPage;
   $strActionMsg = "";
   if ($blnMove) {
     // Build area list
-    $strAreaList  = $CMS->DD->AreaHierarchy("", 0, "Content", false, false, C_NAV_PRIMARY);
+    $strAreaList  = $CMS->DD->AreaHierarchy("", 0, "Content", false, false);
     // Area list HTML
     $strFormContent = <<<AreaList
-<p>Please select the destination area for the above articles. All articles will be moved to the area you select. If you do not wish to proceed, click the Cancel button now.</p>
+<p>Please select the destination area for the above articles.
+All articles will be moved to the area you select.
+If you do not wish to proceed, click the Cancel button now.</p>
 <div>
 <select id="optArea" name="optArea">
 $strAreaList
 </select>
+<br><br>
 </div>
 
 AreaList;
-  } elseif ($blnLock) {
-    $strFormContent = "";
-  } elseif ($blnUnlock) {
-    $strFormContent = "";
   } elseif ($blnEditAuthor) {
     // Build user list
     $strListUsers = $CMS->DD->UserList("");
     // Area list HTML
     $strFormContent = <<<AreaList
-<p>Please select the author to use for the above articles. The author of these articles will be changed to the user you specify. If you do not wish to proceed, click the Cancel button now.</p>
+<p>Please select the author to use for the above articles.
+The author of these articles will be changed to the user you specify.
+If you do not wish to proceed, click the Cancel button now.</p>
 <div>
 <select id="optUser" name="optUser">
 $strListUsers
 </select>
+<br><br>
 </div>
 
 AreaList;
@@ -176,7 +168,7 @@ AreaList;
 
   // Build form
   $strHTML = <<<FormContent
-<h1>$strPageTitle</h1>
+<h1 class="page-header">$strPageTitle</h1>
 <p>You are about to $strActionMsg the following articles:</p>
 $strArticleTitles
 <form action="{FN_ADM_CONTENT_BULK}" method="post">
@@ -191,4 +183,3 @@ $strFormContent
 
 FormContent;
   $CMS->AP->Display($strHTML);
-?>

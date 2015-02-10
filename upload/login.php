@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 
   require 'sys/header.php';
 
-  $blnGet = false;
   $blnSubmitForm = false;
   $strMissingUsername = "";
   $strMissingPassword = "";
@@ -60,23 +59,19 @@
     if (!empty($_GET['redir'])) {
       $blnAlreadyLoggedIn = true;
       $intCurrentUserID = $CMS->RES->GetCurrentUserID();
-      //$strRedirectURL = "http://".SVR_HOST.URL_ROOT.$strRedir;
     } else {
       $CMS->Err_MFail(M_ERR_ALREADY_LOGGED_IN, "");
     }
   }
 
   if ($blnSubmitForm) {
-    if (!$blnGet) {
-      $strPassword = md5($strPassword);
-    }
     $intUserID = $CMS->US->ValidateLogin($strUsername, $strPassword);
     if ($intUserID) {
       if ($CMS->US->IsSuspended($intUserID)) {
         $CMS->Err_MFail(M_ERR_USER_SUSPENDED, "");
       }
       if (empty($_GET['redir'])) {
-        $strRedirectURL = ""; //str_replace("index".F_EXT_PHP, "", FN_INDEX);
+        $strRedirectURL = "";
       } else {
         $strRedirectURL = "http://".SVR_HOST.URL_ROOT.$_GET['redir'];
       }
@@ -92,16 +87,8 @@
         exit;
       }
       // ** Go back link ** //
+      $strReferrer = str_replace('http://'.SVR_HOST.URL_ROOT, '', $strReferrer);
       if ($strReferrer) {
-        // Check logged in flag doesn't already exist
-        if (strpos($strReferrer, "loggedin=1") === false) {
-          // Add the flag to force a recache
-          if (strpos($strReferrer, "?") !== false) {
-            $strReferrer .= "&amp;loggedin=1";
-          } else {
-            $strReferrer .= "?loggedin=1";
-          }
-        }
         $strGoBack = "<li><a href=\"$strReferrer\">Go back to the page you were just viewing</a></li>";
       } else {
         $strGoBack = "";
@@ -112,7 +99,7 @@
 <p>You have successfully logged in.</p>
 <ul>
 $strGoBack
-<li><a href="{FN_INDEX}">Go to the home page</a></li>
+<li><a href="/">Go to the home page</a></li>
 <li><a href="{FN_ADM_INDEX}">View or modify your account settings</a></li>
 </ul>
 
@@ -132,11 +119,6 @@ END;
   $strLoginButton = $CMS->AC->LoginButton();
   $strCancelButton = $CMS->AC->CancelButton();
   
-  if ($CMS->SYS->GetSysPref(C_PREF_ALLOW_PASSWORD_RESETS) == "Y") {
-    $strResetPWLink = "<p>Help, <a href=\"{FN_FORGOT_PW}\">I forgot my password</a>!</p>";
-  } else {
-    $strResetPWLink = "";
-  }
   $strHTML = <<<END
 <h1>$strPageTitle</h1>
 <form action="{FN_LOGIN}" method="post">
@@ -165,11 +147,12 @@ END;
   </tr>
 </table>
 </form>
-$strResetPWLink
-<p><b>Privacy Alert</b>: By logging in you accept that a cookie will be used to remember your details. You can clear the cookie at any time by logging out. Most web browsers will allow the cookie automatically, but if you have cookies disabled, you will not be able to log in. <a href="{FN_INF_COOKIES}">How to enable cookies</a></p>
+<p>Help, <a href="{FN_FORGOT_PW}">I forgot my password</a>!</p>
+<p><b>Privacy Alert</b>: By logging in you accept that a cookie will be used to remember your details. You can clear
+the cookie at any time by logging out. Most web browsers will allow the cookie automatically, but if you have cookies
+disabled, you will not be able to log in. <a href="{FN_INF_COOKIES}">How to enable cookies</a></p>
 
 END;
 
   $CMS->LP->SetTitle($strPageTitle);
   $CMS->LP->Display($strHTML);
-?>

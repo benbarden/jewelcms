@@ -1,0 +1,23 @@
+{% extends "core/base.twig" %}
+
+{% block cms_page_description %}
+{{ Area.Desc }}
+{% endblock cms_page_description %}
+
+{% block cms_content %}
+{% if Area.Content %}
+{% for Item in Area.Content %}
+    <div class="blog-post">
+        <h2 class="blog-post-title">
+            <a href="{{ Item.Permalink }}">{{ Item.Title }}</a>
+        </h2>
+        <p class="blog-post-meta">
+            {{ Item.Date }} |
+            By <a href="{{ cmsLinkUser(Item.AuthorId) }}">{{ Item.AuthorUsername }}</a>
+        </p>
+        {{ Item.Body|raw }}
+    </div>
+{% endfor %}
+{{ cmsBlock('area.pagination') }}
+{% endif %}
+{% endblock cms_content %}

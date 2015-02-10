@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ PostButtons;
           for ($j=0; $j<count($arrSelectedGroups); $j++) {
             $intSelectedGroupID = $arrSelectedGroups[$j];
             if ($intGroupID == $intSelectedGroupID) {
-              $strHTML .= "<span style=\"white-space: nowrap;\"><input type=\"checkbox\" name=\"chk".$strName."[]\" id=\"chk$strName$intGroupID\" value=\"chk$strName$intGroupID\" checked=\"checked\" /><label id=\"lblchk$strName$intGroupID\" for=\"chk$strName$intGroupID\">$strGroupName</label></span> \n";
+              $strHTML .= "<span style=\"white-space: nowrap;\"><input type=\"checkbox\" name=\"chk".$strName."[]\" id=\"chk$strName$intGroupID\" value=\"chk$strName$intGroupID\" checked=\"checked\" /> <label id=\"lblchk$strName$intGroupID\" for=\"chk$strName$intGroupID\">$strGroupName</label></span> \n";
               $blnFlag = true;
             }
           }
@@ -108,7 +108,7 @@ PostButtons;
           $blnFlag = true; // Don't do admin checkbox for per-file permissions
         }
         if (!$blnFlag) {
-          $strHTML .= "<span style=\"white-space: nowrap;\"><input type=\"checkbox\" name=\"chk".$strName."[]\" id=\"chk$strName$intGroupID\" value=\"chk$strName$intGroupID\" /><label id=\"lblchk$strName$intGroupID\" for=\"chk$strName$intGroupID\">$strGroupName</label></span> \n";
+          $strHTML .= "<span style=\"white-space: nowrap;\"><input type=\"checkbox\" name=\"chk".$strName."[]\" id=\"chk$strName$intGroupID\" value=\"chk$strName$intGroupID\" /> <label id=\"lblchk$strName$intGroupID\" for=\"chk$strName$intGroupID\">$strGroupName</label></span> \n";
         }
       }
       if (($strName == "ViewArea") ||
@@ -120,7 +120,7 @@ PostButtons;
         } else {
           $strGuestChecked = "";
         }
-        $strGuestHTML = "<span style=\"white-space: nowrap;\"><input type=\"checkbox\" name=\"chk".$strName."[]\" id=\"$strFieldName\" value=\"$strFieldName\" $strGuestChecked /><label id=\"lbl$strFieldName\" for=\"$strFieldName\">Guest</label></span> \n";
+        $strGuestHTML = "<span style=\"white-space: nowrap;\"><input type=\"checkbox\" name=\"chk".$strName."[]\" id=\"$strFieldName\" value=\"$strFieldName\" $strGuestChecked /> <label id=\"lbl$strFieldName\" for=\"$strFieldName\">Guest</label></span> \n";
       } else {
         $strGuestHTML = "";
       }
@@ -133,7 +133,7 @@ PostButtons;
       global $CMS;
       $dteToday = date('r', strtotime($dteToday));
       $strVersion   = $CMS->SYS->GetSysPref(C_PREF_CMS_VERSION);
-      $strHTML  = "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n";
+      $strHTML  = '<?xml version="1.0" encoding="utf-8"?>'."\n";
       $strHTML .= <<<RSSHeader
 <rss version="2.0" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
@@ -145,218 +145,6 @@ PostButtons;
     <generator>{PRD_PRODUCT_NAME} $strVersion</generator>
 
 RSSHeader;
-      return $strHTML;
-    }
-    // ** Comment Form ** //
-    function CommentForm($intCommentID, $intItemID, $strMode, $intAreaID, $strMissingGuestName, $strMissingGuestEmail, $strMissingContent, $strGuestName, $strGuestEmail, $strGuestURL, $strCommentBody) {
-      global $CMS;
-      global $intRating;
-      $dteStartTime = $this->MicrotimeFloat();
-      $strActionMode = strtolower($strMode); // create, edit
-      // Preview
-      $blnPreview = empty($_POST['chkPreview']) ? false : true;
-      if ($blnPreview) {
-        $strPreviewBody = $strCommentBody;
-        //$strPreviewBody = $CMS->DoEntities($strPreviewBody);
-        $strPreviewBody = $CMS->FMT->CMSToHTML($strPreviewBody);
-        $strPreviewBody = nl2br($strPreviewBody);
-        $strPreviewBody = $CMS->StripSlashesIFW($strPreviewBody);
-        $strPreviewHTML = "<h2>Comment Preview</h2>\n$strPreviewBody";
-      } else {
-        $strPreviewHTML = "";
-      }
-      // Logged in?
-      $CMS->RES->ValidateLoggedIn();
-      $blnLoggedOut = $CMS->RES->IsError() ? true : false;
-      if ($blnLoggedOut) {
-        // ** Use guest cookie details ** //
-        if (!$strGuestName) {
-          $strGuestName  = $CMS->CK->Get(C_CK_COMMENT_NAME);
-        }
-        if (!$strGuestURL) {
-          $strGuestURL   = $CMS->CK->Get(C_CK_COMMENT_URL);
-        }
-        if (!$strGuestEmail) {
-          $strGuestEmail = $CMS->CK->Get(C_CK_COMMENT_EMAIL);
-        }
-      }
-      $strPostButtons = $this->PostButtons("txtContent");
-      if ($intCommentID) {
-        $strCID = "&amp;id=$intCommentID";
-      } else {
-        $strCID = "";
-      }
-      if ($intItemID) {
-        $strParent = "<input type=\"hidden\" name=\"txtArticleID\" value=\"$intItemID\" />";
-      } else {
-        $strParent = "";
-      }
-      $strActionLink = FN_COMMENT."?action=$strActionMode&amp;area=$intAreaID$strCID";
-      $strCHLoader   = FN_SYS_CHLOADER;
-      $strHTML = <<<Script
-<script type="text/javascript">
-  function ValidateComment() {
-
-Script;
-      if ($blnLoggedOut) {
-        $strHTML .= <<<GuestValidation
-    if (document.getElementById('txtGuestName').value == "") {
-      window.alert("Please enter your name.");
-      document.getElementById('txtGuestName').focus();
-      return false;
-    } else if (document.getElementById('txtGuestEmail').value == "") {
-      window.alert("Please enter your email.");
-      document.getElementById('txtGuestEmail').focus();
-      return false;
-    }
-
-GuestValidation;
-      }
-      $strHTML .= <<<CommentTable
-    if (document.getElementById('txtContent').value == "") {
-      window.alert("Please enter your comment.");
-      document.getElementById('txtContent').focus();
-      return false;
-    }
-    return true;
-  }
-  if (!document.all) {
-    cf = document.getElementById('cf');
-  }
-</script>
-$strPreviewHTML
-<form id="cf" name="cf" action="$strActionLink" method="post" onsubmit="if (!ValidateComment()) {return false;}">
-<table id="CommentForm" class="DefaultTable FixedTable MediumTable" cellspacing="1">
-
-CommentTable;
-
-      if ($blnLoggedOut) {
-        $intUseCAPTCHA = $CMS->SYS->GetSysPref(C_PREF_COMMENT_CAPTCHA);
-        if ($intUseCAPTCHA) {
-          $strCAPTCHA = <<<CommentCAPTCHA
-  <tr>
-    <td class="InfoColour NarrowCell Left"><label for="txtCAPTCHA">Verification:</label></td>
-    <td class="BaseColour">
-      <img src="$strCHLoader" alt="Verification code" />
-      <div class="VerifyDesc">Type the verification message shown above. The letters are case sensitive.</div>
-      <input id="txtCAPTCHA" name="txtCAPTCHA" type="text" size="10" maxlength="8" />
-    </td>
-  </tr>
-
-CommentCAPTCHA;
-        } else {
-          $strCAPTCHA = "";
-        }
-        $strHTML .= <<<CommentFormGuest
-  <tr>
-    <td class="InfoColour NarrowCell Left"><label for="txtGuestName">Name *</label></td>
-    <td class="BaseColour">
-      $strMissingGuestName
-      <input id="txtGuestName" name="txtGuestName" type="text" size="25" maxlength="50" value="$strGuestName" />
-    </td>
-  </tr>
-  <tr>
-    <td class="InfoColour NarrowCell Left"><label for="txtGuestEmail">Email *</label></td>
-    <td class="BaseColour">
-      $strMissingGuestEmail
-      <input id="txtGuestEmail" name="txtGuestEmail" type="text" size="25" maxlength="50" value="$strGuestEmail" />
-    </td>
-  </tr>
-  <tr>
-    <td class="InfoColour NarrowCell Left"><label for="txtGuestURL">URL</label></td>
-    <td class="BaseColour">
-      <input id="txtGuestURL" name="txtGuestURL" type="text" size="25" maxlength="150" value="$strGuestURL" />
-    </td>
-  </tr>
-  <tr>
-    <td class="HeadColour SpanCell Bold" colspan="2">* Required Fields. Email will not be shown.</td>
-  </tr>
-$strCAPTCHA
-
-CommentFormGuest;
-      }
-      
-      /*
-      if ($strActionMode == "create") {
-        $strRatingItems = "";
-        if (!$CMS->RAT->HasUserAlreadyVoted($intItemID, $CMS->RES->GetCurrentUserID())) {
-          $intRating = (integer) $intRating;
-          for ($i=5; $i>-1; $i--) {
-            if ($i == 0) {
-              $intValue = "-1";
-              $strLabel = "No rating";
-            } else {
-              $intValue = $i;
-              $strLabel = $i;
-            }
-            if ($intValue == $intRating) {
-              $strSelected = " checked=\"checked\"";
-            } else {
-              $strSelected = "";
-            }
-            $strRatingItems .= "      <label for=\"optRating$i\">$strLabel</label><input id=\"optRating$i\" name=\"optRating[]\" value=\"$intValue\" type=\"radio\"$strSelected />\n";
-          }
-          $strRatingItems .= "<br />\n(5 = Highest, 1 = Lowest)<br />\n<span class=\"rating-note\">Note: if you have already posted a rating on this page,<br />a new vote will not be added.</span>\n";
-          $strRatings = <<<RatingCode
-  <tr>
-    <td class="BaseColour ratings" colspan="2">
-      Rate this article: 
-$strRatingItems
-    </td>
-  </tr>
-
-RatingCode;
-        } else {
-          $strRatings = "";
-        }
-      } else {
-        $strRatings = "";
-      }
-      */
-      
-      // ** Is user subscribed? ** //
-      $strUSTEmail = $CMS->UST->GetEmail();
-      if ($CMS->UST->IsSubscribed($strUSTEmail, $intItemID)) {
-        $strFNSubscribe = FN_SUBSCRIBE;
-        $strSubscribeHTML = <<<SubscribeLink
-You are subscribed to this article. <a href="$strFNSubscribe">Manage your subscriptions</a>
-
-SubscribeLink;
-      } else {
-        $strSubscribeHTML = <<<SubscribeCheckbox
-<input id="chkSubscribe" name="chkSubscribe" type="checkbox" /><label for="chkSubscribe">Email follow-up comments</label>
-
-SubscribeCheckbox;
-      }
-      // ** Preview ** //
-      $strSubscribeHTML .= <<<PreviewCheckbox
-<input id="chkPreview" name="chkPreview" type="checkbox" /><label for="chkPreview">Preview</label>
-
-PreviewCheckbox;
-      // ** Build final section ** //
-      $strHTML .= <<<CommentFormMain
-  <tr>
-    <td class="BaseColour" colspan="2">
-      $strParent
-$strPostButtons<br />
-      $strMissingContent
-      <label for="txtContent">Enter your comment:</label>
-      <br />
-      <textarea id="txtContent" name="txtContent" cols="50" rows="10">$strCommentBody</textarea>
-    </td>
-  </tr>
-  <tr>
-    <td class="BaseColour" colspan="2">
-      $strSubscribeHTML
-      <input style="margin-left: 5px;" type="submit" value="Post Comment" />
-    </td>
-  </tr>
-</table>
-</form>
-
-CommentFormMain;
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $strHTML;
     }
     // ** Date ** //
@@ -594,4 +382,3 @@ SearchForm;
     }
     
 }
-?>

@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -56,13 +56,8 @@
   
   // ** Articles ** //
   define('M_ERR_UNPUBLISHED_CONTENT', "This article is currently unpublished.");
-  define('M_ERR_ARTICLE_LOCKED', "This article is already locked.");
-  define('M_ERR_ARTICLE_UNLOCKED', "This article is already unlocked.");
   define('M_ERR_ARTICLE_MARKED', "This article is already marked for deletion.");
   define('M_ERR_ARTICLE_UNMARKED', "This article is not marked for deletion.");
-  
-  // ** Comments ** //
-  define('M_ERR_COMMENT_LOCKED', "Cannot comment on a locked article.");
 
   // ** Uploads ** //
   define('M_ERR_UPLOAD_NOT_FOUND', "The file does not exist. Please choose another.");
@@ -95,13 +90,11 @@
   // ** Forgot Password ** //
   define('M_ERR_USERNAME_NOT_FOUND', "Username or email not found.");
   define('M_ERR_INVALID_ACTIVATION_KEY', "Invalid activation key.");
-  define('M_ERR_RESETPW_DISABLED', "This page has been disabled by the site admin.");
 
   // ** Users ** //
   define('M_ERR_ENTER_PW_TWICE', "You must enter your old password, and enter your new password twice.");
   define('M_ERR_DIFF_PASSWORDS', "The passwords do not match.");
   define('M_ERR_OLD_PW_WRONG', "The old password is incorrect.");
-  define('M_ERR_CHANGEPASS_DISABLED', "Password changes have been disabled by the site admin.");
   define('M_ERR_AVATAR_LIMIT', "You cannot upload any more avatars. To upload a new avatar, first remove an existing one.");
   define('M_ERR_AVATAR_DIMENSIONS', "This image is either too wide or too tall to be an avatar. Please resize the file and try again.");
   define('M_ERR_AVATAR_NOT_YOURS', "This avatar belongs to another user. You are not allowed to use it.");
@@ -129,13 +122,10 @@
   define('M_AL_ARTICLE_CREATE', "Created article");
   define('M_AL_ARTICLE_EDIT', "Edited article");
   define('M_AL_ARTICLE_DELETE', "Deleted article");
-  define('M_AL_ARTICLE_LOCK', "Locked article");
   define('M_AL_ARTICLE_MARK', "Marked article for deletion");
   define('M_AL_ARTICLE_RESTORE', "Restored article");
-  define('M_AL_ARTICLE_UNLOCK', "Unlocked article");
   define('M_AL_ARTICLE_SAVEDRAFT', "Saved article draft");
   define('M_AL_ARTICLE_REVIEW', "Submitted article for review");
   define('M_AL_ARTICLE_PUBLISH', "Published article");
   define('M_AL_ARTICLE_SCHEDULE', "Scheduled article");
   
-?>

@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,16 +28,13 @@
   $blnCheckID = true;
   $blnCheckAvatar = false;
   $blnDeleteArticle = false; $blnUnmarkArticle = false;
-  $blnLockArticle = false; $blnUnlockArticle = false;
 
   $strAction = $_GET['action'];
   switch ($strAction) {
-    case "setavatar":     $strPageTitle = "Set avatar";     $blnCheckAvatar = true; break;
-    case "clearavatar":   $strPageTitle = "Clear avatar";   $blnCheckID = false; $blnCheckAvatar = false; break;
-    case "deleteavatar":  $strPageTitle = "Delete avatar";  $blnCheckAvatar = true; break;
-    case "deletearticle": $strPageTitle = "Delete article"; $blnDeleteArticle = true; break;
-    case "lockarticle":   $strPageTitle = "Lock article";   $blnLockArticle = true; break;
-    case "unlockarticle": $strPageTitle = "Unlock article"; $blnUnlockArticle = true; break;
+    case "setavatar":     $strPageTitle = "Set Avatar";     $blnCheckAvatar = true; break;
+    case "clearavatar":   $strPageTitle = "Clear Avatar";   $blnCheckID = false; $blnCheckAvatar = false; break;
+    case "deleteavatar":  $strPageTitle = "Delete Avatar";  $blnCheckAvatar = true; break;
+    case "deletearticle": $strPageTitle = "Delete Article"; $blnDeleteArticle = true; break;
     default: $CMS->Err_MFail(M_ERR_MISSINGPARAMS_SYSTEM, "strAction"); break;
   }
   
@@ -69,21 +66,6 @@
       $CMS->Err_MFail(M_ERR_ARTICLE_MARKED, "");
     }
   }
-  if (($blnLockArticle) || ($blnUnlockArticle)) {
-    // Validate access
-    $intAreaID = $CMS->ART->GetArticleAreaID($intItemID);
-    $CMS->RES->LockArticle($intAreaID);
-    if ($CMS->RES->IsError()) {
-      $CMS->Err_MFail(M_ERR_UNAUTHORISED, "");
-    }
-    // Check if this is a valid action
-    $blnLocked = $CMS->ART->IsLocked($intItemID);
-    if (($blnLockArticle) && ($blnLocked)) {
-      $CMS->Err_MFail(M_ERR_ARTICLE_LOCKED, "");
-    } elseif (($blnUnlockArticle) && (!$blnLocked)) {
-      $CMS->Err_MFail(M_ERR_ARTICLE_UNLOCKED, "");
-    }
-  }
   
   $strReturnURL = empty($_GET['back']) ? "" : $_GET['back'];
   
@@ -107,7 +89,7 @@
     case "deleteavatar":
       if ($_POST) {
         $CMS->FL->Delete($intItemID, $intUserID, "");
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>Avatar deleted. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
+        $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>Avatar deleted. <a href=\"$strReturnURL\">Return</a></p>\n";
       } else {
         $strFormMsg = "<p>You are about to delete your avatar with file ID: $intItemID.</p>";
       }
@@ -115,7 +97,7 @@
     case "deletearticle":
       if ($_POST) {
         $CMS->ART->Mark($intItemID);
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>Article deleted. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
+        $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>Article deleted. <a href=\"$strReturnURL\">Return</a></p>\n";
       } else {
         $strArticleTitle = $CMS->ART->GetTitle($intItemID);
         $strFormMsg = <<<DeleteArticle
@@ -128,38 +110,6 @@
 DeleteArticle;
       }
       break;
-    case "lockarticle":
-      if ($_POST) {
-        $CMS->ART->Lock($intItemID);
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>Article locked. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
-      } else {
-        $strArticleTitle = $CMS->ART->GetTitle($intItemID);
-        $strFormMsg = <<<LockArticle
-<p>You are about to lock the following article:</p>
-<ul>
-<li>Title: $strArticleTitle</li>
-<li>ID: $intItemID</li>
-</ul>
-
-LockArticle;
-      }
-      break;
-    case "unlockarticle":
-      if ($_POST) {
-        $CMS->ART->Unlock($intItemID);
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>Article unlocked. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
-      } else {
-        $strArticleTitle = $CMS->ART->GetTitle($intItemID);
-        $strFormMsg = <<<UnlockArticle
-<p>You are about to unlock the following article:</p>
-<ul>
-<li>Title: $strArticleTitle</li>
-<li>ID: $intItemID</li>
-</ul>
-
-UnlockArticle;
-      }
-      break;
   }
 
   if ($blnUCPRedirect) {
@@ -170,8 +120,7 @@ UnlockArticle;
 
   if (!$_POST) {
     $strHTML = <<<END
-<div id="UserCP-UserTools">
-<h1>$strPageTitle</h1>
+<h1 class="page-header">$strPageTitle</h1>
 $strFormMsg
 <form action="{FN_USER_TOOLS}$strFormAction" method="post">
 <p><input type="hidden" name="dummy" value="$intItemID" /></p>
@@ -183,4 +132,3 @@ END;
   }
 
   $CMS->AP->Display($strHTML);
-?>

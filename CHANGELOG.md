@@ -1,5 +1,41 @@
 # Injader changelog
 
+## 3.0.0
+
+Notes:
+To simplify things, several legacy features have been removed in v3. Check the list below for details.
+Old themes cannot be migrated to the new theme system. This won't matter if you haven't used Injader before.
+It is currently not possible to install Injader in a subfolder.
+
+* New: Revamped Control Panel and navigation
+* New: Manual editing of content URLs
+* New: Option to use Disqus comments
+* New: Themes now use Twig
+* New: Archives page can now be customised
+* New: Introduced Bootstrap for public-facing themes and for the Control Panel
+* New: Introduced many new helper functions for themes
+* New: Replaced TinyMCE with CKEditor
+* New: Ability to theme the Control Panel (work-in-progress)
+* Security: Replacing MD5 with BCRYPT
+* SEO: Added canonical URL to category and article pages
+* SEO: Added prev/next URLs to category pages
+* Maintenance: Moved sitemap URL to the Control Panel dashboard
+* Maintenance: Removed standard comments - use Disqus instead
+* Maintenance: Removed navigation types - areas now have one level only
+* Maintenance: Removed ?loggedin=1 from URLs to avoid multiple URLs from being shared
+* Maintenance: Removed setting: Allow password changes
+* Maintenance: Removed setting: Allow password resets
+* Maintenance: Removed setting: Lock system (this will be reworked and added at a later date)
+* Maintenance: Removed setting: Feedburner URL
+* Maintenance: Removed setting: Favicon (the custom header can be used for this)
+* Maintenance: Allowed site description field to be left blank
+* Maintenance: Moved setting from Control Panel to config file: Log file row limit
+* Maintenance: Moved setting from Control Panel to config file: Control Panel page count
+* Maintenance: Cleaned up path constants and removed SystemDirs.php
+* Code: Major framework changes and code cleanup (ongoing)
+* Code: RSS feeds now use full headers
+* Code: Renamed all database tables
+
 ## 2.5.0
 
 Note: You must be on version 2.4.4 or above to upgrade to 2.5.0.

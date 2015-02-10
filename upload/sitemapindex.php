@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,13 +26,10 @@
   for ($i=0; $i<count($arrAreas); $i++) {
     $intAreaID = $arrAreas[$i]['id'];
     if ($arrAreas[$i]['type'] == "Content") {
-      $CMS->RES->ViewArea($intAreaID);
-      if (!$CMS->RES->IsError()) {
         if ($CMS->AR->CountContentInArea($intAreaID, C_CONT_PUBLISHED) > 0) {
           $arrSiteMapAreas[$j] = $arrAreas[$i];
           $j++;
         }
-      }
     }
   }
   

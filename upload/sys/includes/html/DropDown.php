@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@
       return $strOutput;
     }
     // ** Area list ** //
-    function AreaHierarchy($strSelValue, $intExcludeAreaID, $strAreaType, $blnAllowEmpty, $blnIsSearch, $strNavType) {
+    function AreaHierarchy($strSelValue, $intExcludeAreaID, $strAreaType, $blnAllowEmpty, $blnIsSearch) {
       global $CMS;
       $dteStartTime = $this->MicrotimeFloat();
       $this->blnAllowEmpty = $blnAllowEmpty;
@@ -61,7 +61,7 @@
         $this->strEmptyItem = "All";
       }
       $this->blnIsSearch = $blnIsSearch;
-      $arrDDLAreas = $CMS->AT->BuildAreaArray(1, $strNavType); // Just get the values
+      $arrDDLAreas = $CMS->AT->BuildAreaArray(1); // Just get the values
       $j = 0; // List count
       for ($i=0; $i<count($arrDDLAreas); $i++) {
         $intDDLID    = $arrDDLAreas[$i]['id'];
@@ -74,13 +74,14 @@
             $blnProceed = true;
           } elseif ($strDDLType == $strAreaType) {
             if ($this->blnIsSearch) {
-              $CMS->RES->ViewArea($intDDLID);
+              $blnProceed = true;
             } elseif ($strAreaType == "Content") {
               $CMS->RES->CreateArticle($intDDLID);
+              $blnProceed = $CMS->RES->IsError() ? false : true;
             } elseif ($strAreaType == "File") {
               $CMS->RES->UploadFile($intDDLID);
+              $blnProceed = $CMS->RES->IsError() ? false : true;
             }
-            $blnProceed = $CMS->RES->IsError() ? false : true;
           }
           if ($blnProceed) {
             $strDDLNameIndent = " ";
@@ -105,10 +106,10 @@
       return $strHTML;
     }
     // ** Attach File JS ** //
-    function AreaHierarchyAttachJS($strNavType) {
+    function AreaHierarchyAttachJS() {
       global $CMS;
       $dteStartTime = $this->MicrotimeFloat();
-      $arrAreas = $CMS->AT->BuildAreaArray(1, $strNavType); // Just get the values
+      $arrAreas = $CMS->AT->BuildAreaArray(1); // Just get the values
       $arrListData = "";
       $j = 0; // List count
       for ($i=0; $i<count($arrAreas); $i++) {
@@ -211,7 +212,7 @@
     // ** Themes ** //
     function ThemeList($strSelValue) {
       global $CMS;
-      $arrDirList = $CMS->Dir(ABS_SYS_THEMES, "folders", false);
+      $arrDirList = $CMS->Dir(ABS_ROOT.'themes/user/', "folders", false);
       $strDirList = "";
       if (is_array($arrDirList)) {
         for ($i=0; $i<count($arrDirList); $i++) {
@@ -283,34 +284,6 @@
       $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $strHTML;
     }
-    // ** Contact Form Recipient List ** //
-    function FormRecipients($strSelValue) {
-      $dteStartTime = $this->MicrotimeFloat();
-      $arrRecipients = $this->ResultQuery("SELECT id AS list_value, name AS list_text FROM {IFW_TBL_FORM_RECIPIENTS} ORDER BY recipient_order ASC", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $strHTML = $this->BasicList($arrRecipients, $strSelValue);
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $strHTML;
-    }
-    // ** Used for custom links ** //
-    function SystemComponents($strSelValue) {
-      $dteStartTime = $this->MicrotimeFloat();
-      $arrComponents = $this->ResultQuery("SELECT id AS list_value, name AS list_text FROM {IFW_TBL_COMPONENTS} ORDER BY name ASC", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $strHTML = $this->BasicList($arrComponents, $strSelValue);
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $strHTML;
-    }
-    // ** Used for plugins ** //
-    function DatabaseConnections($strSelValue) {
-      $dteStartTime = $this->MicrotimeFloat();
-      $arrConnections = $this->ResultQuery("SELECT id AS list_value, conn_name AS list_text FROM {IFW_TBL_CONNECTIONS} ORDER BY conn_name ASC", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $strHTML = "<option value=\"0\">(Use current database)</option>\n";
-      $strHTML .= $this->BasicList($arrConnections, $strSelValue);
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $strHTML;
-    }
     // ** View Users ** //
     function UserOrderField($strSelValue) {
       global $CMS;
@@ -376,24 +349,51 @@
       $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $strHTML;
     }
-    
-    /**
-     * Makes a drop down list of spam rule types
-     * @param $strSelValue
-     * @return string
-     */
-    function SpamRuleType($strSelValue) {
-    	
-    	global $CMS;
-    	$arrTypeList = $CMS->RC->Get("C_SPAMRULE_");
-    	for ($i=0; $i<count($arrTypeList); $i++) {
-        $arrTypeValues[$i]['list_value'] = $arrTypeList[$i]['key_value'];
-        $arrTypeValues[$i]['list_text']  = $arrTypeList[$i]['key_value'];
+
+      // ** Category list ** //
+      function CategoryList($selectedItem, $allowEmpty)
+      {
+          global $CMS;
+          $this->blnAllowEmpty = $allowEmpty;
+          if (empty($this->strEmptyItem)) {
+              $this->strEmptyItem = "All";
+          }
+
+          $dropDownData = array();
+
+          $topLevelList = $CMS->CAT->getTopLevel();
+
+          foreach ($topLevelList as $topLevelItem) {
+
+              $itemId   = $topLevelItem['id'];
+              $itemName = $topLevelItem['name'];
+
+              $dropDownData[] = array('list_value' => $itemId, 'list_text' => $itemName);
+
+              $categoryChildren = $CMS->CAT->getByParent($itemId);
+
+              if ($categoryChildren) {
+
+                  foreach ($categoryChildren as $childItem) {
+
+                      $childId   = $childItem['id'];
+                      $childName = $childItem['name'];
+
+                      $dropDownData[] = array('list_value' => $childId, 'list_text' => '- '.$childName);
+                      // @todo add recursive function for adding children below this level
+
+                  }
+
+              }
+
+          }
+
+          if (empty($dropDownData)) {
+              $strHTML = $this->BasicList("", $selectedItem);
+          } else {
+              $strHTML = $this->BasicList($dropDownData, $selectedItem);
+          }
+          return $strHTML;
       }
-      $strHTML = $this->BasicList($arrTypeValues, $strSelValue);
-      return $strHTML;
-      
-    }
-    
+
   }
-?>

@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -155,21 +155,16 @@
       $CMS->TH->SetHeaderSiteTitle($strSiteTitle);
       $strSiteDesc = $CMS->SYS->GetSysPref(C_PREF_SITE_DESCRIPTION);
       $CMS->TH->SetHeaderSiteDesc($strSiteDesc);
-      $strMetaGenerator = "<meta name=\"generator\" content=\"".PRD_PRODUCT_NAME." - ".PRD_PRODUCT_URL."\" />\n";
+      $strMetaGenerator = '<meta name="generator" content="'.PRD_PRODUCT_NAME.' - '.PRD_PRODUCT_URL.'">'."\n";
       $CMS->TH->SetHeaderMetaGenerator($strMetaGenerator);
       $strSiteKeywords = $CMS->SYS->GetSysPref(C_PREF_SITE_KEYWORDS);
-      $strKeywords = "<meta name=\"keywords\" content=\"$strSiteKeywords\" />\n";
-      $strSiteFavicon  = $CMS->SYS->GetSysPref(C_PREF_SITE_FAVICON);
-      if ($strSiteFavicon) {
-        $strFavicon = "<link rel=\"icon\" href=\"$strSiteFavicon\" type=\"image/x-icon\" />\n<link rel=\"shortcut icon\" href=\"$strSiteFavicon\" type=\"image/x-icon\" />\n";
-      } else {
-        $strFavicon = "";
-      }
-      $strMetaTags = $strKeywords.$strFavicon;
+      $strKeywords = '<meta name="keywords" content="'.$strSiteKeywords.'">'."\n";
+      $strMetaTags = $strKeywords;
       $CMS->TH->SetHeaderMetaKeywords($strMetaTags);
-      $strHeaderCoreStyles = "<link href=\"".URL_SYS_ROOT."core.css\" rel=\"stylesheet\" type=\"text/css\" />\n";
+      $strHeaderCoreStyles = '<link href="'.URL_ROOT.'sys/core.css" rel="stylesheet" type="text/css">'."\n";
       $CMS->TH->SetHeaderCoreStyles($strHeaderCoreStyles);
-      $strHeaderScripts = "<script type=\"text/javascript\" src=\"".URL_SYS_ROOT."scripts.js\"></script>\n<script type=\"text/javascript\" src=\"".URL_SYS_ROOT."init.js\"></script>\n";
+      $strHeaderScripts  = '<script type="text/javascript" src="'.URL_ROOT.'sys/scripts.js"></script>'."\n";
+      $strHeaderScripts .= '<script type="text/javascript" src="'.URL_ROOT.'sys/init.js"></script>'."\n";
       $CMS->TH->SetHeaderScripts($strHeaderScripts);
       // 2.3.0
       // TinyMCE preview overrides this, so ensure it hasn't been set yet.
@@ -178,36 +173,29 @@
         $CMS->TH->SetHeaderCustomTags($strCustomHeadTags);
       }
     }
-    function DoTopLevelNavBar($intAreaID, $strNavType) {
+    function DoTopLevelNavBar($intAreaID) {
       global $CMS;
-      if (!$strNavType) {
-        $strNavType = C_NAV_PRIMARY;
-      }
-      $strNavClause = " AND parent.nav_type = '$strNavType' ";
       if ($intAreaID) {
         $blnDefaultPage = false;
       } else {
         $blnDefaultPage = true;
-        $intAreaID = $CMS->AR->GetDefaultAreaID($strNavType);
+        $intAreaID = $CMS->AR->GetDefaultAreaID();
       }
       $arrAreas = $this->ResultQuery("SELECT parent.id, parent.name, parent.seo_name ".
         "FROM ({IFW_TBL_AREAS} AS node, {IFW_TBL_AREAS} AS parent) ".
         "WHERE node.hier_left BETWEEN parent.hier_left AND parent.hier_right ".
-        "AND node.id = $intAreaID $strNavClause ORDER BY node.hier_left", 
+        "AND node.id = $intAreaID ORDER BY node.hier_left",
         __CLASS__ . "::" . __FUNCTION__, __LINE__);
       $intTopLevelAreaID = $arrAreas[0]['id'];
       // Primary navigation - Top-level areas
-      $arrAreas = $CMS->AT->GetParentedAreas(0, "All", $strNavType);
+      $arrAreas = $CMS->AT->GetParentedAreas(0, "All");
       $strNavData = "";
       $j = 0;
       $intNavCount = 0;
       for ($i=0; $i<count($arrAreas); $i++) {
         $intNavID = $arrAreas[$i]['id'];
-        $CMS->RES->ViewArea($intNavID);
-        if (!$CMS->RES->IsError()) {
           $arrNavigationItems[$j++] = $arrAreas[$i];
           $intNavCount++;
-        }
       }
       if ($blnDefaultPage) {
         $intTopLevelAreaID = ""; // Don't light up the navbar for default pages
@@ -218,13 +206,10 @@
       $CMS->TH->SetNavigationItems($arrNavigationItems);
       $CMS->TH->StartNavigationItems();
     }
-    function DoAllLevelNavBar($strNavType) {
+    function DoAllLevelNavBar() {
       global $CMS;
-      if (!$strNavType) {
-        $strNavType = C_NAV_PRIMARY;
-      }
       $CMS->AT->arrAreaData = array(); // Reset
-      $arrDDLAreas = $CMS->AT->BuildAreaArray(1, $strNavType);
+      $arrDDLAreas = $CMS->AT->BuildAreaArray(1);
       $j = 0; // List count
       $arrNavigationItems = array();
       if (is_array($arrDDLAreas)) {
@@ -233,10 +218,6 @@
 	        $strDDLName  = $arrDDLAreas[$i]['name'];
 	        $strDDLType  = $arrDDLAreas[$i]['type'];
 	        $intDDLLevel = $arrDDLAreas[$i]['level'];
-	        $blnProceed = false;
-	        $CMS->RES->ViewArea($intDDLID);
-	        $blnProceed = $CMS->RES->IsError() ? false : true;
-	        if ($blnProceed) {
 	        	$strDDLNameIndent = " ";
 	          if ($intDDLLevel > 1) {
 	            for ($k=1; $k<$intDDLLevel; $k++) {
@@ -245,10 +226,7 @@
 	          }
 	          $arrNavigationItems[$j]           = $arrDDLAreas[$i];
 	          $arrNavigationItems[$j]['indent'] = $strDDLNameIndent;
-	          //$arrNavigationItems[$j]['list_value'] = $intDDLID;
-	          //$arrNavigationItems[$j]['list_text']  = $strDDLNameIndent.$strDDLName;
 	          $j++;
-	        }
 	      }
       }
       // *** Assignments *** //
@@ -269,20 +247,13 @@
 
 
     function Area($intID) {
+
+        //$injThemeArea = new \Cms\Theme\Area;
       global $CMS;
       $dteStartTime = $this->MicrotimeFloat();
       
       $CMS->TH->SetCurrentLocation(C_TL_INDEX);
-      
-      // System lock
-      $strSystemLock = $CMS->SYS->GetSysPref(C_PREF_SYSTEM_LOCK);
-      if ($strSystemLock == "Y") {
-        $CMS->RES->Admin();
-        $blnIsSystemLocked = $CMS->RES->IsError() ? true : false;
-        $CMS->RES->ClearErrors();
-      } else {
-        $blnIsSystemLocked = false;
-      }
+
       // Multi-paging
       if (!empty($_GET['page'])) {
         $intPageNumber = $_GET['page'];
@@ -297,11 +268,6 @@
       if (!$arrArea['id']) {
         $this->Err_MFail(M_ERR_NO_ROWS_RETURNED, "Area ID: $intID");
       }
-      // Check the user has access
-      $CMS->RES->ViewArea($intID);
-      if ($CMS->RES->IsError()) {
-        $CMS->Err_MFail(M_ERR_UNAUTHORISED, "ViewArea");
-      }
       // ** SEO links ** //
       $strAreaName = $arrArea['name'];
       $strSEOName  = $arrArea['seo_name'];
@@ -314,8 +280,6 @@
 
       // Release scheduled content
       $CMS->ART->ReleaseScheduledContent();
-      // Purge old access logs
-      $CMS->AL->Purge();
       // Can't view linked areas
       $strAreaType = $CMS->AR->GetAreaType($intID);
       if ($strAreaType == "Linked") {
@@ -364,10 +328,7 @@
       /* ********************************************** */
       /* *              Header - Site Feed              */
       /* ********************************************** */
-      $strRSSArticlesURL = $CMS->SYS->GetSysPref(C_PREF_RSS_ARTICLES_URL);
-      if (!$strRSSArticlesURL) {
-        $strRSSArticlesURL = FN_FEEDS."?name=articles";
-      }
+      $strRSSArticlesURL = FN_FEEDS."?name=articles";
       $strHeaderSiteFeed = "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"Site Feed - ".$CMS->TH->GetHeaderSiteTitle()."\" href=\"$strRSSArticlesURL\" />\n";
       $CMS->TH->SetHeaderSiteFeed($strHeaderSiteFeed);
       /* ********************************************** */
@@ -457,11 +418,7 @@
       $arrParentedAreas = $CMS->AT->GetParentedAreas($intID, "All", "");
       $intSubareaCount = 0;
       for ($i=0; $i<count($arrParentedAreas); $i++) {
-        $intSubAreaID = $arrParentedAreas[$i]['id'];
-        $CMS->RES->ViewArea($intSubAreaID);
-        if (!$CMS->RES->IsError()) {
           $arrAvailableAreas[$intSubareaCount++] = $arrParentedAreas[$i];
-        }
       }
       // *** Assignments *** //
       $CMS->TH->SetSubareaCount($intSubareaCount);
@@ -514,10 +471,6 @@
         $this->Err_MFail(M_ERR_NO_ROWS_RETURNED, $intID);
     	}
       $intAreaID = $arrContent['content_area_id'];
-      $CMS->RES->ViewArea($intAreaID);
-      if ($CMS->RES->IsError()) {
-        $CMS->Err_MFail(M_ERR_UNAUTHORISED, "ViewArea");
-      }
       $strUserGroups = $arrContent['user_groups'];
       if ($strUserGroups) {
         $CMS->RES->ViewArticle($intID);
@@ -531,29 +484,11 @@
       // ** SEO links ** //
       $strContTitle = $arrContent['title'];
       $strSEOTitle  = $arrContent['seo_title'];
-      $CMS->PL->SetTitle($strSEOTitle);
-      $strViewArticle = $CMS->PL->ViewArticle($intID);
-      /*
-      $blnRedirect = false;
-      if ($strTitle) {
-        if ($strTitle != $strSEOTitle) {
-          $blnRedirect = true;
-        }
-      } else {
-        $blnRedirect = true;
-      }
-      if ($blnRedirect) {
-        if ($_SERVER['REQUEST_URI'] == $strViewArticle) {
-          // Do nothing - prevent infinite loop
-        } else {
-          httpRedirectPerm($strViewArticle);
-        }
-      }
-      */
+      $permalink    = $arrContent['permalink'];
       // Log activity - but only for registered users
       $intUserID = $CMS->RES->GetCurrentUserID();
       if ($intUserID) {
-        $CMS->SYS->CreateAccessLog("Viewed article: <a href=\"$strViewArticle\">$strContTitle</a>", AL_TAG_ARTICLE_VIEW, $intUserID, "");
+        $CMS->SYS->CreateAccessLog("Viewed article: <a href=\"$permalink\">$strContTitle</a>", AL_TAG_ARTICLE_VIEW, $intUserID, "");
         $CMS->ART->UpdateUserList($intID, $intUserID);
         $CMS->ART->IncrementHits($intID);
       } else {
@@ -561,8 +496,6 @@
       }
       // Release scheduled content
       $CMS->ART->ReleaseScheduledContent();
-      // Purge old access logs
-      $CMS->AL->Purge();
       // ** Article Content ** //
       $strContTitle  = $arrContent['title'];
       $strContBody   = $arrContent['content'];
@@ -571,7 +504,6 @@
       $dteCreateDate = $arrContent['create_date'];
       $dteEditDate   = $arrContent['edit_date'];
       $strSEOTitle   = $arrContent['seo_title'];
-      $strLocked     = $arrContent['locked'];
       // Hits get incremented after we retrieve the record, so increment here too
       $intHits       = $arrContent['hits'] + 1;
       $strContURL    = $arrContent['link_url'];
@@ -616,19 +548,6 @@
         $CMS->TH->SetRelatedContentCount(0);
       }
       /* ********************************************** */
-      /* *              Article - Comments              */
-      /* ********************************************** */
-      $arrComments = $CMS->TH->GetComments($intID);
-      // *** Assignments *** //
-      if (is_array($arrComments)) {
-        $CMS->TH->SetCommentCount(count($arrComments));
-        $CMS->TH->SetCommentItems($arrComments);
-        $CMS->TH->StartCommentItems();
-        //$CMS->TH->NextCommentItem();
-      } else {
-        $CMS->TH->SetCommentCount(0);
-      }
-      /* ********************************************** */
       /* *              Theme File Calls                */
       /* ********************************************** */
       $arrArea = $CMS->AR->GetArea($intAreaID);
@@ -667,10 +586,7 @@
       /* ********************************************** */
       /* *              Header - Site Feed              */
       /* ********************************************** */
-      $strRSSArticlesURL = $CMS->SYS->GetSysPref(C_PREF_RSS_ARTICLES_URL);
-      if (!$strRSSArticlesURL) {
-        $strRSSArticlesURL = FN_FEEDS."?name=articles";
-      }
+      $strRSSArticlesURL = FN_FEEDS."?name=articles";
       $strHeaderSiteFeed = "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"Site Feed - ".$CMS->TH->GetHeaderSiteTitle()."\" href=\"$strRSSArticlesURL\" />\n";
       $CMS->TH->SetHeaderSiteFeed($strHeaderSiteFeed);
       /* ********************************************** */

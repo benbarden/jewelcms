@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 */
 
   // Latest version of Injader
-  define('C_SYS_LATEST_VERSION', '2.5.0');
+  define('C_SYS_LATEST_VERSION', '3.0.0');
 
   // Product
   define('PRD_PRODUCT_NAME', 'Injader');
@@ -28,10 +28,7 @@
   define('PRD_COMPANY_URL',  'http://www.benbarden.com');
 
   // Cookies
-  define('C_CK_LOGIN',         'IJ-Login');
-  define('C_CK_COMMENT_NAME',  'IJ-CommentName');
-  define('C_CK_COMMENT_URL',   'IJ-CommentURL');
-  define('C_CK_COMMENT_EMAIL', 'IJ-CommentEmail');
+  define('C_CK_LOGIN', 'IJ-Login');
 
   // Content status
   define('C_CONT_PUBLISHED', 'Published');
@@ -43,27 +40,11 @@
   
   // Allowed file types
   define('C_ALLOWED_FILE_TYPES', 'JPG,PNG,GIF,TXT,DOC,XLS,PPT,PDF,ZIP,MP3');
-  
-  // Spam rule types
-  define('C_SPAMRULE_EMAIL',   'Email');
-  define('C_SPAMRULE_URL',     'URL');
-  define('C_SPAMRULE_NAME',    'Name');
-  define('C_SPAMRULE_COMMENT', 'Comment');
-  define('C_SPAMRULE_IP',      'IP');
-  //define('C_SPAMRULE_ANY',     'Any');
-  
+
   // Area types
   define('C_AREA_CONTENT', 'Content');
   define('C_AREA_LINKED',  'Linked');
   define('C_AREA_SMART',   'Smart');
-  
-  // Navigation types
-  define('C_NAV_PRIMARY',   'Primary');
-  define('C_NAV_SECONDARY', 'Secondary');
-  define('C_NAV_TERTIARY',  'Tertiary');
-  
-  // Widget types
-  define('C_WIDGET_DATA', 'Data');
 
   // Theme files
   define('C_TH_HEADER',     'header.php');
@@ -89,35 +70,21 @@
   define('C_PREF_SITE_KEYWORDS',         'prefSiteKeywords');
   define('C_PREF_SITE_EMAIL',            'prefSiteEmail');
   define('C_PREF_SITE_HEADER',           'prefSiteHeader');
-  define('C_PREF_RSS_ARTICLES_URL',      'prefRSSArticlesURL');
-  define('C_PREF_SITE_FAVICON',          'prefSiteFavicon');
-  define('C_PREF_SYSTEM_PAGE_COUNT',     'prefSystemPageCount');
-  define('C_PREF_MAX_LOG_ENTRIES',       'prefMaxLogEntries');
-  define('C_PREF_SYSTEM_LOCK',           'prefSystemLock');
   define('C_PREF_DATE_FORMAT',           'prefDateFormat');
   define('C_PREF_TIME_FORMAT',           'prefTimeFormat');
   define('C_PREF_SERVER_TIME_OFFSET',    'prefServerTimeOffset');
   define('C_PREF_USER_REGISTRATION',     'prefUserRegistration');
-  define('C_PREF_USER_CHANGE_PASS',      'prefUserChangePass');
-  define('C_PREF_ALLOW_PASSWORD_RESETS', 'prefAllowPasswordResets');
   define('C_PREF_COOKIE_DAYS',           'prefCookieDays');
   define('C_PREF_DEFAULT_THEME',         'prefDefaultTheme');
 
   // Content Settings
   define('C_PREF_TAG_THRESHOLD',        'prefTagThreshold');
   define('C_PREF_RSS_COUNT',            'prefRSSCount');
+  define('C_PREF_DISQUS_ID',            'prefDisqusId');
 
-  // Comment Settings
-  define('C_PREF_COMMENT_CAPTCHA',        'prefCommentCAPTCHA');
-  define('C_PREF_COMMENT_USE_NOFOLLOW',   'prefCommentUseNoFollow');
-  define('C_PREF_COMMENT_NOFOLLOW_LIMIT', 'prefCommentNoFollowLimit');
-  
   // Notification Settings
   define('C_PREF_ARTICLE_NOTIFY_ADMIN',   'prefArticleNotifyAdmin');
   define('C_PREF_ARTICLE_REVIEW_EMAIL',   'prefArticleReviewEmail');
-  define('C_PREF_COMMENT_REVIEW_EMAIL',   'prefCommentReviewEmail');
-  define('C_PREF_COMMENT_NOTIFICATION',   'prefCommentNotification');
-  define('C_PREF_COMMENT_NOTIFY_AUTHOR',  'prefCommentNotifyAuthor');
 
   // File Settings
   define('C_PREF_THUMB_SMALL',      'prefThumbSmall');
@@ -135,4 +102,3 @@
   // Link Settings
   define('C_PREF_LINK_STYLE',       'prefLinkStyle');
 
-?>

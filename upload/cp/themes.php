@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,20 +28,15 @@
   
   $strDefaultTheme = $CMS->SYS->GetSysPref(C_PREF_DEFAULT_THEME);
 
-  $arrDirList = $CMS->Dir(ABS_SYS_THEMES, "both", false);
+  $arrDirList = glob(ABS_ROOT.'themes/user/*');
 
   $strHTML = <<<MainContentStart
-<h1>$strPageTitle</h1>
-<table id="tblSysResults" class="DefaultTable" cellspacing="1">
-  <colgroup>
-    <col class="BaseColour MediumCell" />
-    <col class="BaseColour MediumCell" />
-    <col class="BaseColour" />
-  </colgroup>
-  <tr>
-    <th>Theme Name</th>
-    <th>Configure</th>
-    <th>Usage</th>
+<h1 class="page-header">$strPageTitle</h1>
+<div class="table-responsive">
+<table class="table table-striped" style="width: 400px;">
+  <tr class="separator-row">
+    <td>Theme</td>
+    <td>Usage</td>
   </tr>
 
 MainContentStart;
@@ -49,7 +44,9 @@ MainContentStart;
   if (is_array($arrDirList)) {
     for ($i=0; $i<count($arrDirList); $i++) {
       $strDir = $arrDirList[$i];
-      if ($strDir != "index.php") {
+      if (!is_dir($strDir)) continue;
+      //if ($strDir == 'index.php') continue;
+      $strDir = basename($strDir);
         if ($strDir == $strDefaultTheme) {
           $strDefaultLink = "<i>(default)</i>";
         } else {
@@ -58,15 +55,12 @@ MainContentStart;
         $strHTML .= <<<TableRow
   <tr>
     <td>$strDir</td>
-    <td><a href="{FN_ADM_THEME}?name=$strDir">Files</a> : <a href="{FN_ADM_THEME_SETTINGS}?name=$strDir">Settings</a></td>
-    <td><a href="{FN_ADM_THEME_PREVIEW}?name=$strDir">Preview</a> : $strDefaultLink</td>
+    <td>$strDefaultLink</td>
   </tr>
 
 TableRow;
-      }
     }
   }
-  $strHTML .= "</table>\n";
+  $strHTML .= "</table></div>\n";
 
   $CMS->AP->Display($strHTML);
-?>

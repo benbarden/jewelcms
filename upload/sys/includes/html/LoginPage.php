@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ ExecTime;
       $dteStartTime = $this->MicrotimeFloat();
       $strPageTitle = $this->GetTitle();
       // Index
-      $strIndexURL   = str_replace("index".F_EXT_PHP, "", FN_INDEX);
+      $strIndexURL   = str_replace("index.php", "", FN_INDEX);
       $strHeaderHTML = <<<CMSHeader
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -75,7 +75,7 @@ ExecTime;
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>$strPageTitle</title>
-<link rel="stylesheet" type="text/css" href="{URL_SYS_ROOT}loginpage.css" />
+<link rel="stylesheet" type="text/css" href="{URL_ROOT}sys/loginpage.css" />
 </head>
 <body>
 <div id="mPage">

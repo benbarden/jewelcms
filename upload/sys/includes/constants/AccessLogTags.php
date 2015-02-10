@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,9 +18,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-  // Admin - SQL Query
-  define('AL_TAG_ADM_SQL_QUERY',       "AdminSQLQuery");
-
   // Articles
   define('AL_TAG_ARTICLE_VIEW',        "ArticleView");
   define('AL_TAG_ARTICLE_CREATE',      "ArticleCreate");
@@ -30,8 +27,6 @@
   define('AL_TAG_ARTICLE_UNMARK',      "ArticleUnmarkForDeletion");
   define('AL_TAG_ARTICLE_DELETE',      "ArticleDelete");
   define('AL_TAG_ARTICLE_RESTORE',     "ArticleRestore");
-  define('AL_TAG_ARTICLE_LOCK',        "ArticleLock");
-  define('AL_TAG_ARTICLE_UNLOCK',      "ArticleUnlock");
   define('AL_TAG_ARTICLE_SAVEDRAFT',   "ArticleSaveDraft");
   define('AL_TAG_ARTICLE_REVIEW',      "ArticleReview");
   define('AL_TAG_ARTICLE_PUBLISH',     "ArticlePublish");
@@ -39,8 +34,6 @@
   
   // Articles - Bulk actions
   define('AL_TAG_ARTICLE_BULKMOVE',       "ArticleBulkMove");
-  define('AL_TAG_ARTICLE_BULKLOCK',       "ArticleBulkLock");
-  define('AL_TAG_ARTICLE_BULKUNLOCK',     "ArticleBulkUnlock");
   define('AL_TAG_ARTICLE_BULKEDITAUTHOR', "ArticleEditAuthor");
   define('AL_TAG_ARTICLE_BULKDELETE',     "ArticleBulkDelete");
   define('AL_TAG_ARTICLE_BULKRESTORE',    "ArticleBulkRestore");
@@ -53,11 +46,6 @@
   define('AL_TAG_FILE_DELETE',       "FileDelete");
   define('AL_TAG_FILE_LOCK',         "FileLock");
   define('AL_TAG_FILE_UNLOCK',       "FileUnlock");
-  
-  // Comments
-  define('AL_TAG_COMMENT_ADD',    "CommentAdd");
-  define('AL_TAG_COMMENT_DELETE', "CommentDelete");
-  define('AL_TAG_COMMENT_EDIT',   "CommentEdit");
   
   // Areas
   define('AL_TAG_AREA_VIEW',    "AreaView");
@@ -77,16 +65,6 @@
   define('AL_TAG_PPCA_EDIT',   "PerProfileCAEdit");
   define('AL_TAG_PPSYS_EDIT',  "PerProfileSYSEdit");
   
-  // Plugins
-  define('AL_TAG_PLUGIN_CREATE', "PluginCreate");
-  define('AL_TAG_PLUGIN_EDIT',   "PluginEdit");
-  define('AL_TAG_PLUGIN_DELETE', "PluginDelete");
-  
-  // Forms
-  define('AL_TAG_FORM_RECIPIENT_CREATE', "FormRecipientCreate");
-  define('AL_TAG_FORM_RECIPIENT_DELETE', "FormRecipientDelete");
-  define('AL_TAG_FORM_RECIPIENT_EDIT',   "FormRecipientEdit");
-
   // User
   define('AL_TAG_AVATAR_DELETE',     "AvatarDelete");
   define('AL_TAG_AVATAR_SET',        "AvatarSet");
@@ -104,10 +82,3 @@
   // User Sessions
   define('AL_TAG_USER_SESSION_DELETE',         "UserSessionDelete");
   define('AL_TAG_USER_SESSION_DELETE_EXPIRED', "UserSessionDeleteExpired");
-  
-  // User-defined variables
-  define('AL_TAG_USER_VARIABLE_CREATE', "UserVariableCreate");
-  define('AL_TAG_USER_VARIABLE_DELETE', "UserVariableDelete");
-  define('AL_TAG_USER_VARIABLE_EDIT',   "UserVariableEdit");
-  
-?>

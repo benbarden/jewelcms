@@ -11,161 +11,61 @@ CREATE TABLE IF NOT EXISTS {IFW_TBL_ACCESS_LOG} (
   INDEX ip_address(ip_address)
 );
 
-DROP TABLE IF EXISTS {IFW_TBL_AREAS};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_AREAS} (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(125) NOT NULL DEFAULT '',
-  area_level int(10) UNSIGNED NOT NULL DEFAULT 0,
-  area_order int(10) UNSIGNED NOT NULL DEFAULT 0,
-  hier_left int(10) UNSIGNED NOT NULL DEFAULT 0,
-  hier_right int(10) UNSIGNED NOT NULL DEFAULT 0,
-  parent_id int(10) UNSIGNED NOT NULL DEFAULT 0,
-  permission_profile_id int(10) UNSIGNED NOT NULL DEFAULT 0,
-  area_graphic_id int(10) UNSIGNED NOT NULL DEFAULT 0,
-  content_per_page int(10) UNSIGNED NOT NULL DEFAULT 0,
-  sort_rule VARCHAR(100) NOT NULL DEFAULT '',
-  include_in_rss_feed CHAR(1) NOT NULL DEFAULT 'Y',
-  max_file_size VARCHAR(20) NOT NULL DEFAULT '0',
-  max_files_per_user int(10) UNSIGNED NOT NULL DEFAULT 0,
-  area_url VARCHAR(200) NOT NULL DEFAULT '',
-  smart_tags TEXT NOT NULL,
-  seo_name VARCHAR(100) NOT NULL DEFAULT '',
-  area_description TEXT NOT NULL,
-  area_type VARCHAR(45) NOT NULL,
-  theme_path TEXT NOT NULL,
-  layout_style VARCHAR(50) NOT NULL DEFAULT '',
-  nav_type VARCHAR(20) NOT NULL DEFAULT '',
-  subarea_content_on_index CHAR( 1 ) NOT NULL DEFAULT 'N',
-  PRIMARY KEY(id),
-  INDEX parent_id(parent_id),
-  INDEX permission_profile_id(permission_profile_id),
-  INDEX area_graphic_id(area_graphic_id),
-  INDEX area_type(area_type),
-  INDEX nav_type(nav_type)
-);
-
-INSERT INTO {IFW_TBL_AREAS} (id, name, area_level, area_order, hier_left, hier_right, parent_id, permission_profile_id, area_graphic_id, content_per_page, sort_rule, include_in_rss_feed, max_file_size, max_files_per_user, seo_name, smart_tags, area_description, area_type, theme_path, layout_style, nav_type) VALUES (1, 'Home', 1, 1, 1, 2, 0, 0, 0, 10, 'create_date|desc', 'Y', '0', 0, 'home', '', 'This is your front page.', '{C_AREA_CONTENT}', '', '', '{C_NAV_PRIMARY}');
-INSERT INTO {IFW_TBL_AREAS} (id, name, area_level, area_order, hier_left, hier_right, parent_id, permission_profile_id, area_graphic_id, content_per_page, sort_rule, include_in_rss_feed, max_file_size, max_files_per_user, seo_name, smart_tags, area_description, area_type, theme_path, layout_style, nav_type) VALUES (2, 'Forum', 1, 1, 3, 4, 0, 0, 0, 25, 'last_updated|desc', 'N', '0', 0, 'forum', '', 'This is a discussion forum.', '{C_AREA_CONTENT}', '', 'forum', '{C_NAV_PRIMARY}');
-
-DROP TABLE IF EXISTS {IFW_TBL_COMMENTS};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_COMMENTS} (
-  id int(10) unsigned NOT NULL auto_increment,
-  content text NOT NULL,
-  create_date datetime NOT NULL default '0000-00-00 00:00:00',
-  edit_date datetime NOT NULL default '0000-00-00 00:00:00',
-  author_id int(10) unsigned NOT NULL default 0,
-  story_id int(10) unsigned NOT NULL default 0,
-  upload_id int(10) unsigned NOT NULL default 0,
-  comment_count int(10) unsigned NOT NULL default 0,
-  ip_address VARCHAR(20) NOT NULL default '',
-  comment_status VARCHAR(20) NOT NULL,
-  guest_name VARCHAR( 100 ) NOT NULL default '',
-  guest_email VARCHAR( 100 ) NOT NULL default '',
-  guest_url VARCHAR( 150 ) NOT NULL default '',
-  PRIMARY KEY(id),
-  INDEX story_id(story_id),
-  INDEX author_id(author_id),
-  INDEX upload_id(upload_id),
-  INDEX comment_status(comment_status)
-);
-
-DROP TABLE IF EXISTS {IFW_TBL_CONNECTIONS};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_CONNECTIONS} (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  conn_host VARCHAR(100) NOT NULL,
-  conn_schema VARCHAR(100) NOT NULL,
-  conn_user VARCHAR(100) NOT NULL,
-  conn_pass VARCHAR(100) NOT NULL,
-  conn_name VARCHAR(100) NOT NULL,
-  PRIMARY KEY(id)
-);
+DROP TABLE IF EXISTS {IFW_TBL_CATEGORIES};
+CREATE TABLE IF NOT EXISTS {IFW_TBL_CATEGORIES} (
+  id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  permalink VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  parent_id INT(10) UNSIGNED NULL,
+  items_per_page INT(10) UNSIGNED NOT NULL,
+  sort_rule VARCHAR(30) NOT NULL,
+  PRIMARY KEY (id));
+INSERT INTO {IFW_TBL_CATEGORIES} (id, name, permalink, items_per_page, sort_rule) VALUES(1, 'General', '/general/', 5, 'create_date|desc');
 
 DROP TABLE IF EXISTS {IFW_TBL_CONTENT};
 CREATE TABLE IF NOT EXISTS {IFW_TBL_CONTENT} (
   id int(10) unsigned NOT NULL auto_increment,
   title varchar(125) NOT NULL default '',
+  permalink VARCHAR(255) NOT NULL,
   content mediumtext NOT NULL,
   author_id int(10) unsigned NOT NULL default 0,
-  content_area_id int(10) unsigned NOT NULL default 0,
+  category_id int(10) unsigned NULL default 0,
   create_date datetime NOT NULL default '0000-00-00 00:00:00',
-  edit_date datetime NOT NULL default '0000-00-00 00:00:00',
   last_updated datetime NOT NULL default '0000-00-00 00:00:00',
-  locked char(1) NOT NULL default '',
-  read_userlist text NOT NULL,
-  hits int(10) unsigned NOT NULL default '0',
   tags TEXT NOT NULL,
-  seo_title VARCHAR(100) NOT NULL default '',
   link_url VARCHAR(150) NOT NULL default '',
   content_status VARCHAR(20) NOT NULL,
-  comment_count INTEGER UNSIGNED NOT NULL DEFAULT 0,
-  user_groups TEXT NOT NULL,
   tags_deleted TEXT NOT NULL,
   article_order INT(10) UNSIGNED NOT NULL DEFAULT '0',
   article_excerpt TEXT NOT NULL,
   PRIMARY KEY(id),
   INDEX author_id(author_id), 
-  INDEX content_area_id(content_area_id),
+  INDEX category_id(category_id),
   INDEX content_status(content_status)
 ) ENGINE = MyISAM;
 ALTER TABLE {IFW_TBL_CONTENT} ADD FULLTEXT title(title);
 ALTER TABLE {IFW_TBL_CONTENT} ADD FULLTEXT content(content);
 ALTER TABLE {IFW_TBL_CONTENT} ADD FULLTEXT title_content(title, content);
-
-DROP TABLE IF EXISTS {IFW_TBL_FORM_RECIPIENTS};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_FORM_RECIPIENTS} (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(100) NOT NULL,
-  email VARCHAR(150) NOT NULL,
-  recipient_order INTEGER UNSIGNED NOT NULL DEFAULT 0,
-  PRIMARY KEY(id)
-);
+ALTER TABLE {IFW_TBL_CONTENT} ADD INDEX permalink (permalink ASC);
 
 DROP TABLE IF EXISTS {IFW_TBL_PERMISSION_PROFILES};
 CREATE TABLE {IFW_TBL_PERMISSION_PROFILES} (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
   is_system CHAR(1) NOT NULL,
-  view_area TEXT NOT NULL,
   create_article TEXT NOT NULL,
   publish_article TEXT NOT NULL,
   edit_article TEXT NOT NULL,
   delete_article TEXT NOT NULL,
-  add_comment TEXT NOT NULL,
-  edit_comment TEXT NOT NULL,
-  delete_comment TEXT NOT NULL,
-  lock_article TEXT NOT NULL,
   attach_file TEXT NOT NULL,
   PRIMARY KEY (id),
   INDEX is_system(is_system)
 );
-INSERT INTO {IFW_TBL_PERMISSION_PROFILES}(name, is_system, view_area, create_article, publish_article, edit_article, delete_article, add_comment, edit_comment, delete_comment, lock_article, attach_file) VALUES('System', 'Y', '0|1|2', '2', '2', '2', '2', '0|1|2', '2', '2', '2', '2');
+INSERT INTO {IFW_TBL_PERMISSION_PROFILES}(name, is_system, create_article, publish_article, edit_article, delete_article, attach_file) VALUES('System', 'Y', '2', '2', '2', '2', '2');
 
-DROP TABLE IF EXISTS {IFW_TBL_RATINGS};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_RATINGS} (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  article_id INTEGER UNSIGNED NOT NULL default 0,
-  comment_id INTEGER UNSIGNED NOT NULL default 0,
-  rating_value INTEGER UNSIGNED NOT NULL default 0,
-  ip_address VARCHAR(20) NOT NULL default '',
-  user_id INTEGER UNSIGNED NOT NULL default 0,
-  PRIMARY KEY (id),
-  INDEX article_id(article_id),
-  INDEX comment_id(comment_id),
-  INDEX ip_address(ip_address),
-  INDEX user_id(user_id)
-);
-
-DROP TABLE IF EXISTS {IFW_TBL_SPAM_RULES};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_SPAM_RULES} (
-  id int(10) unsigned NOT NULL auto_increment, 
-  block_rule VARCHAR( 255 ) NOT NULL ,
-  block_type ENUM( 'Email', 'URL', 'Name', 'Comment', 'IP', 'Any' ) NOT NULL,
-  PRIMARY KEY(id),
-  INDEX (block_rule)
-);
-
-DROP TABLE IF EXISTS {IFW_TBL_SYS_PREFERENCES};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_SYS_PREFERENCES} (
+DROP TABLE IF EXISTS {IFW_TBL_SETTINGS};
+CREATE TABLE IF NOT EXISTS {IFW_TBL_SETTINGS} (
   id int(10) unsigned NOT NULL auto_increment,
   preference varchar(45) NOT NULL default '',
   content TEXT NOT NULL,
@@ -173,56 +73,42 @@ CREATE TABLE IF NOT EXISTS {IFW_TBL_SYS_PREFERENCES} (
   INDEX preference(preference)
 );
 
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_CMS_VERSION}', '{C_SYS_LATEST_VERSION}');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_SITE_TITLE}', 'Your site title');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_SITE_DESCRIPTION}', 'Your site description');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_SITE_KEYWORDS}', 'Injader, CMS, content management system');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_SITE_HEADER}', '');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_SITE_EMAIL}', 'you@yoursite.com');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_SITE_FAVICON}', '');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_CMS_VERSION}', '{C_SYS_LATEST_VERSION}');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_TITLE}', 'Injader test site');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_DESCRIPTION}', '');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_KEYWORDS}', '');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_HEADER}', '');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SITE_EMAIL}', 'you@yoursite.com');
 
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_RSS_ARTICLES_URL}', '');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_DEFAULT_THEME}', "default");
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DEFAULT_THEME}', 'injader');
 
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_SYSTEM_PAGE_COUNT}', '25');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_MAX_LOG_ENTRIES}', '3000');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_SYSTEM_LOCK}', 'N');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DATE_FORMAT}', '1');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_TIME_FORMAT}', '0');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_SERVER_TIME_OFFSET}', '0');
 
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_DATE_FORMAT}', '1');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_TIME_FORMAT}', '0');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_SERVER_TIME_OFFSET}', '0');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_USER_REGISTRATION}', '0');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_COOKIE_DAYS}', '14');
 
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_USER_REGISTRATION}', '0');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_USER_CHANGE_PASS}', 'Y');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_ALLOW_PASSWORD_RESETS}', 'Y');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_COOKIE_DAYS}', '14');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_TAG_THRESHOLD}', '1');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_RSS_COUNT}', '10');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DISQUS_ID}', '');
 
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_TAG_THRESHOLD}', '1');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_RSS_COUNT}', '10');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_ARTICLE_NOTIFY_ADMIN}', '1');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_ARTICLE_REVIEW_EMAIL}', '1');
 
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_COMMENT_CAPTCHA}', '0');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_COMMENT_USE_NOFOLLOW}', '1');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_COMMENT_NOFOLLOW_LIMIT}', '3');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_THUMB_SMALL}', '100');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_THUMB_MEDIUM}', '300');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_THUMB_LARGE}', '600');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_THUMB_KEEPASPECT}', 'Y');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_ATTACH_MAX_SIZE}', '1000000');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_AVATARS_PER_USER}', '1');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_AVATAR_SIZE}', '100');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_AVATAR_MAX_SIZE}', '100000');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DIR_AVATARS}', 'data/avatars/');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DIR_SITE_IMAGES}', 'data/site/');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DIR_MISC}', 'data/attach/');
 
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_ARTICLE_NOTIFY_ADMIN}', '1');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_ARTICLE_REVIEW_EMAIL}', '1');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_COMMENT_REVIEW_EMAIL}', '1');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_COMMENT_NOTIFICATION}', '1');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_COMMENT_NOTIFY_AUTHOR}', '1');
-
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_THUMB_SMALL}', '100');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_THUMB_MEDIUM}', '300');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_THUMB_LARGE}', '600');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_THUMB_KEEPASPECT}', 'Y');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_ATTACH_MAX_SIZE}', '1000000');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_AVATARS_PER_USER}', '1');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_AVATAR_SIZE}', '100');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_AVATAR_MAX_SIZE}', '100000');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_DIR_AVATARS}', 'data/avatars/');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_DIR_SITE_IMAGES}', 'data/site/');
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_DIR_MISC}', 'data/attach/');
-
-INSERT INTO {IFW_TBL_SYS_PREFERENCES}(preference, content) VALUES('{C_PREF_LINK_STYLE}', '1');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_LINK_STYLE}', '1');
 
 DROP TABLE IF EXISTS {IFW_TBL_TAGS};
 CREATE TABLE IF NOT EXISTS {IFW_TBL_TAGS} (
@@ -239,11 +125,9 @@ DROP TABLE IF EXISTS {IFW_TBL_UPLOADS};
 CREATE TABLE IF NOT EXISTS {IFW_TBL_UPLOADS} (
   id int(10) unsigned NOT NULL auto_increment,
   title varchar(100) NOT NULL default '',
-  description text NOT NULL,
   location text NOT NULL,
   file_area_id int(10) unsigned NOT NULL default '0',
   author_id int(10) unsigned NOT NULL default '0',
-  user_groups TEXT NOT NULL,
   create_date datetime NOT NULL default '0000-00-00 00:00:00',
   edit_date datetime NOT NULL default '0000-00-00 00:00:00',
   hits int(10) unsigned NOT NULL default '0',
@@ -267,15 +151,17 @@ CREATE TABLE IF NOT EXISTS {IFW_TBL_UPLOADS} (
 
 DROP TABLE IF EXISTS {IFW_TBL_URL_MAPPING};
 CREATE TABLE IF NOT EXISTS {IFW_TBL_URL_MAPPING} (
-  relative_url VARCHAR( 255 ) NOT NULL ,
-  is_active CHAR( 1 ) NOT NULL DEFAULT 'Y' ,
-  article_id INT( 10 ) NOT NULL DEFAULT '0' ,
-  area_id INT( 10 ) NOT NULL DEFAULT '0' ,
-  PRIMARY KEY (relative_url)
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  relative_url varchar(255) NOT NULL,
+  is_active char(1) NOT NULL DEFAULT 'Y',
+  article_id int(10) NOT NULL DEFAULT '0',
+  category_id int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  UNIQUE KEY relative_url (relative_url),
+  KEY is_active (is_active),
+  KEY article_id (article_id),
+  KEY category_id (category_id)
 );
-ALTER TABLE {IFW_TBL_URL_MAPPING} ADD INDEX is_active(is_active);
-ALTER TABLE {IFW_TBL_URL_MAPPING} ADD INDEX article_id(article_id);
-ALTER TABLE {IFW_TBL_URL_MAPPING} ADD INDEX area_id(area_id);
 
 DROP TABLE IF EXISTS {IFW_TBL_USERS};
 CREATE TABLE IF NOT EXISTS {IFW_TBL_USERS} (
@@ -331,41 +217,4 @@ CREATE TABLE IF NOT EXISTS {IFW_TBL_USER_SESSIONS} (
   PRIMARY KEY(id),
   INDEX user_id(user_id),
   INDEX session_id(session_id)
-);
-
-DROP TABLE IF EXISTS {IFW_TBL_USER_STATS};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_USER_STATS} (
-  user_email VARCHAR( 100 ) NOT NULL ,
-  comment_count INT NOT NULL DEFAULT '0',
-  article_subscriptions TEXT NOT NULL,
-  PRIMARY KEY (user_email)
-);
-
-DROP TABLE IF EXISTS {IFW_TBL_USER_VARIABLES};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_USER_VARIABLES} (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(100) NOT NULL,
-  content TEXT NOT NULL,
-  user_variable VARCHAR(100) NOT NULL,
-  PRIMARY KEY(id),
-  INDEX user_variable(user_variable)
-);
-
-DROP TABLE IF EXISTS {IFW_TBL_WIDGETS};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_WIDGETS} (
-  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(100) NOT NULL DEFAULT '',
-  version VARCHAR(20) NOT NULL DEFAULT '',
-  conn_id INTEGER UNSIGNED NOT NULL DEFAULT 0,
-  ucp_link CHAR(1) NOT NULL DEFAULT 'N',
-  acp_link CHAR(1) NOT NULL DEFAULT 'N',
-  query_string TEXT NOT NULL,
-  item_limit INTEGER UNSIGNED NOT NULL DEFAULT 0,
-  widget_variable VARCHAR(100) NOT NULL DEFAULT '',
-  widget_template TEXT NOT NULL,
-  widget_type VARCHAR(30) NOT NULL DEFAULT '',
-  PRIMARY KEY(id),
-  INDEX conn_id(conn_id),
-  INDEX widget_variable(widget_variable),
-  INDEX widget_type(widget_type)
 );

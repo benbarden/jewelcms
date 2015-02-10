@@ -1,0 +1,110 @@
+{% extends "core/base.twig" %}
+
+{% block cp_content %}
+
+    <h1 class="page-header">Dashboard</h1>
+
+    <table width="100%;">
+        <tr>
+            <td style="vertical-align: top; width: 40%;">
+                <h2 class="sub-header">Overview</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tr class="separator-row">
+                            <td colspan="2">Content</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%;">
+                                {% if Auth.CanWriteContent %}
+                                    <a href="{{ cpLink('articles') }}">Articles</a>
+                                {% else %}
+                                    Articles
+                                {% endif %}
+                            </td>
+                            <td>{{ Page.ArticleCount }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                {% if Auth.IsAdmin %}
+                                    <a href="{{ cpLink('users', {'action': 'showall'}) }}">Active Users</a>
+                                {% else %}
+                                    Active Users
+                                {% endif %}
+                            </td>
+                            <td>{{ Page.UserCount }}</td>
+                        </tr>
+                        <tr>
+                            <td>Site Files</td>
+                            <td>{{ Page.SiteFileCount }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+            <td style="vertical-align: top; width: 55%;">
+                <h2 class="sub-header">Useful info</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tr class="separator-row">
+                            <td>Field</td>
+                            <td>Details</td>
+                        </tr>
+                        <tr>
+                            <td>Sitemap URL</td>
+                            <td>
+                                <a href="{{ Page.SitemapUrl }}">{{ Page.SitemapUrl }}</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <table width="100%">
+        <tr>
+            <td style="vertical-align: top; width: 48%;">
+                <h2 class="sub-header">Recent Drafts</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        {% if Auth.CanWriteContent %}
+                            {% if Page.RecentDrafts %}
+                                {% for Item in Page.RecentDrafts %}
+                                    <tr>
+                                        <td><a href="{{ cpLink('write', {'action': 'edit', 'id': Item.id}) }}">{{ Item.title }}</a></td>
+                                        <td>{{ Item.create_date|date('d M Y H:i') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td><em>No drafts</em></td>
+                                    <td>-</td>
+                                </tr>
+                            {% endif %}
+                        {% else %}
+                            <tr>
+                                <td><em>Not authorised</em></td>
+                                <td>-</td>
+                            </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </td>
+            <td style="vertical-align: top; width: 48%;">
+                <h2 class="sub-header">&nbsp;</h2>
+            </td>
+        </tr>
+    </table>
+
+    <p>
+        <a href="http://www.injader.com/" target="_blank">Injader {{ Page.CmsVersion }}</a> |
+        <a href="https://github.com/benbarden/injader" title="Github" target="_blank">Github</a> |
+        Injader is free software released under the
+        <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public Licence</a> (v3) |
+        Copyright &copy; 2005-{{ Page.ThisYear }} <a href="http://www.benbarden.com/" target="_blank">Ben Barden</a>
+        <br><strong>Components:</strong>
+        <a href="http://getbootstrap.com" target="_blank">Bootstrap</a> |
+        <a href="http://glyphicons.com/" target="_blank">Glyphicons</a> |
+        Blog template by <a href="https://twitter.com/mdo">@mdo</a> |
+    </p>
+
+{% endblock cp_content %}

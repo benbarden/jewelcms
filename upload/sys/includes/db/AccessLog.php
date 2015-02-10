@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -67,17 +67,11 @@
         case AL_TAG_ARTICLE_DELETE:
           $strLogDesc = M_AL_ARTICLE_DELETE;
           $blnBasicLog = false; $blnPLArticle = true; break;
-        case AL_TAG_ARTICLE_LOCK:
-          $strLogDesc = M_AL_ARTICLE_LOCK;
-          $blnBasicLog = false; $blnPLArticle = true; break;
         case AL_TAG_ARTICLE_MARK:
           $strLogDesc = M_AL_ARTICLE_MARK;
           $blnBasicLog = false; $blnPLArticle = true; break;
         case AL_TAG_ARTICLE_RESTORE:
           $strLogDesc = M_AL_ARTICLE_RESTORE;
-          $blnBasicLog = false; $blnPLArticle = true; break;
-        case AL_TAG_ARTICLE_UNLOCK:
-          $strLogDesc = M_AL_ARTICLE_UNLOCK;
           $blnBasicLog = false; $blnPLArticle = true; break;
         case AL_TAG_ARTICLE_SAVEDRAFT:
           $strLogDesc = M_AL_ARTICLE_SAVEDRAFT;
@@ -96,16 +90,6 @@
           $strLogDesc = "Bulk moved articles $strItemTitle to area $intItemID";
           $blnBasicLog = false;
           break;
-        case AL_TAG_ARTICLE_BULKLOCK:
-          $strItemTitle = str_replace(",", ", ", $strItemTitle);
-          $strLogDesc = "Bulk locked articles $strItemTitle";
-          $blnBasicLog = false;
-          break;
-        case AL_TAG_ARTICLE_BULKUNLOCK:
-          $strItemTitle = str_replace(",", ", ", $strItemTitle);
-          $strLogDesc = "Bulk unlocked articles $strItemTitle";
-          $blnBasicLog = false;
-          break;
         case AL_TAG_ARTICLE_BULKEDITAUTHOR:
           $strItemTitle = str_replace(",", ", ", $strItemTitle);
           $strLogDesc = "Bulk edited author for articles $strItemTitle";
@@ -121,24 +105,6 @@
           $strLogDesc = "Bulk restored articles $strItemTitle";
           $blnBasicLog = false;
           break;
-        case AL_TAG_COMMENT_ADD:
-          $strLogDesc = "Added comment"; break;
-        case AL_TAG_COMMENT_DELETE:
-          $strLogDesc = "Deleted comment"; break;
-        case AL_TAG_COMMENT_EDIT:
-          $strLogDesc = "Edited comment"; break;
-        case AL_TAG_FORM_RECIPIENT_CREATE:
-          $strLogDesc = "Created form recipient"; break;
-        case AL_TAG_FORM_RECIPIENT_DELETE:
-          $strLogDesc = "Deleted form recipient"; break;
-        case AL_TAG_FORM_RECIPIENT_EDIT:
-          $strLogDesc = "Edited form recipient"; break;
-        case AL_TAG_PLUGIN_CREATE:
-          $strLogDesc = "Created plugin"; break;
-        case AL_TAG_PLUGIN_EDIT:
-          $strLogDesc = "Edited plugin"; break;
-        case AL_TAG_PLUGIN_DELETE:
-          $strLogDesc = "Deleted plugin"; break;
         case AL_TAG_PPCA_CREATE:
           $strLogDesc = "Created area-specific permission profile"; break;
         case AL_TAG_PPCA_DELETE:
@@ -167,12 +133,6 @@
           $strLogDesc = "Deleted all expired user sessions"; break;
         case AL_TAG_USER_SUSPEND:
           $strLogDesc = "Suspended user"; break; // Name
-        case AL_TAG_USER_VARIABLE_CREATE:
-          $strLogDesc = "Created user variable"; break;
-        case AL_TAG_USER_VARIABLE_DELETE:
-          $strLogDesc = "Deleted user variable"; break;
-        case AL_TAG_USER_VARIABLE_EDIT:
-          $strLogDesc = "Edited user variable"; break;
         case AL_TAG_USERGROUP_CREATE:
           $strLogDesc = "Created user group"; break;
         case AL_TAG_USERGROUP_EDIT:
@@ -192,29 +152,11 @@
             $strLogDesc .= " (ID: $intItemID)";
           }
         } elseif ($blnPLArticle) {
-          $strViewLink = $CMS->PL->ViewArticle($intItemID);
-          $strLogDesc = $strLogDesc.": <a href=\"$strViewLink\">$strItemTitle</a> (ID: $intItemID)";
+          $dbArticle = $CMS->ART->GetArticle($intItemID);
+          $permalink = $dbArticle['permalink'];
+          $strLogDesc = "$strLogDesc: ".'<a href="'.$permalink.'">'.$strItemTitle.'</a>'." (ID: $intItemID)";
         }
         $this->Create($strLogDesc, $strTag);
       }
     }
-    // ** Purge old access log entries ** //
-    function Purge() {
-      global $CMS;
-      $dteStartTime = $this->MicrotimeFloat();
-      $intLogLimit = $CMS->SYS->GetSysPref(C_PREF_MAX_LOG_ENTRIES);
-      $arrLogData = $CMS->ResultQuery("SELECT id FROM {IFW_TBL_ACCESS_LOG} ORDER BY id DESC LIMIT $intLogLimit,1", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $intLogID = $arrLogData[0]['id'];
-      if ($intLogID) {
-        $arrExcess = $CMS->ResultQuery("SELECT count(*) AS count FROM {IFW_TBL_ACCESS_LOG} WHERE id < $intLogID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-        $intExcessRowCount = $arrExcess[0]['count'];
-        if ($intExcessRowCount > 50) {
-          $CMS->Query("DELETE FROM {IFW_TBL_ACCESS_LOG} WHERE id < $intLogID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-        }
-      }
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-    }
   }
-
-?>

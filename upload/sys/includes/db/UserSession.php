@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
   class UserSession extends Helper {
     // ** Database writes ** //
     function Create($intUserID, $dteTodaysDate, $dteExpiryDate) {
-      $intSessionID = md5(mt_rand().time());
+      $intSessionID = password_hash($intUserID.mt_rand().time(), PASSWORD_BCRYPT);
       $intUserIP    = $_SERVER['REMOTE_ADDR'];
       $strUserAgent = empty($_SERVER['HTTP_USER_AGENT']) ? "" : $_SERVER['HTTP_USER_AGENT'];
       $this->Query("INSERT INTO {IFW_TBL_USER_SESSIONS}(session_id, user_id, ip_address, user_agent, login_date, expiry_date) VALUES('$intSessionID', $intUserID, '$intUserIP', '$strUserAgent', '$dteTodaysDate', '$dteExpiryDate')", __CLASS__ . "::" . __FUNCTION__, __LINE__);
@@ -52,5 +52,3 @@
       return $arrSessions;
     }
   }
-
-?>

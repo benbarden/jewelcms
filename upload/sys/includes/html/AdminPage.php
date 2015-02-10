@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -72,50 +72,78 @@ ExecTime;
       global $CMS;
       $dteStartTime = $this->MicrotimeFloat();
       $strPageTitle = $this->GetTitle();
-      $strSystemLock = $CMS->SYS->GetSysPref(C_PREF_SYSTEM_LOCK);
-      if ($strSystemLock == "Y") {
-        $strSystemLocked = <<<AdminNotice
-<div id="notice-locked">
-ADMIN NOTICE: SITE LOCKED - Currently, only administrators can view this web site. You must unlock the system to remove this alert.
-</div>
 
-AdminNotice;
-      } else {
-        $strSystemLocked = "";
-      }
       // Index
       $strSiteTitle  = $CMS->SYS->GetSysPref(C_PREF_SITE_TITLE);
-      $strIndexURL   = str_replace("index".F_EXT_PHP, "", FN_INDEX);
+      $strIndexURL   = str_replace("index.php", "", FN_INDEX);
+
+      // CP LINKS
+      $controlPanelLinks = array();
+
+      $currentUserId = $CMS->RES->GetCurrentUserID();
+      $viewProfileLink = $CMS->PL->ViewUser($currentUserId);
+
       // New article
-      $strNewArticleLink = "<a href=\"{FN_ADM_WRITE}?action=create\" title=\"Add new content to the site\">New Article</a>";
       // Content
-      $CMS->RES->ViewManageContent();
-      if ($CMS->RES->IsError()) {
-        $strManageContent = "";
-      } else {
-        // Create article?
-        if ($CMS->RES->CountTotalWriteAccess() > 0) {
+        $strNewArticleLink = "";
+        if ($CMS->RES->CanAddContent()) {
           $strManageContent = $strNewArticleLink." | <a href=\"{FN_ADM_CONTENT_MANAGE}\" title=\"Manage Content\">Content</a>";
+          $strNewArticleLink = "<li><a href=\"/cp/article.php?action=create\" title=\"Add new content to the site\">+ Article</a></li>";
+          $controlPanelLinks[] = array(
+              'URL' => '/cp/articles.php',
+              'Title' => 'Articles',
+              'Text' => 'Articles'
+          );
         } else {
           $strManageContent = "";
         }
-      }
       // Admin
       $CMS->RES->Admin();
       if ($CMS->RES->IsError()) {
         $strAdminLinks = $strManageContent;
       } else {
-        $strAdminLinks = <<<AdminLinks
-$strNewArticleLink | 
-<a href="{FN_ADM_AREAS}" title="Manage your site areas">Areas</a> | 
-<a href="{FN_ADM_CONTENT_MANAGE}" title="Manage Content">Content</a> | 
-<a href="{FN_ADM_FILES}" title="Manage site files, attachments and avatars">Files</a> | 
-<a href="{FN_ADM_COMMENTS}" title="Manage comments">Comments</a> | 
-<a href="{FN_ADM_WIDGETS}" title="Manage your Widgets">Widgets</a> | 
-<a href="{FN_ADM_THEMES}" title="Manage your themes">Themes</a> | 
-<a href="{FN_ADM_TOOLS}" title="Plugins and more">Tools</a> | 
-<a href="{FN_ADM_GENERAL_SETTINGS}" title="Configure website settings">Settings</a> | 
-<a href="{FN_ADM_USERS}" title="Manage user accounts, roles, and permissions">Access</a>
+          $strAdminLinks = <<<AdminLinks
+                    <!-- Content -->
+                    <li><a href="/cp/articles.php">Articles</a></li>
+                    <!-- Categories -->
+                    <li><a href="/cp/categories.php">Categories</a></li>
+                    <!-- Files -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Files <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/cp/files.php?type=site">Site Files</a></li>
+                            <li><a href="/cp/files.php?type=attach">Attachments</a></li>
+                            <li><a href="/cp/files.php?type=avatar">Avatars</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/cp/files_site_upload.php?action=create">+ Add New File</a></li>
+                        </ul>
+                    </li>
+                    <!-- Users -->
+                    <li><a href="/cp/users.php?action=showall" title="Manage user accounts, roles, and permissions">Users</a></li>
+                    <!-- Tools -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Tools <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/cp/access_log.php">Access Log</a></li>
+                            <li><a href="/cp/error_log.php">Error Log</a></li>
+                            <li><a href="/cp/tools_user_sessions.php">User Sessions</a></li>
+                        </ul>
+                    </li>
+                    <!-- Settings -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="/cp/general_settings.php">General Settings</a></li>
+                            <li><a href="/cp/content_settings.php">Content Settings</a></li>
+                            <li><a href="/cp/files_settings.php">File Settings</a></li>
+                            <li><a href="/cp/url_settings.php">URL Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/cp/themes.php">Themes</a></li>
+                            <li class="divider"></li>
+                            <li><a href="/cp/permission.php?action=edit&id=1">Permissions</a></li>
+                            <li><a href="/cp/user_roles.php">User Roles</a></li>
+                        </ul>
+                    </li>
 
 AdminLinks;
       }
@@ -123,32 +151,76 @@ AdminLinks;
       $strMetaGenerator = "<meta name=\"generator\" content=\"".PRD_PRODUCT_NAME." - ".PRD_PRODUCT_URL."\" />";
       // Build code
       $strHeaderHTML = <<<CMSHeader
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-$strMetaGenerator
-<title>$strPageTitle</title>
-<link href="{URL_SYS_ROOT}cp.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="{URL_SYS_ROOT}scripts.js"></script>
-<script type="text/javascript" src="{URL_SYS_JQUERY}jquery-1.11.1.min.js"></script>
-</head>
-<body id="cp-body">
-$strSystemLocked
-<!-- Begin header -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>$strPageTitle</title>
 
-<div id="tplPageWrapper">
-  <div id="topnav">
-    <a href="$strIndexURL" title="Back to $strSiteTitle">Back to $strSiteTitle</a> | <a href="{FN_ADM_INDEX}" title="Go to the Control Panel Index">Control Panel Index</a>
-  </div>
-  <div id="tplHeadContent">
-    <img src="{URL_SYS_IMAGES}ij_header.jpg" alt="Injader" border="0" />
-  </div>
-  <div id="navbar">
-    $strAdminLinks
-  </div>
-  <div id="cp">
+    <script type="text/javascript" src="{URL_ROOT}sys/scripts.js"></script>
+    <script type="text/javascript" src="{URL_ROOT}assets/js/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="{URL_ROOT}assets/js/jqueryui/jquery-ui.min.js"></script>
+    <link href="{URL_ROOT}assets/css/jqueryui/jquery-ui.min.css" rel="stylesheet">
+    <link href="{URL_ROOT}assets/css/jqueryui/jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="{URL_ROOT}assets/css/jqueryui/jquery-ui.theme.min.css" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{URL_ROOT}assets/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{URL_ROOT}assets/css/bootstrap/dashboard.css" rel="stylesheet">
+
+    <!-- Custom Injader styles -->
+    <link href="{URL_ROOT}assets/css/injader-cp/injader-cp.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <!-- 3.7.2 -->
+      <script src="{URL_ROOT}assets/js/bootstrap/html5shiv.min.js"></script>
+      <!-- 1.4.2 -->
+      <script src="{URL_ROOT}assets/js/bootstrap/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+</head>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <p class="navbar-text"><a href="$strIndexURL">&lt; view site</a></p>
+        </div> <!-- /navbar-header -->
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                <a href="{FN_ADM_INDEX}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Dashboard</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Settings <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="/cp/edit_profile.php">Edit Profile</a></li>
+                        <li><a href="$viewProfileLink">View Profile</a></li>
+                        <li><a href="/cp/change_password.php">Change Password</a></li>
+                        <li><a href="/cp/manage_avatars.php">Manage Avatars</a></li>
+                    </ul>
+                </li>
+                $strNewArticleLink
+                $strAdminLinks
+            </ul>
+        </div> <!-- /navbar-collapse -->
+    </div>
+</div> <!-- /navbar -->
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="main">
 
 CMSHeader;
       $dteEndTime = $this->MicrotimeFloat();
@@ -159,25 +231,24 @@ CMSHeader;
     function GetFooter() {
       global $CMS;
       $dteStartTime = $this->MicrotimeFloat();
-      $strVersion   = $CMS->SYS->GetSysPref(C_PREF_CMS_VERSION);
-      $intYear = date('Y'); // Current year
       $strFooter = <<<Footer
-</div> <!-- /cp -->
-\$cmsQueryTime
-<div id="footer">
-<a href="http://www.injader.com/">Injader</a> $strVersion |
-<a href="https://github.com/benbarden/injader" title="Github">Github</a> |
-Injader is free software released under the
-<a href="http://www.gnu.org/licenses/gpl.html">GNU General Public Licence</a> (v3).
-Copyright &copy; 2005-$intYear <a href="http://www.benbarden.com/">Ben Barden</a>.
 </div>
-</div> <!-- /tplPageWrapper -->
+</div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{URL_ROOT}assets/js/bootstrap/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="{URL_ROOT}assets/js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+
 </body>
 </html>
+
 Footer;
       $dteEndTime = $this->MicrotimeFloat();
       $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $strFooter;
     }
   }
-?>

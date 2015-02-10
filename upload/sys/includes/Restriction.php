@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -84,10 +84,6 @@
       global $CMS;
       return $CMS->ART->GetAuthor($intArticleID);
     }
-    function GetCommentAuthor($intCommentID) {
-      global $CMS;
-      return $CMS->COM->GetAuthor($intCommentID);
-    }
     function GetFileAuthor($intFileID) {
       $dteStartTime = $this->MicrotimeFloat();
       $arrAuthor = $this->ResultQuery("SELECT username FROM {IFW_TBL_UPLOADS} up LEFT JOIN {IFW_TBL_USERS} u ON u.id = up.author_id WHERE up.id = $intFileID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
@@ -161,11 +157,6 @@
       global $CMS;
       $dteStartTime = $this->MicrotimeFloat();
       $this->ClearErrors();
-      /* This breaks guest comments
-      $this->ValidateLoggedIn();
-      if ($this->IsError()) {
-        $this->InsufficientAccess();
-      } */
       $strAllowedGroups = $this->GetAllowedGroups();
       if ($strAllowedGroups != "") {
         $strUserGroups = $this->GetUserGroups();
@@ -328,43 +319,6 @@
       $dteEndTime = $this->MicrotimeFloat();
       $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
     }
-    // ** Area Permissions ** //
-    function ViewArea($intAreaID) {
-      global $CMS;
-      $dteStartTime = $this->MicrotimeFloat();
-      //if (!isset($this->arrAreaProfileIDs[$intAreaID])) {
-      //  $intPerProfileID = $CMS->AR->GetPerProfileID($intAreaID);
-      //  $this->arrAreaProfileIDs[$intAreaID] = $intPerProfileID;
-      //}
-      // Ensure area cache is loaded
-      if (empty($CMS->AR->arrArea[$intAreaID])) {
-        $CMS->AR->arrArea[$intAreaID] = $CMS->AR->GetArea($intAreaID);
-      }
-      if (empty($CMS->AR->arrArea[$intAreaID]['profile_id'])) {
-        $intProfileID = 0;
-      } else {
-        $intProfileID = $CMS->AR->arrArea[$intAreaID]['profile_id'];
-      }
-      // Grab allowed groups
-      if ($intProfileID) {
-        $strAllowedGroups = $CMS->AR->arrArea[$intAreaID]['view_area'];
-      } else {
-        $strAllowedGroups = $CMS->PP->GetViewArea("");
-      }
-      //$intPerProfileID = $this->arrAreaProfileIDs[$intAreaID];
-      //if (isset($this->arrAllowedGroups[$intAreaID]["view_area"])) {
-      //  $strAllowedGroups = $this->arrAllowedGroups[$intAreaID]["view_area"];
-      //} else {
-      //  $this->arrAllowedGroups[$intAreaID]["view_area"] = $strAllowedGroups;
-      //}
-      $this->SetAllowedGroups($strAllowedGroups);
-      $this->ValidatePublic();
-      if ($this->strOutput) {
-        $this->ValidateAllowedGroups();
-      }
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__ . " (Area: $intAreaID)", __LINE__);
-    }
     // ** Articles ** //
     function CreateArticle($intAreaID) {
       $dteStartTime = $this->MicrotimeFloat();
@@ -414,75 +368,39 @@
       $dteEndTime = $this->MicrotimeFloat();
       $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
     }
-    // ** Comments ** //
-    function AddComment($intAreaID) {
-      $dteStartTime = $this->MicrotimeFloat();
-      $this->GroupValidator($intAreaID, "add_comment");
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-    }
-    function EditComment($intAreaID, $intCommentID) {
-      $dteStartTime = $this->MicrotimeFloat();
-      $this->SetAuthor($this->GetCommentAuthor($intCommentID));
-      $this->ValidateAuthor();
-      if ($this->strOutput) {
-        $this->GroupValidator($intAreaID, "edit_comment");
+
+    // *********** SIMPLIFIED METHODS *********** //
+
+      public function CanAddContent()
+      {
+          global $CMS;
+          $createArticleGroups = $CMS->ResultQuery("
+            SELECT create_article FROM Cms_Permissions
+          ");
+          $groupList = $createArticleGroups[0]['create_article'];
+          $this->SetAllowedGroups($groupList);
+          $this->ValidateAllowedGroups();
+          return !$this->IsError();
       }
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-    }
-    function DeleteComment($intAreaID) {
-      $dteStartTime = $this->MicrotimeFloat();
-      $this->GroupValidator($intAreaID, "delete_comment");
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-    }
-    function LockArticle($intAreaID) {
-      $dteStartTime = $this->MicrotimeFloat();
-      $this->GroupValidator($intAreaID, "lock_article");
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-    }
-    // Permissions across multiple areas //
-    function CountTotalWriteAccess() {
-      global $CMS;
-      $arrTopLevelAreas  = $CMS->AT->GetParentedAreas("", "All", "");
-      $intAreaWriteCount = 0;
-      for ($i=0; $i<count($arrTopLevelAreas); $i++) {
-        $intID = $arrTopLevelAreas[$i]['id'];
-        $intAreaWriteCount += $CMS->RES->CountContentAreasWithWriteAccess($intID);
+
+      public function CanPublish()
+      {
+          global $CMS;
+          $createArticleGroups = $CMS->ResultQuery("
+            SELECT publish_article FROM Cms_Permissions
+          ");
+          $groupList = $createArticleGroups[0]['publish_article'];
+          $this->SetAllowedGroups($groupList);
+          $this->ValidateAllowedGroups();
+          return !$this->IsError();
       }
-      return $intAreaWriteCount;
-    }
-    function CountContentAreasWithWriteAccess($intParentID) {
-      global $CMS;
-      $dteStartTime = $this->MicrotimeFloat();
-      $arrContentAreas = $CMS->AT->GetAllParentedAreas($intParentID, "Content", "");
-      $intAllowedAreas = 0;
-      for ($i=0; $i<count($arrContentAreas); $i++) {
-        $intID = $arrContentAreas[$i]['id'];
-        $this->CreateArticle($intID);
-        if (!$this->IsError()) {
-          $intAllowedAreas++;
-        }
+
+      public function IsAdmin()
+      {
+          global $CMS;
+          $adminGroupId = $CMS->UG->GetAdminGroupID();
+          $this->SetAllowedGroups($adminGroupId);
+          $this->ValidateAllowedGroups();
+          return !$this->IsError();
       }
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $intAllowedAreas;
-    }
-    // ** Manage Content ** //
-    function ViewManageContent() {
-      global $CMS;
-      $dteStartTime = $this->MicrotimeFloat();
-      $intMyArticleCount = $CMS->ART->CountUserContent($this->GetCurrentUserID(), "");
-      $intAreaWriteCount = $this->CountTotalWriteAccess();
-      if (($intMyArticleCount > 0) || ($intAreaWriteCount > 0)) {
-        $this->ClearErrors();
-      } else {
-        $this->InsufficientAccess();
-      }
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-    }
   }
-?>

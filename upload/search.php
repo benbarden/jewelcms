@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -221,13 +221,7 @@
 
   $CMS->AT->arrAreaData = array();
   $CMS->DD->strEmptyItem = "All";
-  $strAreaListPrimary = $CMS->DD->AreaHierarchy($intAreaID, "", "Content", true, true, C_NAV_PRIMARY);
-  $CMS->AT->arrAreaData = array();
-  $CMS->DD->strEmptyItem = "All";
-  $strAreaListSecondary = $CMS->DD->AreaHierarchy($intAreaID, "", "Content", true, true, C_NAV_SECONDARY);
-  $CMS->AT->arrAreaData = array();
-  $CMS->DD->strEmptyItem = "All";
-  $strAreaListTertiary = $CMS->DD->AreaHierarchy($intAreaID, "", "Content", true, true, C_NAV_TERTIARY);
+  $strAreaListPrimary = $CMS->DD->AreaHierarchy($intAreaID, "", "Content", true, true);
   
   $strSearchButton = $CMS->AC->SearchButton();
   
@@ -333,7 +327,7 @@ END;
     }
     $CMS->RES->ClearErrors();
     // Standard mode
-    $strSQL = "SELECT c.id, c.title, c.content, a.name, a.seo_name, c.content_area_id, c.tags, c.seo_title FROM ({IFW_TBL_CONTENT} c, {IFW_TBL_AREAS} a) WHERE c.content_area_id = a.id AND content_status = '{C_CONT_PUBLISHED}' $strAreaClause $strWhereClause $strUserGroupSQL LIMIT $intStart, $intContentPerPage";
+    $strSQL = "SELECT c.id, c.title, c.permalink, c.content, a.name, a.seo_name, c.content_area_id, c.tags, c.seo_title FROM ({IFW_TBL_CONTENT} c, {IFW_TBL_AREAS} a) WHERE c.content_area_id = a.id AND content_status = '{C_CONT_PUBLISHED}' $strAreaClause $strWhereClause $strUserGroupSQL LIMIT $intStart, $intContentPerPage";
     $arrResult = $CMS->ResultQuery($strSQL, basename(__FILE__), __LINE__);
     $arrItemCount = $CMS->ResultQuery("SELECT count(*) AS count FROM ({IFW_TBL_CONTENT} c, {IFW_TBL_AREAS} a) WHERE c.content_area_id = a.id $strAreaClause $strWhereClause $strUserGroupSQL", basename(__FILE__), __LINE__);
     $intItemCount = $arrItemCount[0]['count'];
@@ -345,6 +339,7 @@ END;
     for ($i=0; $i<count($arrResult); $i++) {
       $intID       = $arrResult[$i]['id'];
       $strTitle    = $arrResult[$i]['title'];
+      $permalink   = $arrResult[$i]['permalink'];
       $strBody     = $arrResult[$i]['content'];
       $strBody     = strip_tags($strBody);
       $strArea     = $arrResult[$i]['name'];
@@ -367,9 +362,8 @@ END;
       } else {
         $blnAddToResults = true;
       }
-      // Can user view this article?
-      $CMS->RES->ViewArea($intAreaID);
-      if ((!$CMS->RES->IsError()) && ($blnAddToResults == true)) {
+
+      if ($blnAddToResults) {
         $intViewableItems++;
         if ($intViewableItems == 1) {
           $strHTML .= <<<ResultHeader
@@ -380,14 +374,12 @@ $strPageNumbers
 ResultHeader;
         }
         // Make page link
-        $CMS->PL->SetTitle($strSEOTitle);
-        $strViewLink = $CMS->PL->ViewArticle($intID);
         $CMS->PL->SetTitle($strSEOAName);
         $strAreaLink = $CMS->PL->ViewArea($intAreaID);
         // Build item HTML
         $strHTML .= <<<SearchItem
 <div class="search-item">
-<div class="title"><a href="$strViewLink">$strTitle</a></div> <div class="area">in area: <a href="$strAreaLink">$strArea</a></div>
+<div class="title"><a href="$permalink">$strTitle</a></div> <div class="area">in area: <a href="$strAreaLink">$strArea</a></div>
 <div class="intro">$strIntro</div>
 </div>
 

@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,50 +25,43 @@ class CMS extends Helper {
     var $Cache; // ICache
     var $CacheFile; // ICacheFile
     var $CacheBuild; // ICacheBuild
-    var $IP; // IPacker
     var $IQ; // IQuery
     var $RES; // Restriction
     var $SYS; // System
-    
-    var $pages_Archives;
-    
-    // Class caching
-    var $AC; // Autocode
-    var $AL; // AccessLog
-    var $AP; // AdminPage
-    var $AR; // Area
-    var $ARCO; // AreaContent
-    var $ART; // Article
-    var $AT; // AreaTraverse
-    var $CHA; // Challenge
+
+    // Top-level
     var $CK; // Cookie
-    var $COM; // Comment
-    var $CON; // Connection
-    var $DD; // DropDown
-    var $FL; // File
     var $FMT; // Formatting
-    var $FR; // FormRecipient
-    var $LP; // LoginPage
     var $MV; // View
     var $MSG; // Messaging
     var $PL; // PageLink
     var $PN; // PageNumber
-    var $PNN; // PageNumberNavigation
-    var $PP; // PermissionProfile
-    var $RAT; // Rating
     var $RC; // ReplaceConstants
-    var $SR; // SortRule
+
+    // DB
+    var $AL; // AccessLog
+    var $AR; // Area
+    var $AT; // AreaTraverse
+    var $ART; // Article
+    var $CAT; // Category;
+    var $FL; // File
+    var $PP; // PermissionProfile
     var $TG; // Tag
-    var $TH; // Theme
-    var $TS; // ThemeSetting
-    var $UG; // UserGroup
     var $UM; // URLMapping
     var $US; // User
+    var $UG; // UserGroup
     var $USess; // UserSession
-    var $UST; // UserStat
-    var $UV; // UserVariable
-    var $WGT; // Widget
-    
+
+    // HTML
+    var $AP; // AdminPage
+    var $ARCO; // AreaContent
+    var $AC; // Autocode
+    var $DD; // DropDown
+    var $LP; // LoginPage
+    var $PNN; // PageNumberNavigation
+    var $TH; // Theme
+    var $TS; // ThemeSetting
+
     function InitClasses() {
         
         // Generic initialisation routine
@@ -76,50 +69,43 @@ class CMS extends Helper {
         $this->Cache = new ICache;
         $this->CacheFile  = new ICacheFile;
         $this->CacheBuild = new ICacheBuild;
-        $this->IP    = new IPacker;
         $this->IQ    = new IQuery;
         $this->RES   = new Restriction;
         $this->SYS   = new System;
         
-        $this->pages_Archives = new pages_Archives;
-        
-        $this->AC    = new Autocode;
-        $this->AL    = new AccessLog;
-        $this->AP    = new AdminPage;
-        $this->AR    = new Area;
-        $this->ARCO  = new AreaContent;
-        $this->ART   = new Article;
-        $this->AT    = new AreaTraverse;
-        $this->CHA   = new Challenge;
+        // Top level
         $this->CK    = new Cookie;
-        $this->COM   = new Comment;
-        $this->CON   = new Connection;
-        $this->DD    = new DropDown;
-        $this->FL    = new File;
         $this->FMT   = new Formatting;
-        $this->FR    = new FormRecipient;
-        $this->LP    = new LoginPage;
         $this->MV    = new View;
         $this->MSG   = new Messaging;
         $this->PL    = new PageLink;
         $this->PN    = new PageNumber;
-        $this->PNN   = new PageNumberNavigation;
-        $this->PP    = new PermissionProfile;
-        $this->RAT   = new Ratings;
         $this->RC    = new ReplaceConstants;
-        $this->SR    = new SpamRule;
+
+        // DB
+        $this->AL    = new AccessLog;
+        $this->AR    = new Area;
+        $this->AT    = new AreaTraverse;
+        $this->ART   = new Article;
+        $this->CAT   = new Category;
+        $this->FL    = new File;
+        $this->PP    = new PermissionProfile;
         $this->TG    = new Tags;
-        $this->TH    = new Theme;
-        $this->TS    = new ThemeSetting;
-        $this->UG    = new UserGroup;
         $this->UM    = new URLMapping;
         $this->US    = new User;
+        $this->UG    = new UserGroup;
         $this->USess = new UserSession;
-        $this->UST   = new UserStats;
-        $this->UV    = new UserVariable;
-        $this->WGT   = new Widget;
-        
+
+        // HTML
+        $this->AP    = new AdminPage;
+        $this->ARCO  = new AreaContent;
+        $this->AC    = new Autocode;
+        $this->DD    = new DropDown;
+        $this->LP    = new LoginPage;
+        $this->PNN   = new PageNumberNavigation;
+        $this->TH    = new Theme;
+        $this->TS    = new ThemeSetting;
+
     }
     
 }
-?>

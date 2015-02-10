@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@
     case "suspenduser":           $strPageTitle = "Suspend User"; break;
     case "reinstateuser":         $strPageTitle = "Reinstate User"; break;
     case "deletecustomlink":      $strPageTitle = "Delete Custom Link"; break;
-    case "deleteformrecipient":   $strPageTitle = "Delete Form Recipient"; break;
     case "deleteperprofile":      $strPageTitle = "Delete Permission Profile"; break;
     case "deletesession":         $strPageTitle = "Delete User Session"; break;
     case "deleteexpiredsessions": $strPageTitle = "Delete Expired Sessions"; $blnCheckID = false; break;
@@ -91,7 +90,7 @@
     case "deletefile":
       if ($_POST) {
         $CMS->FL->Delete($intItemID, $intUserID, "");
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>File deleted. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
+        $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>File deleted. <a href=\"$strReturnURL\">Return</a></p>\n";
         $CMS->AP->Display($strHTML);
       } else {
         $strFormMsg = "You are about to delete the file with ID: $intItemID.";
@@ -100,7 +99,7 @@
     case "suspenduser":
       if ($_POST) {
         $CMS->US->Suspend($intItemID);
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>User suspended. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
+        $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>User suspended. <a href=\"$strReturnURL\">Return</a></p>\n";
         $CMS->AP->Display($strHTML);
       } else {
         $strFormMsg = "You are about to suspend the user with ID: $intItemID.";
@@ -109,40 +108,16 @@
     case "reinstateuser":
       if ($_POST) {
         $CMS->US->Reinstate($intItemID);
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>User reinstated. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
+        $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>User reinstated. <a href=\"$strReturnURL\">Return</a></p>\n";
         $CMS->AP->Display($strHTML);
       } else {
         $strFormMsg = "You are about to reinstate the user with ID: $intItemID.";
       }
       break;
-    case "deleteformrecipient":
-      if ($_POST) {
-        // ** Build Query: Get recipient name ** //
-        $strQuery = sprintf("SELECT name FROM {IFW_TBL_FORM_RECIPIENTS} WHERE id = %s",
-          $intItemID
-        );
-        // ** Process query ** //
-        $arrRData = $CMS->ResultQuery($strQuery, basename(__FILE__), __LINE__);
-        $strName = $arrRData[0]['name'];
-        // ** Build Query: Delete form recipient ** //
-        $strQuery = sprintf("DELETE FROM {IFW_TBL_FORM_RECIPIENTS} WHERE id = %s",
-          $intItemID
-        );
-        // ** Process query ** //
-        $CMS->Query($strQuery, basename(__FILE__), __LINE__);
-        // ** Access log ** //
-        $CMS->AL->Build(AL_TAG_FORM_RECIPIENT_DELETE, $intItemID, $strName);
-        // ** Confirmation ** //
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>Form recipient deleted. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
-        $CMS->AP->Display($strHTML);
-      } else {
-        $strFormMsg = "You are about to delete the form recipient with ID: $intItemID.";
-      }
-      break;
     case "deleteperprofile":
       if ($_POST) {
         $CMS->PP->Delete($intItemID);
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>Permission profile deleted. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
+        $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>Permission profile deleted. <a href=\"$strReturnURL\">Return</a></p>\n";
         $CMS->AP->Display($strHTML);
       } else {
         $strFormMsg = "You are about to delete the permission profile with ID: $intItemID.";
@@ -151,7 +126,7 @@
     case "deletesession":
       if ($_POST) {
         $CMS->USess->Delete($intItemID);
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>User session deleted. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
+        $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>User session deleted. <a href=\"$strReturnURL\">Return</a></p>\n";
         $CMS->AP->Display($strHTML);
       } else {
         $strFormMsg = "You are about to delete the user session with ID: $intItemID.";
@@ -160,7 +135,7 @@
     case "deleteexpiredsessions":
       if ($_POST) {
         $CMS->USess->DeleteAllExpiredSessions();
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>All expired user sessions deleted. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
+        $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>All expired user sessions deleted. <a href=\"$strReturnURL\">Return</a></p>\n";
         $CMS->AP->Display($strHTML);
       } else {
         $strFormMsg = "You are about to delete all expired user sessions.";
@@ -171,7 +146,7 @@
         if ($CMS->SYS->GetSysPref(C_PREF_DEFAULT_THEME) != $strTheme) {
           $CMS->SYS->WriteSysPref(C_PREF_DEFAULT_THEME, $strTheme);
         }
-        $strHTML = "<div id=\"mPage\">\n<h1>$strPageTitle</h1>\n<p>Default theme updated. <a href=\"$strReturnURL\">Return</a></p>\n</div>\n";
+        $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>Default theme updated. <a href=\"$strReturnURL\">Return</a></p>\n";
         $CMS->AP->Display($strHTML);
       } else {
         $strFormMsg = "You are about to set <b>$strTheme</b> as the default theme.";
@@ -180,17 +155,14 @@
   }
   
   $strHTML = <<<END
-<div id="AdminTools">
-<h1>$strPageTitle</h1>
+<h1 class="page-header">$strPageTitle</h1>
 <p>$strFormMsg</p>
 <form action="{FN_ADMIN_TOOLS}$strFormAction" method="post">
 $strCustomFields
 <p><input type="hidden" name="dummy" value="$intItemID" /></p>
 <p>$strSubmitButton $strCancelButton</p>
 </form>
-</div>
 
 END;
 
   $CMS->AP->Display($strHTML);
-?>

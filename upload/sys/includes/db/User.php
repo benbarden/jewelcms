@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@
     // Insert, Update, Delete //
     function Create($strCaller, $strUsername, $strPassword, $strForename, $strSurname, $strEmail, $strLocation, $strOccupation, $strInterests, $strHomepageLink, $strHomepageText, $intAvatarID, $dteJoinDate, $strUserIP, $strUserGroups) {
       global $CMS;
-      $strPassword = md5($strPassword);
+      $strPassword = password_hash($strPassword, PASSWORD_BCRYPT);
       if (empty($intAvatarID)) {
         $intAvatarID = 0;
       }
-      if (($strCaller == FN_REGISTER) || ($strCaller == FN_COMMENT)) {
+      if ($strCaller == FN_REGISTER) {
         if ($strUserGroups == "") {
           $strUserGroups = $CMS->UG->GetDefaultGroup();
         }
@@ -59,7 +59,7 @@
     }
     function EditPassword($intUserID, $strPassword) {
       global $CMS;
-      $strPassword = md5($strPassword);
+      $strPassword = password_hash($strPassword, PASSWORD_BCRYPT);
       $this->Query("UPDATE {IFW_TBL_USERS} SET userpass = '$strPassword' WHERE id = $intUserID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       $CMS->AL->Build(AL_TAG_USER_EDITPASSWORD, $intUserID, "");
     }
@@ -101,7 +101,7 @@
     }
     // ** Activation Key ** //
     function MakeActivationKey($intUserID) {
-      $strKeyData = md5(mt_rand());
+      $strKeyData = password_hash(mt_rand(), PASSWORD_BCRYPT);
       $this->Query("UPDATE {IFW_TBL_USERS} SET activation_key = '$strKeyData' WHERE id = $intUserID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $strKeyData;
     }
@@ -176,10 +176,13 @@
     function ValidateLogin($strUsername, $strPassword) {
       global $CMS;
       $strUsername = $CMS->AddSlashesIFW($strUsername);
-      $arrLoggedOn = $this->ResultQuery("SELECT username, id FROM {IFW_TBL_USERS} WHERE username = '$strUsername' AND userpass = '$strPassword'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $strLoginName = $arrLoggedOn[0]['username'];
-      $intUserID    = $arrLoggedOn[0]['id'];
-      return $intUserID;
+      $arrLoggedOn = $this->ResultQuery("SELECT id, userpass FROM {IFW_TBL_USERS} WHERE username = '$strUsername'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+      if (password_verify($strPassword, $arrLoggedOn[0]['userpass'])) {
+        return $arrLoggedOn[0]['id'];
+      } else {
+          exit($strPassword."___".$arrLoggedOn[0]['userpass']);
+        return null;
+      }
     }
     function IsUniqueUsername($strUsername) {
       global $CMS;

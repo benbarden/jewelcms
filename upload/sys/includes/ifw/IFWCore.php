@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -179,7 +179,7 @@
       $strData = strip_tags($strData);
       return $strData;
     }
-    function FilterAlphanumeric($strData, $strExtraChars) {
+    function FilterAlphanumeric($strData, $strExtraChars = "") {
       $strData = preg_replace("/[^a-zA-Z0-9".$strExtraChars."]/", "", $strData);
       $strData = strip_tags($strData);
       return $strData;
@@ -294,16 +294,6 @@
         $strFileSize = $fltFileSizeMB."MB";
       }
       return $strFileSize;
-    }
-    // ** CAPTCHA builder ** //
-    function BuildRandomText($intLength) {
-      $strItemString = "AaBbCcDdEFfGgHhiJjKkLMmNnPpQqRrSsTUuVvWwXxYyZz23456789";
-      $strText = "";
-      for ($i=0; $i<$intLength; $i++) {
-        $strChar = rand(0, strlen($strItemString) - 1);
-        $strText .= $strItemString[$strChar];
-      }
-      return $strText;
     }
     // ** Sort rule ** //
     // Build sort rule array //

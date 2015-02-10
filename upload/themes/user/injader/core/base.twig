@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ Page.Title }} | {{ CMS.Settings.SiteTitle }}</title>
+    {{ cmsBlock('header')|raw }}
+    <!-- Add your own custom header code below -->
+    <link href="{{ URL.ThemeRoot }}blog.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="blog-masthead" class="blog-masthead">
+    <div class="container">
+        <nav class="blog-nav">
+            {{ cmsBlock('nav.primary')|raw }}
+        </nav>
+    </div>
+</div>
+
+<div class="container {{ Page.WrapperClass }}">
+
+    <div class="blog-header">
+        <h1 class="blog-title">{{ Page.Title }}</h1>
+        <p class="lead blog-description">
+            {% block cms_page_description %}{% endblock cms_page_description %}
+        </p>
+    </div>
+
+    <div class="row">
+
+        <div class="col-sm-8 blog-main">
+
+            {% block cms_content %}{% endblock cms_content %}
+
+        </div><!-- /.blog-main -->
+
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+            {#
+            <div class="sidebar-module sidebar-module-inset">
+                <h4>About {{ CMS.Settings.SiteTitle }}</h4>
+                <p>{{ CMS.Settings.SiteDesc }}</p>
+            </div>
+            <div class="sidebar-module">
+                <h4>Search</h4>
+                {{ cmsBlock('search')|raw }}
+            </div>
+            <div class="sidebar-module sidebar-module-inset">
+                <h4>Subareas</h4>
+                {{ cmsBlock('area.subareas')|raw }}
+            </div>
+            #}
+            <div class="sidebar-module sidebar-module-inset">
+                <h4>Welcome {{ Login.User.Name }}!</h4>
+                <ul>
+                    {{ cmsLinkPage('archives') }}
+                    {{ cmsLinkPage('register') }}
+                    {{ cmsLinkPage('login') }}
+                    {{ cmsLinkPage('cp') }}
+                    {{ cmsLinkPage('logout') }}
+                    {{ cmsLinkPage('tagmap') }}
+                </ul>
+            </div>
+        </div><!-- /.blog-sidebar -->
+
+    </div><!-- /.row -->
+
+</div><!-- /.container -->
+
+<div class="blog-footer">
+    <p>
+        Copyright &copy; {{ "now"|date("Y") }} {{ CMS.Settings.SiteTitle }} |
+        Powered by <a href="http://www.injader.com" title="Injader">Injader</a> |
+        <a href="#blog-masthead">Back to top</a>
+    </p>
+</div>
+
+</body>
+</html>

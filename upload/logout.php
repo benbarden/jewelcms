@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,31 +25,22 @@
   }
   $CMS->US->Logout($CMS->RES->GetCurrentUserID());
   $strReferrer = empty($_SERVER['HTTP_REFERER']) ? "" : $_SERVER['HTTP_REFERER'];
-  if ($strReferrer) {
-    // Remove logged in flag
-    if (strpos($strReferrer, "?loggedin=1") !== false) {
-      $strReferrer = str_replace("?loggedin=1", "", $strReferrer);
-    } elseif (strpos($strReferrer, "&loggedin=1") !== false) {
-      $strReferrer = str_replace("&loggedin=1", "", $strReferrer);
+    // ** Go back link ** //
+    $strReferrer = str_replace('http://'.SVR_HOST.URL_ROOT, '', $strReferrer);
+    if ($strReferrer) {
+        $strGoBack = "<li><a href=\"$strReferrer\">Go back to the page you were just viewing</a></li>";
+    } else {
+        $strGoBack = "";
     }
-    // Fix broken page number links
-    if ((strpos($strReferrer, "?") === false) && (strpos($strReferrer, "&") !== false)) {
-      $strReferrer = str_replace("&", "?", $strReferrer);
-    }
-    $strGoBack = "<li><a href=\"$strReferrer\">Go back to the page you were just viewing</a></li>";
-  } else {
-    $strGoBack = "";
-  }
       // ** Display results ** //
       $strHTML = <<<END
 <h1>Logged out</h1>
 <p>You have successfully logged out.</p>
 <ul>
 $strGoBack
-<li><a href="{FN_INDEX}">Go to the home page</a></li>
+<li><a href="/">Go to the home page</a></li>
 </ul>
 
 END;
   $CMS->LP->SetTitle("Logged out");
   $CMS->LP->Display($strHTML);
-?>

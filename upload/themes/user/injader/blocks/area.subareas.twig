@@ -1,0 +1,11 @@
+{% if Area.Subareas %}
+    {% for Item in Area.Subareas %}
+    <p><a href="{{ cmsLinkArea(Item.Id) }}">{{ Item.Name }}</a>
+    {% if Item.Desc %}
+    <br>{{ Item.Desc }}
+    {% endif %}
+    </p>
+    {% endfor %}
+{% else %}
+    <p>No subareas.</p>
+{% endif %}

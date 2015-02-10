@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@
     	
     	$this->arrSysPrefs = array();
     	
-      $arrResult = $CMS->ResultQuery("SELECT * FROM {IFW_TBL_SYS_PREFERENCES}", 
+      $arrResult = $CMS->ResultQuery("SELECT * FROM {IFW_TBL_SETTINGS}",
         __CLASS__ . "::" . __FUNCTION__, __LINE__);
       for ($i=0; $i<count($arrResult); $i++) {
         $strPrefName = $arrResult[$i]['preference'];
@@ -87,7 +87,7 @@
     
     function WriteSysPref($strPref, $strContent) {
     	
-      $this->Query("UPDATE {IFW_TBL_SYS_PREFERENCES} ".
+      $this->Query("UPDATE {IFW_TBL_SETTINGS} ".
         "SET content = '$strContent' WHERE preference = '$strPref'", 
         __CLASS__ . "::" . __FUNCTION__ . "; Pref = $strPref", __LINE__);
       
@@ -119,7 +119,6 @@
         $intUserIP = $_SERVER['REMOTE_ADDR'];
       }
       $this->Query("INSERT INTO {IFW_TBL_ACCESS_LOG}(user_id, detail, tag, log_date, ip_address) VALUES($intUserID, '$strDetail', '$strTag', '$dteLogDate', '$intUserIP')", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $CMS->AL->Purge();
       $dteEndTime = $this->MicrotimeFloat();
       $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
     }

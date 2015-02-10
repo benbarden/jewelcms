@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 */
 
   require '../sys/header.php';
-  $CMS->RES->ViewManageContent();
-  if ($CMS->RES->IsError()) {
-    $CMS->Err_MFail(M_ERR_UNAUTHORISED, "ViewManageContent");
+  $cpItemsPerPage = $cmsContainer->getService('Cms.Config')->getByKey('CP.ItemsPerPage');
+  if (!$CMS->RES->CanAddContent()) {
+      $CMS->Err_MFail(M_ERR_UNAUTHORISED, "ViewManageContent");
   }
   $strPageTitle = "Manage Content";
   $CMS->AP->SetTitle($strPageTitle);
@@ -44,98 +44,35 @@
     }
   }
   
-  $intAreaID = "";
+  $categoryId = "";
   $strWhereClause = "";
   $strGetURL = "";
   $intNumPages = 0;
 
-  if ($CMS->RES->CountTotalWriteAccess() < $CMS->AR->CountAreasByAreaType(C_AREA_CONTENT)) {
-    $blnAllowEmpty = false;
-  } else {
-    $blnAllowEmpty = true;
-  }
+  $blnAllowEmpty = true;
 
   $blnInvalidSearch = false;
   $strAddArticle = "<br />";
-  $strStartupList = "area1";
-  $blnNavOK = false;
-  if (isset($_GET['navtype'])) {
-    switch ($_GET['navtype']) {
-      case "1":
-        $strGetURL = "?navtype=1";
-        if (isset($_GET['area1'])) {
-          $intAreaID = $_GET['area1'];
-          $strStartupList = "area1";
-          $blnNavOK = true;
-        }
-        break;
-      case "2":
-        $strGetURL = "?navtype=2";
-        if (isset($_GET['area2'])) {
-          $intAreaID = $_GET['area2'];
-          $strStartupList = "area2";
-          $blnNavOK = true;
-        }
-        break;
-      case "3":
-        $strGetURL = "?navtype=3";
-        if (isset($_GET['area3'])) {
-          $intAreaID = $_GET['area3'];
-          $strStartupList = "area3";
-          $blnNavOK = true;
-        }
-        break;
+
+  if (isset($_GET['area'])) {
+      $categoryId = $CMS->FilterNumeric($_GET['area']);
+    if ($strGetURL) {
+      $strGetURL .= "&amp;area=".$_GET['area'];
+    } else {
+      $strGetURL = "?area=".$_GET['area'];
     }
-  } else {
-    $strGetURL = "?navtype=";
   }
 
-  if (!$blnNavOK) {
-    if (isset($_GET['area1'])) {
-      $intAreaID = $_GET['area1'];
-      $strStartupList = "area1";
-    } elseif (isset($_GET['area2'])) {
-      $intAreaID = $_GET['area2'];
-      $strStartupList = "area2";
-    } elseif (isset($_GET['area3'])) {
-      $intAreaID = $_GET['area3'];
-      $strStartupList = "area3";
-    }
-  }
-  
-  if (isset($_GET['area1'])) {
-    if ($strGetURL) {
-      $strGetURL .= "&amp;area1=".$_GET['area1'];
-    } else {
-      $strGetURL = "?area1=".$_GET['area1'];
-    }
-  }
-  if (isset($_GET['area2'])) {
-    if ($strGetURL) {
-      $strGetURL .= "&amp;area2=".$_GET['area2'];
-    } else {
-      $strGetURL = "?area2=".$_GET['area2'];
-    }
-  }
-  if (isset($_GET['area3'])) {
-    if ($strGetURL) {
-      $strGetURL .= "&amp;area3=".$_GET['area3'];
-    } else {
-      $strGetURL = "?area3=".$_GET['area3'];
-    }
-  }
-  
-  if ($intAreaID) {
-    $intAreaID = $CMS->FilterNumeric($intAreaID);
-    if ($intAreaID == 0) {
+  if ($categoryId) {
+    if ($categoryId == 0) {
       if ($blnAllowEmpty) {
         $strWhereClause = "";
       } else {
         $blnInvalidSearch = true;
       }
     } else {
-      $strWhereClause = " AND content_area_id = $intAreaID ";
-      $strAddArticle = "<p><a href=\"{FN_ADM_WRITE}?action=create&amp;area=$intAreaID\">Add an article to this area</a></p>";
+      $strWhereClause = " AND category_id = $categoryId ";
+      $strAddArticle = "<p><a href=\"{FN_ADM_WRITE}?action=create&amp;area=$categoryId\">Add an article to this category</a></p>";
     }
   }
 
@@ -210,87 +147,45 @@
     $strWhereClause .= " AND $strTagClause";
   }
   
-  $strTagOptions = <<<TagOptions
-<input id="tags1" name="tags" type="radio" value="1" $strTagSelect1 /><label for="tags1">All content</label>
-<input id="tags2" name="tags" type="radio" value="2" $strTagSelect2 /><label for="tags2">Content with tags</label>
-<input id="tags3" name="tags" type="radio" value="3" $strTagSelect3 /><label for="tags3">Content without tags</label>
+  $strTagOptions1 = <<<TagOptions1
+<input id="tags1" name="tags" type="radio" value="1" $strTagSelect1 /> <label for="tags1">All content</label>
 
-TagOptions;
+TagOptions1;
 
-  $strNavType1Checked = "";
-  $strNavType2Checked = "";
-  $strNavType3Checked = "";
-  switch ($strStartupList) {
-    case "area1":
-      $strNavType1Checked = " checked=\"checked\"";
-      break;
-    case "area2":
-      $strNavType2Checked = " checked=\"checked\"";
-      break;
-    case "area3":
-      $strNavType3Checked = " checked=\"checked\"";
-      break;
-    default:
-      $strStartupList = "area1";
-      $strNavType1Checked = " checked=\"checked\"";
-      break;
-  }
+  $strTagOptions2 = <<<TagOptions2
+<input id="tags2" name="tags" type="radio" value="2" $strTagSelect2 /> <label for="tags2">Content with tags</label>
+
+TagOptions2;
+
+  $strTagOptions3 = <<<TagOptions3
+<input id="tags3" name="tags" type="radio" value="3" $strTagSelect3 /> <label for="tags3">Content without tags</label>
+
+TagOptions3;
 
   $CMS->AT->arrAreaData = array();
   $CMS->DD->strEmptyItem = "All";
-  $strAreaListPrimary = $CMS->DD->AreaHierarchy($intAreaID, 0, "Content", $blnAllowEmpty, false, C_NAV_PRIMARY);
-  
-  $CMS->AT->arrAreaData = array();
-  $CMS->DD->strEmptyItem = "All";
-  $strAreaListSecondary = $CMS->DD->AreaHierarchy($intAreaID, 0, "Content", $blnAllowEmpty, false, C_NAV_SECONDARY);
-  
-  $CMS->AT->arrAreaData = array();
-  $CMS->DD->strEmptyItem = "All";
-  $strAreaListTertiary = $CMS->DD->AreaHierarchy($intAreaID, 0, "Content", $blnAllowEmpty, false, C_NAV_TERTIARY);
-    
+  $categoryDropDownHtml = $CMS->DD->CategoryList($categoryId, $blnAllowEmpty);
+
   $strStatusList   = $CMS->DD->ContentStatus($strStatus);
   $strSearchButton = $CMS->AC->SearchButton();
 
   $strHTML = <<<END
-<h1>$strPageTitle</h1>
+<h1 class="page-header">$strPageTitle</h1>
 <form action="{FN_ADM_CONTENT_MANAGE}" method="get">
-<table class="DefaultTable WideTable" cellspacing="1">
-  <colgroup>
-    <col class="InfoColour NarrowCell" />
-    <col class="BaseColour" />
-    <col class="InfoColour NarrowCell" />
-    <col class="BaseColour" />
-  </colgroup>
-  <tr>
-    <th colspan="4">Search for content</th>
+<div class="table-responsive">
+<table class="table table-striped">
+  <tr class="separator-row">
+    <td colspan="6">Search for content</td>
   </tr>
   <tr>
     <td>
-      <b>Nav Type</b>
+      <label><b>Category</b></label>
     </td>
-    <td colspan="3">
-      <input type="radio" id="navtype1" name="navtype" onclick="SwitchDropDown('area1');" value="1"$strNavType1Checked /><label for="navtype1">Primary</label>
-      <input type="radio" id="navtype2" name="navtype" onclick="SwitchDropDown('area2');" value="2"$strNavType2Checked /><label for="navtype2">Secondary</label>
-      <input type="radio" id="navtype3" name="navtype" onclick="SwitchDropDown('area3');" value="3"$strNavType3Checked /><label for="navtype3">Tertiary</label>
-    </td>
-  </tr>
-  <tr>
     <td>
-      <b>Area</b>
-    </td>
-    <td colspan="3">
-      <select id="area1" name="area1">
-$strAreaListPrimary
-      </select>
-      <select id="area2" name="area2">
-$strAreaListSecondary
-      </select>
-      <select id="area3" name="area3">
-$strAreaListTertiary
+      <select id="area" name="area">
+$categoryDropDownHtml
       </select>
     </td>
-  </tr>
-  <tr>
     <td>
       <label for="status"><b>Status</b></label>
     </td>
@@ -305,16 +200,24 @@ $strAreaListTertiary
       <input type="text" id="user" name="user" size="20" maxlength="100" value="$strUser" />
     </td>
   </tr>
+  <!--
   <tr>
     <td>
       <b>Tag Options</b>
     </td>
-    <td colspan="3">
-$strTagOptions
+    <td>
+$strTagOptions1
+    </td>
+    <td>
+$strTagOptions2
+    </td>
+    <td>
+$strTagOptions3
     </td>
   </tr>
+  -->
   <tr>
-    <td class="FootColour Centre" colspan="4">
+    <td class="FootColour Centre" colspan="6">
       $strSearchButton
     </td>
   </tr>
@@ -325,26 +228,29 @@ END;
 
   // ** List all content in area ** //
   if (!$blnInvalidSearch) {
-    if (isset($intAreaID) && ($intAreaID <> "")) {
+    if (isset($categoryId) && ($categoryId <> "")) {
       // Page numbers
-      $intContentPerPage = $CMS->SYS->GetSysPref(C_PREF_SYSTEM_PAGE_COUNT);
+      $intContentPerPage = $cpItemsPerPage;
       $intStart = $CMS->PN->GetPageStart($intContentPerPage, $intPageNumber);
       // Get content
       $strDateFormat = $CMS->SYS->GetDateFormat();
-      $strContentSQL = "
-        SELECT c.id, c.title, c.seo_title, c.content_status, c.hits, c.comment_count, c.content_area_id,
+      $arrAreaContent = $CMS->ResultQuery("
+        SELECT c.id, c.title, c.permalink, c.seo_title, c.content_status, c.hits, c.category_id,
         DATE_FORMAT(c.create_date, '$strDateFormat') AS create_date, c.create_date AS create_date_raw,
-        a.name AS area_name, a.seo_name AS area_seo_name
-        FROM ({IFW_TBL_CONTENT} c, {IFW_TBL_AREAS} a)
+        cat.name AS category_name, cat.permalink AS category_permalink
+        FROM ({IFW_TBL_CONTENT} c, {IFW_TBL_CATEGORIES} cat)
         LEFT JOIN {IFW_TBL_USERS} u ON c.author_id = u.id
-        WHERE c.content_area_id = a.id $strWhereClause
+        WHERE c.category_id = cat.id
+        $strWhereClause
         ORDER BY c.id ASC
         LIMIT $intStart, $intContentPerPage
-      ";
-      // LIMIT $intStart, $intContentPerPage
-      $arrAreaContent = $CMS->ResultQuery($strContentSQL, basename(__FILE__), __LINE__);
-      $strCountSQL = "SELECT count(*) AS count FROM ({IFW_TBL_CONTENT} c, {IFW_TBL_AREAS} a) WHERE c.content_area_id = a.id $strWhereClause ORDER BY c.id ASC";
-      $arrAreaCount = $CMS->ResultQuery($strCountSQL, basename(__FILE__), __LINE__);
+      ", basename(__FILE__), __LINE__);
+      $arrAreaCount = $CMS->ResultQuery("
+        SELECT count(*) AS count FROM ({IFW_TBL_CONTENT} c, {IFW_TBL_CATEGORIES} cat)
+        WHERE c.category_id = cat.id
+        $strWhereClause
+        ORDER BY c.id ASC
+      ", basename(__FILE__), __LINE__);
       $intAreaCount = $arrAreaCount[0]['count'];
       // Page number links
       $intNumPages = $CMS->PN->GetTotalPages($intContentPerPage, $intAreaCount);
@@ -352,20 +258,14 @@ END;
       // Loopity loop
       for ($i=0; $i<count($arrAreaContent); $i++) {
         $intID           = $arrAreaContent[$i]['id'];
-        $intAreaID       = $arrAreaContent[$i]['content_area_id'];
-        $strAreaName     = $arrAreaContent[$i]['area_name'];
-        $strSEOAreaName  = $arrAreaContent[$i]['area_seo_name'];
-        $CMS->PL->SetTitle($strSEOAreaName);
-        $strAreaLink     = $CMS->PL->ViewArea($intAreaID);
         $strCreateDate   = $arrAreaContent[$i]['create_date'];
         $strTitle        = $arrAreaContent[$i]['title'];
+        $permalink       = $arrAreaContent[$i]['permalink'];
         $strStatus       = $arrAreaContent[$i]['content_status'];
         $strSEOTitle     = $arrAreaContent[$i]['seo_title'];
         $intHits         = $arrAreaContent[$i]['hits'];
-        $intComments     = $arrAreaContent[$i]['comment_count'];
-        // Make page link
-        $CMS->PL->SetTitle($strSEOTitle);
-        $strViewLink = $CMS->PL->ViewArticle($intID);
+        $categoryName    = $arrAreaContent[$i]['category_name'];
+        $categoryLink    = $arrAreaContent[$i]['category_permalink'];
         // Table header
         if ($i == 0) {
           // Bulk options
@@ -379,8 +279,6 @@ AdminBulk;
             } else {
               $strBulkOptions = <<<AdminBulk
           <option value="move">Move</option>
-          <option value="lock">Lock</option>
-          <option value="unlock">Unlock</option>
           <option value="editauthor">Edit Author</option>
           <option value="delete">Delete</option>
           <option value="restore">Restore</option>
@@ -390,40 +288,25 @@ AdminBulk;
           } else {
             $strBulkOptions = "<option value=\"\">&nbsp;</option>";
           }
-          // No longer used
-          // <!-- $strPageNumbers -->
           // Build header
           $strHTML .= <<<TableHeader
 $strAddArticle
 $strPageNumbers
-  <!--<form action="{FN_ADM_CONTENT_MANAGE}" method="post">-->
-  <!--</form>-->
 <form action="{FN_ADM_CONTENT_BULK}" method="post">
-<table id="tblArticles" class="DefaultTable PageTable" cellspacing="1">
-    <colgroup>
-      <col class="BaseColour TinyCell" />
-      <col class="BaseColour WideCell" />
-      <col class="BaseColour MediumCell" />
-      <col class="BaseColour MediumCell" />
-      <col class="BaseColour NarrowCell" />
-      <col class="BaseColour TinyCell" />
-      <col class="BaseColour TinyCell" />
-      <col class="BaseColour NarrowCell" />
-      <col class="BaseColour TinyCell" />
-    </colgroup>
+<div class="table-responsive">
+<table class="table table-striped">
     <thead>
-      <tr>
-        <th>ID</th>
-        <th>Title</th>
-        <th>Area</th>
-        <th>Created</th>
-        <th>Status</th>
-        <th>Comments</th>
-        <th>Hits</th>
-        <th>Options</th>
-        <th>
+      <tr class="separator-row">
+        <td>ID</td>
+        <td>Title</td>
+        <td>Area</td>
+        <td>Created</td>
+        <td>Status</td>
+        <td>Hits</td>
+        <td>Options</td>
+        <td>
           <a href="#FooterRow1" id="js-manage-content-check-all" style="color: #fff; text-decoration: none;" title="Toggle All">+</a>
-        </th>
+        </td>
       </tr>
     </thead>
     <tfoot>
@@ -444,7 +327,7 @@ TableHeader;
         }
         // Permissions
         $CMS->RES->ClearErrors();
-        $CMS->RES->EditArticle($intAreaID, $intID);
+        $CMS->RES->EditArticle($categoryId, $intID);
         if ($CMS->RES->IsError()) {
           $strEditArticle = "";
         } else {
@@ -468,11 +351,10 @@ TableHeader;
         $strHTML .= <<<AreaContent
       <tr id="$strRowID" class="$strRowClass">
         <td class="Centre ID">$intID</td>
-        <td class="Left Title"><a href="$strViewLink" title="View this article">$strTitle</a></td>
-        <td class="Centre Area"><a href="$strAreaLink">$strAreaName</a></td>
+        <td class="Left Title"><a href="$permalink" title="View this article">$strTitle</a></td>
+        <td class="Centre Area"><a href="$categoryLink">$categoryName</a></td>
         <td class="Centre Created">$strCreateDate</td>
         <td class="Centre Status">$strStatus</td>
-        <td class="Centre Comments">$intComments</td>
         <td class="Centre Hits">$intHits</td>
         <td class="Centre Options">$strEditArticle $strEditTags</td>
         <td class="Centre Checkbox"><input type="checkbox" name="chkBulkOptions[]" id="chkBulkOptions$intID" value="$intID" /></td>
@@ -484,6 +366,7 @@ AreaContent;
         $strHTML .= <<<TableFooter
     </tbody>
 </table>
+</div>
 </form>
 
 TableFooter;
@@ -496,13 +379,6 @@ TableFooter;
   // ** SCRIPT ** //
   $strHTML .= <<<FooterScript
 <script type="text/javascript">
-  function SwitchDropDown(strWhich) {
-    document.getElementById('area1').style.display  = 'none';
-    document.getElementById('area2').style.display  = 'none';
-    document.getElementById('area3').style.display  = 'none';
-    document.getElementById(strWhich).style.display = 'block';
-  }
-  SwitchDropDown('$strStartupList'); // do on startup
 
     var checkAll = true;
     $('#js-manage-content-check-all').on('click', function() {
@@ -514,4 +390,3 @@ TableFooter;
 FooterScript;
   
   $CMS->AP->Display($strHTML);
-?>

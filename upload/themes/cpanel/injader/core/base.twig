@@ -1,0 +1,154 @@
+{% set SiteRoot  = '/' %}
+{% set ThemeRoot = '/themes/cpanel/injader/' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ CP.Title }}</title>
+
+{#<script type="text/javascript" src="/scripts.js"></script>#}
+    <script type="text/javascript" src="/assets/js/jquery/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="/assets/js/jqueryui/jquery-ui.min.js"></script>
+    <link href="/assets/css/jqueryui/jquery-ui.min.css" rel="stylesheet">
+    <link href="/assets/css/jqueryui/jquery-ui.structure.min.css" rel="stylesheet">
+    <link href="/assets/css/jqueryui/jquery-ui.theme.min.css" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/bootstrap/dashboard.css" rel="stylesheet">
+
+    <!-- Custom Injader styles -->
+    <link href="/assets/css/injader-cp/injader-cp.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <!-- 3.7.2 -->
+    <script src="/assets/js/bootstrap/html5shiv.min.js"></script>
+    <!-- 1.4.2 -->
+    <script src="/assets/js/bootstrap/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+</head>
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <p class="navbar-text"><a href="{{ SiteRoot }}">&lt; view site</a></p>
+        </div> <!-- /navbar-header -->
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="{{ cpLink('index') }}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Dashboard</a>
+                </li>
+                <!-- My Settings -->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Settings <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ cpLink('edit_profile') }}">Edit Profile</a></li>
+                        {% if Login.User %}
+                        <li><a href="{{ cmsLinkUser(Login.User.Id) }}">View Profile</a></li>
+                        {% endif %}
+                        <li><a href="{{ cpLink('change_password') }}">Change Password</a></li>
+                        <li><a href="{{ cpLink('manage_avatars') }}">Manage Avatars</a></li>
+                    </ul>
+                </li>
+                {% if Auth.CanWriteContent %}
+                    <li><a href="{{ cpLink('article', {'action': 'create'}) }}">+ Article</a></li>
+                {% endif %}
+                {% if Auth.IsAdmin %}
+                    <!-- Content -->
+                    <li><a href="{{ cpLink('articles') }}">Articles</a></li>
+                    <!-- Categories -->
+                    <li><a href="{{ cpLink('categories') }}">Categories</a></li>
+                    <!-- Files -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Files <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ cpLink('files', {'type': 'site'}) }}">Site Files</a></li>
+                            <li><a href="{{ cpLink('files', {'type': 'attach'}) }}">Attachments</a></li>
+                            <li><a href="{{ cpLink('files', {'type': 'avatar'}) }}">Avatars</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{{ cpLink('file_add') }}">+ Add New File</a></li>
+                        </ul>
+                    </li>
+                    <!-- Users -->
+                    <li><a href="{{ cpLink('users', {'action': 'showall'}) }}" title="Manage user accounts, roles, and permissions">Users</a></li>
+                    <!-- Tools -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Tools <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ cpLink('tools_access_log') }}">Access Log</a></li>
+                            <li><a href="{{ cpLink('tools_error_log') }}">Error Log</a></li>
+                            <li><a href="{{ cpLink('tools_user_sessions') }}">User Sessions</a></li>
+                        </ul>
+                    </li>
+                    <!-- Settings -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Settings <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{{ cpLink('settings_general') }}">General Settings</a></li>
+                            <li><a href="{{ cpLink('settings_content') }}">Content Settings</a></li>
+                            <li><a href="{{ cpLink('settings_file') }}">File Settings</a></li>
+                            <li><a href="{{ cpLink('settings_url') }}">URL Settings</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{{ cpLink('themes') }}">Themes</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{{ cpLink('permissions') }}">Permissions</a></li>
+                            <li><a href="{{ cpLink('user_roles') }}">User Roles</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+            </ul>
+        </div> <!-- /navbar-collapse -->
+    </div>
+</div> <!-- /navbar -->
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="main">
+            {% block cp_content %}{% endblock cp_content %}
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/assets/js/bootstrap/bootstrap.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="/assets/js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+
+<script type="text/javascript">
+    function alertAutoHide() {
+        if ($('.alert-dismissible').length) {
+            $('.alert-dismissible').fadeOut();
+            alertClearMsgUrl();
+        }
+    }
+    function alertClearMsgUrl() {
+        var pageTitle = document.getElementsByTagName("title")[0].innerHTML;
+        newUrlArray = top.location.href.split('?msg=');
+        window.history.replaceState({} , pageTitle, newUrlArray[0]);
+    }
+    $(document).ready(function() {
+        if ($('.alert-dismissible').length) {
+            window.setTimeout('alertAutoHide()', 2000);
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,20 +28,20 @@
       $intHierLeft, $intHierRight, $intParentID, $intPerProfileID, $intGraphicID, 
       $intContPerPage, $strSortRule, $strIncludeInRSSFeed, 
       $strMaxFileSize, $intMaxFilesPerUser, $strAreaURL, $strSmartTags, $strAreaDesc, 
-      $strType, $strThemePath, $strLayoutStyle, $strNavType, $strSubareaContent) {
+      $strType, $strThemePath, $strLayoutStyle, $strSubareaContent) {
       global $CMS;
       $strSEOName = $this->MakeSEOTitle($strName);
       $intID = $this->Query("
         INSERT INTO {IFW_TBL_AREAS}(name, area_level, area_order, hier_left, hier_right, 
         parent_id, permission_profile_id, area_graphic_id, content_per_page, sort_rule, 
         include_in_rss_feed, max_file_size, max_files_per_user, area_url, smart_tags, 
-        seo_name, area_description, area_type, theme_path, layout_style, nav_type, 
+        seo_name, area_description, area_type, theme_path, layout_style,
         subarea_content_on_index)
         VALUES('$strName', $intAreaLevel, $intAreaOrder, $intHierLeft, $intHierRight, 
         $intParentID, $intPerProfileID, $intGraphicID, $intContPerPage, '$strSortRule', 
         '$strIncludeInRSSFeed', '$strMaxFileSize', $intMaxFilesPerUser, '$strAreaURL', 
         '$strSmartTags', '$strSEOName', '$strAreaDesc', '$strType', '$strThemePath', 
-        '$strLayoutStyle', '$strNavType', '$strSubareaContent'
+        '$strLayoutStyle', '$strSubareaContent'
         )
       ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       $CMS->AL->Build(AL_TAG_AREA_CREATE, $intID, $strName);
@@ -50,7 +50,6 @@
       $CMS->PL->SetTitle($strSEOName);
       $strLink = $CMS->PL->ViewArea($intID);
       $CMS->PL->SetTitle("");
-      $strLink = str_replace("?loggedin=1", "", $strLink);
       $CMS->UM->addLink($strLink, 0, $intID);
       
       return $intID;
@@ -59,7 +58,7 @@
       $intHierLeft, $intHierRight, $intParentID, $intPerProfileID, $intGraphicID, 
       $intContPerPage, $strSortRule, $strIncludeInRSSFeed, 
       $strMaxFileSize, $intMaxFilesPerUser, $strAreaURL, $strSmartTags, $strAreaDesc, 
-      $strType, $strThemePath, $strLayoutStyle, $strNavType, $blnRebuild, $strSubareaContent) {
+      $strType, $strThemePath, $strLayoutStyle, $blnRebuild, $strSubareaContent) {
       global $CMS;
       if ($blnRebuild) {
         $strHierClause = "hier_left = $intHierLeft, hier_right = $intHierRight, ";
@@ -77,7 +76,7 @@
         area_url = '$strAreaURL', smart_tags = '$strSmartTags', seo_name = '$strSEOName', 
         area_description = '$strAreaDesc', area_type = '$strType', 
         theme_path = '$strThemePath', layout_style = '$strLayoutStyle', 
-        nav_type = '$strNavType', subarea_content_on_index = '$strSubareaContent' 
+        subarea_content_on_index = '$strSubareaContent'
         WHERE id = $intAreaID
       ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       $CMS->AL->Build(AL_TAG_AREA_EDIT, $intAreaID, $strName);
@@ -86,7 +85,6 @@
       $CMS->PL->SetTitle($strSEOName);
       $strLink = $CMS->PL->ViewArea($intAreaID);
       $CMS->PL->SetTitle("");
-      $strLink = str_replace("?loggedin=1", "", $strLink);
       $CMS->UM->addLink($strLink, 0, $intAreaID);
       
     }
@@ -133,9 +131,8 @@
         // If it's still not set, get this specific area
         if (!isset($this->arrArea[$intAreaID])) {
           $arrArea = $this->ResultQuery("
-            SELECT a.*, p.id AS profile_id, is_system, view_area, create_article, 
-            edit_article, delete_article, add_comment, edit_comment, delete_comment, 
-            lock_article, attach_file FROM {IFW_TBL_AREAS} a 
+            SELECT a.*, p.id AS profile_id, is_system, create_article,
+            edit_article, delete_article, attach_file FROM {IFW_TBL_AREAS} a
             LEFT JOIN {IFW_TBL_PERMISSION_PROFILES} p ON a.permission_profile_id = p.id 
             WHERE a.id = $intAreaID
           ", __CLASS__ . "::" . __FUNCTION__ ." (Area: $intAreaID)", __LINE__);
@@ -146,9 +143,8 @@
     }
     function BuildTopLevelAreaCache() {
       $arrAreas = $this->ResultQuery("
-        SELECT a.*, p.id AS profile_id, is_system, view_area, create_article, 
-        edit_article, delete_article, add_comment, edit_comment, delete_comment, 
-        lock_article, attach_file FROM {IFW_TBL_AREAS} a 
+        SELECT a.*, p.id AS profile_id, is_system, create_article,
+        edit_article, delete_article, attach_file FROM {IFW_TBL_AREAS} a
         LEFT JOIN {IFW_TBL_PERMISSION_PROFILES} p ON a.permission_profile_id = p.id 
         WHERE area_level = 1 ORDER BY a.id ASC
       ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
@@ -183,50 +179,8 @@
       }
       return $this->arrArea[$intAreaID]['seo_name'];
     }
-    
-    /**
-     * Counts the total number of areas
-     * @return integer
-     */
-    function CountAreas() {
-      $arrAreaCount = $this->ResultQuery("SELECT count(*) AS count FROM {IFW_TBL_AREAS} "
-        , __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $arrAreaCount[0]['count'];
-    }
-    
-    /**
-     * Counts the number of areas with a particular area type
-     * @param $strAreaType
-     * @return integer
-     */
-    function CountAreasByAreaType($strAreaType) {
-    	if (empty($strAreaType)) {
-    		return "0";
-    	} else {
-        $strWhereClause = " WHERE area_type = '$strAreaType' ";
-      }
-      $arrAreaCount = $this->ResultQuery("SELECT count(*) AS count FROM {IFW_TBL_AREAS} ".
-        $strWhereClause, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $arrAreaCount[0]['count'];
-    }
-    
-    /**
-     * Counts the number of areas with a particular navigation type
-     * @param $strNavType
-     * @return integer
-     */
-    function CountAreasByNavType($strNavType) {
-    	if (empty($strNavType)) {
-    		return "0";
-    	} else {
-    		$strWhereClause = " WHERE nav_type = '$strNavType' ";
-    	}
-      $arrAreaCount = $this->ResultQuery("
-        SELECT count(*) AS count FROM {IFW_TBL_AREAS} $strWhereClause
-      ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $arrAreaCount[0]['count'];
-    }
-    
+
+
     /**
      * Counts the number of articles that exist in a comma-delimeted list of IDs.
      * Only articles that actually exist will be counted.  
@@ -324,13 +278,9 @@
     }
     
     // ** Misc area selection methods ** //
-    function GetDefaultAreaID($strNavType) {
-      if (!$strNavType) {
-        $strNavType = C_NAV_PRIMARY;
-      }
+    function GetDefaultAreaID() {
       $arrDefault = $this->ResultQuery("
-        SELECT id FROM {IFW_TBL_AREAS}
-        WHERE nav_type = '$strNavType' ORDER BY hier_left LIMIT 1
+        SELECT id FROM {IFW_TBL_AREAS} ORDER BY hier_left LIMIT 1
       ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $arrDefault[0]['id'];
     }

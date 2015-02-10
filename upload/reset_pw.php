@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,9 +19,6 @@
 */
 
   require 'sys/header.php';
-  if ($CMS->SYS->GetSysPref(C_PREF_ALLOW_PASSWORD_RESETS) != "Y") {
-    $CMS->Err_MFail(M_ERR_RESETPW_DISABLED, "");
-  }
   $CMS->RES->ValidateLoggedIn();
   if (!$CMS->RES->IsError()) {
     $CMS->Err_MFail(M_ERR_ALREADY_LOGGED_IN, "");

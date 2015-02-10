@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -82,26 +82,10 @@
             if (($intID <> "") && ($intID <> $intContentID)) {
               $intAreaID = $CMS->ART->GetArticleAreaID($intID);
               if ($intAreaID) {
-                if (isset($arrViewArea[$intAreaID])) {
-                  if ($arrViewArea[$intAreaID]) {
-                    if (!empty($arrArticles[$intID])) {
-                      $arrArticles[$intID]++;
-                    } else {
-                      $arrArticles[$intID] = 1;
-                    }
-                  }
+                if (!empty($arrArticles[$intID])) {
+                  $arrArticles[$intID]++;
                 } else {
-                  $CMS->RES->ViewArea($intAreaID);
-                  if ($CMS->RES->IsError()) {
-                    $arrViewArea[$intAreaID] = false; // Caching
-                  } else {
-                    $arrViewArea[$intAreaID] = true; // Caching
-                    if (!empty($arrArticles[$intID])) {
-                      $arrArticles[$intID]++;
-                    } else {
-                      $arrArticles[$intID] = 1;
-                    }
-                  }
+                  $arrArticles[$intID] = 1;
                 }
               }
             }
@@ -162,8 +146,9 @@
       }
       $strLink = "";
       if ($this->intNavID > 0) {
-        $strLinkURL = $CMS->PL->ViewArticle($this->intNavID);
-        $strLink = "<a href=\"$strLinkURL\">".$this->strNavTitle." &gt;</a>";
+        $dbArticle = $CMS->ART->GetArticle($this->intNavID);
+        $permalink = $dbArticle['permalink'];
+        $strLink = "<a href=\"$permalink\">".$this->strNavTitle." &gt;</a>";
       }
       $dteEndTime = $this->MicrotimeFloat();
       $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
@@ -179,8 +164,9 @@
       }
       $strLink = "";
       if ($this->intNavID > 0) {
-        $strLinkURL = $CMS->PL->ViewArticle($this->intNavID);
-        $strLink = "<a href=\"$strLinkURL\">&lt; ".$this->strNavTitle."</a>";
+        $dbArticle = $CMS->ART->GetArticle($this->intNavID);
+        $permalink = $dbArticle['permalink'];
+        $strLink = "<a href=\"$permalink\">&lt; ".$this->strNavTitle."</a>";
       }
       $dteEndTime = $this->MicrotimeFloat();
       $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
@@ -188,4 +174,3 @@
     }
   }
 
-?>

@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -24,25 +24,16 @@
   switch ($strFeed) {
     case "articles":
       $intAreaID = empty($_GET['id']) ? "" : $CMS->FilterNumeric($_GET['id']);
-      if (!$intAreaID) {
-        $strFeedburnerURL = $CMS->SYS->GetSysPref(C_PREF_RSS_ARTICLES_URL);
-        if ($strFeedburnerURL) {
-          $strUserAgent = empty($_SERVER['HTTP_USER_AGENT']) ? "" : $_SERVER['HTTP_USER_AGENT'];
-          if (strpos(strtoupper($strUserAgent), "FEEDBURNER") !== false) {
-            // Feedburner is OK to access this URL
-          } else {
-            httpRedirect($strFeedburnerURL);
-            exit;
-          }
-        }
-      }
-      exit($RSS->GetArticleRSS($intAreaID));
+      header('Content-type: text/xml');
+      print($RSS->GetArticleRSS($intAreaID));
+      exit;
       break;
     case "comments":
       $intArticleID = empty($_GET['id']) ? "" : $CMS->FilterNumeric($_GET['id']);
-      exit($RSS->GetCommentRSS($intArticleID));
+      header('Content-type: text/xml');
+      print($RSS->GetCommentRSS($intArticleID));
+      exit;
       break;
     default: $CMS->Err_MFail(M_ERR_MISSINGPARAMS_SYSTEM, "name");
   }
   
-?>

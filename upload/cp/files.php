@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 */
 
   require '../sys/header.php';
+  $cpItemsPerPage = $cmsContainer->getService('Cms.Config')->getByKey('CP.ItemsPerPage');
   $CMS->RES->Admin();
   if ($CMS->RES->IsError()) {
     $CMS->Err_MFail(M_ERR_UNAUTHORISED, "Admin");
@@ -91,51 +92,26 @@
     $intUserID = "";
   }
   
-  // Switch links
-  $strHTML = "<p><a href=\"{FN_ADM_FILES_SITE_UPLOAD}?action=create\">New Site File</a>";
-  if ($blnSite) {
-    $strHTML .= <<<OpeningLinks
- | <b>Site Files</b> | <a href="{FN_ADM_FILES}?type=attach">Attachments</a> | <a href="{FN_ADM_FILES}?type=avatar">Avatars</a></p>
-
-OpeningLinks;
-  } elseif ($blnAttach) {
-    $strHTML .= <<<OpeningLinks
- | <a href="{FN_ADM_FILES}?type=site">Site Files</a> | <b>Attachments</b> | <a href="{FN_ADM_FILES}?type=avatar">Avatars</a></p>
-
-OpeningLinks;
-  } elseif ($blnAvatar) {
-    $strHTML .= <<<OpeningLinks
- | <a href="{FN_ADM_FILES}?type=site">Site Files</a> | <a href="{FN_ADM_FILES}?type=attach">Attachments</a> | <b>Avatars</b></p>
-
-OpeningLinks;
-  }
-  
   // Search button
 
   $strSearchButton  = $CMS->AC->SearchButton();
 
-  $strHTML .= <<<MainContentStart
-<h1>$strPageTitle</h1>
+  $strHTML = <<<MainContentStart
+<h1 class="page-header">$strPageTitle</h1>
 <form action="{FN_ADM_FILES}" method="get">
-<table class="OptionTable MediumTable" cellspacing="1">
-  <colgroup>
-    <col class="InfoColour NarrowCell" />
-    <col class="BaseColour" />
-  </colgroup>
-  <tr>
-    <td class="HeadColour SpanCell Left" colspan="2"><b>Search Files</b></td>
+<div class="table-responsive">
+<table class="table table-striped">
+  <tr class="separator-row">
+    <td colspan="5">Search Files</td>
   </tr>
   <tr>
     <td>
       <label for="user"><b>User</b></label>
-      <br />Enter a username to find content created by that user
     </td>
     <td>
       $strInvalidUsername
-      <input type="text" id="user" name="user" size="30" maxlength="100" value="$strUser" />
+      <input type="text" id="user" name="user" size="20" maxlength="100" value="$strUser" />
     </td>
-  </tr>
-  <tr>
     <td>
       <label for="order">Order by:</label>
     </td>
@@ -148,9 +124,7 @@ OpeningLinks;
       $strDropDownOBD
       </select>
     </td>
-  </tr>
-  <tr>
-    <td class="FootColour SpanCell Centre" colspan="2">
+    <td>
       $strSearchButton
     </td>
   </tr>
@@ -178,7 +152,7 @@ MainContentStart;
 
   $strDateFormat = $CMS->SYS->GetDateFormat();
   // Page numbers
-  $intContentPerPage = $CMS->SYS->GetSysPref(C_PREF_SYSTEM_PAGE_COUNT);
+  $intContentPerPage = $cpItemsPerPage;
   $intStart = $CMS->PN->GetPageStart($intContentPerPage, $intPageNumber);
   // Where clause
   if ($blnSite) {
@@ -208,19 +182,14 @@ MainContentStart;
     if ($i == 0) {
       $strHTML .= <<<TableHeader
 $strPageNumbers
-<table id="tblSiteFiles" class="OptionTable" cellspacing="1">
-  <colgroup>
-    <col class="BaseColour MediumCell" />
-    <col class="BaseColour" />
-    <col class="BaseColour" />
-    <col class="BaseColour" />
-  </colgroup>
+<div class="table-responsive">
+<table class="table table-striped">
   <thead>
-    <tr>
-      <th>Info</th>
-      <th>Thumbnail</th>
-      <th>Links</th>
-      <th>HTML</th>
+    <tr class="separator-row">
+      <td>Info</td>
+      <td>Thumbnail</td>
+      <td>Links</td>
+      <td>HTML</td>
     </tr>
   </thead>
   <tbody id="tblSiteFilesBody">
@@ -352,7 +321,7 @@ Thumb;
 CloseRow;
 	}
   if (count($arrImages) > 0) {
-    $strHTML .= "  </tbody>\n</table>\n$strPageNumbers\n";
+    $strHTML .= "  </tbody>\n</table>\n</div>\n$strPageNumbers\n";
   } else {
     $strHTML .= "<p>No files found.</p>\n";
   }

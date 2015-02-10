@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,15 +18,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-  function httpRedirect($url) {
-    if (headers_sent()) {
-      echo "<script type='text/javascript'>location.href='$url';</script>";
-    } else {
-      header("Location: $url");
+    function httpRedirect($url)
+    {
+        if (headers_sent()) {
+            echo "<script type='text/javascript'>location.href='$url';</script>";
+        } else {
+            header("Location: $url");
+        }
+        exit;
     }
-  }
-  function httpRedirectPerm($url) {
-    header("HTTP/1.1 301 Moved Permanently");
-    header("Location: $url");
-  }
-?>
+
+    function httpRedirectPerm($url)
+    {
+        header("HTTP/1.1 301 Moved Permanently");
+        header("Location: $url");
+        exit;
+    }

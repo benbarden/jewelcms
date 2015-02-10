@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,14 +25,15 @@
     exit("No ID specified!");
   }
   
-  $CMS->RES->ViewArea($intID);
-  if ($CMS->RES->IsError()) {
-    exit("No access to view this area!");
-  }
-  
   $strXMLData = "";
   
-  $arrResult = $CMS->ResultQuery("SELECT id, seo_title, last_updated FROM {IFW_TBL_CONTENT} con WHERE content_area_id = $intID AND content_status = '{C_CONT_PUBLISHED}' ORDER BY create_date DESC", basename(__FILE__), __LINE__);
+  $arrResult = $CMS->ResultQuery("
+  SELECT id, permalink, last_updated
+  FROM {IFW_TBL_CONTENT} con
+  WHERE content_area_id = $intID
+  AND content_status = '{C_CONT_PUBLISHED}'
+  ORDER BY create_date DESC
+  ", basename(__FILE__), __LINE__);
   
   if (count($arrResult) == 0) {
     exit("There is no content on your site!");
@@ -46,11 +47,9 @@ XMLHeader;
 
   for ($i=0; $i<count($arrResult); $i++) {
     $intID       = $arrResult[$i]['id'];
-    $strSEOTitle = $arrResult[$i]['seo_title'];
+    $permalink   = $arrResult[$i]['permalink'];
     $dteUpdated  = $arrResult[$i]['last_updated'];
-    $CMS->PL->SetTitle($strSEOTitle);
-    $strItemURL = $CMS->PL->ViewArticle($intID);
-    $strItemURL = "http://".SVR_HOST.$strItemURL;
+    $strItemURL = "http://".SVR_HOST.$permalink;
     $strXMLData .= <<<XMLItem
   <url>
     <loc>$strItemURL</loc>

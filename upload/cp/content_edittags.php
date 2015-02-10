@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@
     $CMS->SYS->CreateAccessLog("Edited article tags (ID: $intContentID)", AL_TAG_ARTICLE_EDITTAGS, $intUserID, "");
     // Confirmation page
     $strHTML = <<<ConfPage
-<h1>$strPageTitle</h1>
+<h1 class="page-header">$strPageTitle</h1>
 <p>Tags updated successfully. <a href="{FN_ADM_CONTENT_MANAGE}">Manage Content</a></p>
 
 ConfPage;
@@ -87,15 +87,12 @@ ConfPage;
   $strCancelButton = $CMS->AC->CancelButton();
   
   $strHTML = <<<END
-<h1>$strPageTitle</h1>
+<h1 class="page-header">$strPageTitle</h1>
 <form action="{FN_ADM_CONTENT_EDITTAGS}?id=$intContentID" method="post">
-<table class="DefaultTable MediumTable" cellspacing="1">
-  <colgroup>
-    <col class="InfoColour NarrowCell Left" />
-    <col class="BaseColour Left" />
-  </colgroup> 
+<div class="table-responsive">
+<table class="table table-striped" style="width: 500px;">
   <tr>
-    <td>Title:</td>
+    <td><strong>Title:</strong></td>
     <td>$strTitle</td>
   </tr>
   <tr>
@@ -111,9 +108,9 @@ ConfPage;
     </td>
   </tr>
 </table>
+</div>
 </form>
 
 END;
 
   $CMS->AP->Display($strHTML);
-?>

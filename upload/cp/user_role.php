@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@
         $strMsg = "deleted";
         $CMS->UG->Delete($intGroupID, $strName);
       }
-      $strHTML = "<h1>$strPageTitle</h1>\n<p>User Role was successfully $strMsg. <a href=\"{FN_ADM_USER_ROLES}\">User Roles</a></p>";
+      $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n<p>User Role was successfully $strMsg. <a href=\"{FN_ADM_USER_ROLES}\">User Roles</a></p>";
       $CMS->AP->Display($strHTML);
     }
   } else {
@@ -94,7 +94,7 @@
   $strSubmitButton = $CMS->AC->SubmitButton();
   $strCancelButton = $CMS->AC->CancelButton();
 
-  $strHTML = "<h1>$strPageTitle</h1>\n$strFormTag";
+  $strHTML = "<h1 class=\"page-header\">$strPageTitle</h1>\n$strFormTag";
 
   if ($blnDelete) {
     $strHTML .= <<<Delete
@@ -107,15 +107,10 @@ Delete;
   } else {
 
     $strHTML .= <<<CreateEdit
-<table class="DefaultTable MediumTable FixedTable" cellspacing="1">
-  <colgroup>
-    <col class="InfoColour NarrowCell" />
-    <col class="BaseColour" />
-  </colgroup> 
-  <tr>
-    <td class="HeadColour SpanCell" colspan="2">
-      <b>Role Details</b>
-    </td>
+<div class="table-responsive">
+<table class="table table-striped">
+  <tr class="separator-row">
+    <td colspan="2">Role Details</td>
   </tr>
   <tr>
     <td><label for="txtName">Name:</label></td>
@@ -129,6 +124,7 @@ Delete;
     </td>
   </tr>
 </table>
+</div>
 
 CreateEdit;
 

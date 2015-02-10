@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ class Article extends Helper {
     var $arrArticle;
     
     // Insert, Update, Delete //
-    function Create($intAuthorID, $dteDate, $strTitle, $strContent, $intAreaID, 
+    function Create($intAuthorID, $dteDate, $strTitle, $strContent, $categoryId,
         $strTags, $strContURL, $strContStatus, $strUserGroups, 
-        $strExcerpt, $intOrder) {
+        $strExcerpt, $intOrder, $contentUrl) {
         
         global $CMS;
         
@@ -36,19 +36,20 @@ class Article extends Helper {
         
         $strQuery = sprintf("
             INSERT INTO {IFW_TBL_CONTENT}(
-                author_id, create_date, title, content, content_area_id, last_updated, 
+                author_id, create_date, title, permalink, content, category_id, last_updated,
                 read_userlist, tags, seo_title, link_url, content_status, user_groups, 
                 tags_deleted, article_excerpt, article_order
             ) VALUES(
-                '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', 
+                '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s',
                 '%s', '%s', '%s', '%s'
             )
         ",
             mysql_real_escape_string($intAuthorID),
             mysql_real_escape_string($dteDate),
             mysql_real_escape_string($strTitle),
+            mysql_real_escape_string($contentUrl),
             mysql_real_escape_string($strContent),
-            mysql_real_escape_string($intAreaID),
+            mysql_real_escape_string($categoryId),
             mysql_real_escape_string($dteDate),
             "",
             mysql_real_escape_string($strTags),
@@ -63,6 +64,11 @@ class Article extends Helper {
         
         $intID = $this->Query($strQuery, __CLASS__ . "::" . __FUNCTION__, __LINE__);
         
+        // Update mapping table
+        $CMS->UM->addLink($contentUrl, $intID, 0);
+
+        $this->Query($strQuery, __CLASS__ . "::" . __FUNCTION__, __LINE__);
+
         switch ($strContStatus) {
             case C_CONT_PUBLISHED:
                 $CMS->AL->Build(AL_TAG_ARTICLE_PUBLISH, $intID, $strTitle);
@@ -80,32 +86,26 @@ class Article extends Helper {
                 $CMS->AL->Build(AL_TAG_ARTICLE_CREATE, $intID, $strTitle);
                 break;
         }
-        
-        // Update mapping table
-        $CMS->PL->SetTitle($strSEOTitle);
-        $strLink = $CMS->PL->ViewArticle($intID, $intAreaID);
-        $CMS->PL->SetTitle("");
-        $strLink = str_replace("?loggedin=1", "", $strLink);
-        $CMS->UM->addLink($strLink, $intID, 0);
-        
+
         // The end!
         return $intID;
     }
     
-    function Edit($intID, $intAuthorID, $strTitle, $strContent, $dteCreateDate, 
-        $intAreaID, $strTags, $strContURL, $strContStatus, $strUserGroups,
-        $strExcerpt, $intOrder) {
+    function Edit($intID, $intAuthorID, $strTitle, $strContent, $dteCreateDate,
+        $categoryId, $strTags, $strContURL, $strContStatus, $strUserGroups,
+        $strExcerpt, $intOrder, $contentUrl) {
         
         global $CMS;
         $dteEditDate = $CMS->SYS->GetCurrentDateAndTime();
         $strSEOTitle = $CMS->MakeSEOTitle($strTitle);
-        
+
         $strQuery = sprintf("
             UPDATE {IFW_TBL_CONTENT}
             SET author_id = %s,
             title = '%s',
+            permalink = '%s',
             content = '%s', 
-            content_area_id = %s, 
+            category_id = %s,
             create_date = '%s', 
             edit_date = '%s', 
             last_updated = '%s', 
@@ -120,8 +120,9 @@ class Article extends Helper {
         ",
             mysql_real_escape_string($intAuthorID),
             mysql_real_escape_string($strTitle),
+            mysql_real_escape_string($contentUrl),
             mysql_real_escape_string($strContent),
-            mysql_real_escape_string($intAreaID),
+            mysql_real_escape_string($categoryId),
             mysql_real_escape_string($dteCreateDate),
             mysql_real_escape_string($dteEditDate),
             mysql_real_escape_string($dteEditDate),
@@ -137,6 +138,9 @@ class Article extends Helper {
         
         $this->Query($strQuery, __CLASS__ . "::" . __FUNCTION__, __LINE__);
         
+        // Update mapping table
+        $CMS->UM->addLink($contentUrl, $intID, 0);
+
         switch ($strContStatus) {
             case C_CONT_PUBLISHED:
                 $CMS->AL->Build(AL_TAG_ARTICLE_PUBLISH, $intID, $strTitle);
@@ -151,13 +155,7 @@ class Article extends Helper {
                 $CMS->AL->Build(AL_TAG_ARTICLE_EDIT, $intID, $strTitle);
                 break;
         }
-        
-        // Update mapping table
-        $CMS->PL->SetTitle($strSEOTitle);
-        $strLink = $CMS->PL->ViewArticle($intID, $intAreaID);
-        $CMS->PL->SetTitle("");
-        $strLink = str_replace("?loggedin=1", "", $strLink);
-        $CMS->UM->addLink($strLink, $intID, 0);
+
     }
     
     function Delete($intArticleID) {
@@ -165,8 +163,6 @@ class Article extends Helper {
         $arrArticle = $this->ResultQuery("SELECT title FROM {IFW_TBL_CONTENT} WHERE id = $intArticleID", 
             __CLASS__ . "::" . __FUNCTION__, __LINE__);
         $strTitle = $arrArticle[0]['title'];
-        // Delete ratings
-        $CMS->RAT->Delete($intArticleID);
         // Delete attached comments
         $this->Query("DELETE FROM {IFW_TBL_COMMENTS} WHERE story_id = $intArticleID", 
             __CLASS__ . "::" . __FUNCTION__, __LINE__);
@@ -209,20 +205,6 @@ class Article extends Helper {
       if (!$this->blnBulk) {
         $CMS->AL->Build(AL_TAG_ARTICLE_RESTORE, $intArticleID, $strTitle);
       }
-    }
-    
-    function Lock($intArticleID) {
-      global $CMS;
-      $strTitle = $this->GetTitle($intArticleID);
-      $this->Query("UPDATE {IFW_TBL_CONTENT} SET locked = 'Y' WHERE id = $intArticleID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $CMS->AL->Build(AL_TAG_ARTICLE_LOCK, $intArticleID, $strTitle);
-    }
-    
-    function Unlock($intArticleID) {
-      global $CMS;
-      $strTitle = $this->GetTitle($intArticleID);
-      $this->Query("UPDATE {IFW_TBL_CONTENT} SET locked = 'N' WHERE id = $intArticleID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $CMS->AL->Build(AL_TAG_ARTICLE_UNLOCK, $intArticleID, $strTitle);
     }
     function IncrementHits($intArticleID) {
       $arrContent = $this->ResultQuery("SELECT hits FROM {IFW_TBL_CONTENT} WHERE id = $intArticleID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
@@ -276,14 +258,14 @@ class Article extends Helper {
         $strDateFormat = $CMS->SYS->GetDateFormat();
         $arrArticle = $this->ResultQuery("
           SELECT con.*, u.username, u.email, 
-          u.avatar_id, a.name AS area_name, a.nav_type, 
+          u.avatar_id, cat.name AS category_name,
           DATE_FORMAT(con.create_date, '$strDateFormat') AS create_date, 
           con.create_date AS create_date_raw, 
           DATE_FORMAT(con.edit_date, '$strDateFormat') AS edit_date, 
           con.edit_date AS edit_date_raw
-          FROM ({IFW_TBL_CONTENT} con, {IFW_TBL_AREAS} a)
+          FROM ({IFW_TBL_CONTENT} con, {IFW_TBL_CATEGORIES} cat)
           LEFT JOIN {IFW_TBL_USERS} u ON con.author_id = u.id
-          WHERE con.id = $intArticleID AND con.content_area_id = a.id
+          WHERE con.id = $intArticleID AND con.category_id = cat.id
         ", __CLASS__ . "::" . __FUNCTION__ . " (Article $intArticleID)", __LINE__);
         $this->arrArticle[$intArticleID] = $arrArticle[0];
       }
@@ -327,12 +309,6 @@ class Article extends Helper {
       }
       return $this->arrArticle[$intArticleID]['content_status'] == C_CONT_PUBLISHED ? true : false;
     }
-    function IsLocked($intArticleID) {
-      if (!isset($this->arrArticle[$intArticleID])) {
-        $this->GetArticle($intArticleID);
-      }
-      return $this->arrArticle[$intArticleID]['locked'] == "Y" ? true : false;
-    }
     function IsDeleted($intArticleID) {
       if (!isset($this->arrArticle[$intArticleID])) {
         $this->GetArticle($intArticleID);
@@ -368,8 +344,7 @@ class Article extends Helper {
       global $CMS;
       if ($arrArea['subarea_content_on_index'] == "Y") {
           $strAreaClause = 
-            " AND a.hier_left BETWEEN ".$arrArea['hier_left']." AND ".$arrArea['hier_right'].
-            " AND a.nav_type = '".$arrArea['nav_type']."'";
+            " AND a.hier_left BETWEEN ".$arrArea['hier_left']." AND ".$arrArea['hier_right'];
       } else {
           $strAreaClause = "AND content_area_id = $intAreaID";
       }
@@ -440,7 +415,15 @@ class Article extends Helper {
       global $CMS;
       $intStart = $CMS->PN->GetPageStart($intContentPerPage, $intPageNumber);
       $strDateFormat = $CMS->SYS->GetDateFormat();
-      $arrUserContent = $CMS->ResultQuery("SELECT c.id, c.title, c.content_area_id, a.name AS area_name, a.seo_name AS area_seo_name, DATE_FORMAT(c.create_date, '$strDateFormat') AS create_date, c.create_date AS create_date_raw, c.seo_title, c.hits, c.content_status, c.comment_count FROM ({IFW_TBL_CONTENT} c, {IFW_TBL_AREAS} a) LEFT JOIN {IFW_TBL_USERS} u ON c.author_id = u.id WHERE c.content_area_id = a.id AND author_id = $intUserID $strWhereClause ORDER BY create_date_raw DESC LIMIT $intStart, $intContentPerPage", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+      $arrUserContent = $CMS->ResultQuery("
+      SELECT c.id, c.title, c.content_area_id, a.name AS area_name, a.seo_name AS area_seo_name,
+      DATE_FORMAT(c.create_date, '$strDateFormat') AS create_date, c.create_date AS create_date_raw, c.seo_title, c.hits,
+      c.content_status
+      FROM ({IFW_TBL_CONTENT} c, {IFW_TBL_AREAS} a)
+      LEFT JOIN {IFW_TBL_USERS} u ON c.author_id = u.id
+      WHERE c.content_area_id = a.id AND author_id = $intUserID $strWhereClause
+      ORDER BY create_date_raw DESC LIMIT $intStart, $intContentPerPage
+      ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $arrUserContent;
     }
     // ** Count deleted content ** //
@@ -464,31 +447,6 @@ class Article extends Helper {
         }
       }
     }
-    // ** Refresh comment count ** //
-    function RefreshCommentCount() {
-      global $CMS;
-      $arrResult = $this->ResultQuery("SELECT id FROM {IFW_TBL_CONTENT} ORDER BY id ASC", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      for ($i=0; $i<count($arrResult); $i++) {
-        $intID    = $arrResult[$i]['id'];
-        $intCount = $CMS->COM->CountArticleComments($intID);
-        $this->Query("UPDATE {IFW_TBL_CONTENT} SET comment_count = $intCount WHERE id = $intID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      }
-    }
-    function RefreshArticleCommentCount($intArticleID) {
-      global $CMS;
-      $intCount = $CMS->COM->CountArticleComments($intArticleID);
-      $this->Query("UPDATE {IFW_TBL_CONTENT} SET comment_count = $intCount WHERE id = $intArticleID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-    }
-    function BulkRefreshArticleCommentCount($strArticleIDs) {
-      global $CMS;
-      $strArticleIDs = str_replace("(", "", $strArticleIDs);
-      $strArticleIDs = str_replace(")", "", $strArticleIDs);
-      $arrArticleIDs = explode(",", $strArticleIDs);
-      for ($i=0; $i<count($arrArticleIDs); $i++) {
-        $intArticleID = $arrArticleIDs[$i];
-        $this->RefreshArticleCommentCount($intArticleID);
-      }
-    }
     // ** Select ** //
     function GetFirstID() {
       $arrItems = $this->ResultQuery("SELECT id FROM {IFW_TBL_CONTENT} LIMIT 1", __CLASS__ . "::" . __FUNCTION__, __LINE__);
@@ -509,16 +467,6 @@ class Article extends Helper {
       $this->Query("UPDATE {IFW_TBL_CONTENT} SET content_area_id = $intAreaID WHERE id IN $strArticleIDs", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       $CMS->AL->Build(AL_TAG_ARTICLE_BULKMOVE, $intAreaID, $strArticleIDs);
     }
-    function BulkLock($strArticleIDs) {
-      global $CMS;
-      $this->Query("UPDATE {IFW_TBL_CONTENT} SET locked = 'Y' WHERE id IN $strArticleIDs", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $CMS->AL->Build(AL_TAG_ARTICLE_BULKLOCK, "", $strArticleIDs);
-    }
-    function BulkUnlock($strArticleIDs) {
-      global $CMS;
-      $this->Query("UPDATE {IFW_TBL_CONTENT} SET locked = 'N' WHERE id IN $strArticleIDs", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $CMS->AL->Build(AL_TAG_ARTICLE_BULKUNLOCK, "", $strArticleIDs);
-    }
     function BulkEditAuthor($strArticleIDs, $intUserID) {
       global $CMS;
       $this->Query("UPDATE {IFW_TBL_CONTENT} SET author_id = $intUserID WHERE id IN $strArticleIDs", __CLASS__ . "::" . __FUNCTION__, __LINE__);
@@ -538,7 +486,6 @@ class Article extends Helper {
         }
         $this->Query("UPDATE {IFW_TBL_CONTENT} SET content_status = '$strContStatus' WHERE id = $intID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       }
-      //$CMS->AL->Build(AL_TAG_ARTICLE_BULKLOCK, "", $strArticleIDs);
     }
     function BulkDelete($strArticleIDs) {
       global $CMS;
@@ -564,83 +511,4 @@ class Article extends Helper {
       }
       $CMS->AL->Build(AL_TAG_ARTICLE_BULKRESTORE, "", $strArticleIDs);
     }
-    
-    /**
-     * Gets a summary of the site content for the Archives page
-     * @param integer $year
-     * @param integer $month
-     * @return array
-     */
-    function getArchivesSummary($year = 0, $month = 0) {
-        
-        global $CMS;
-        
-        $year  = $CMS->FilterNumeric($year);
-        $month = $CMS->FilterNumeric($month);
-        
-        if (($year > 0) && ($month > 0)) {
-            $havingClause = "HAVING content_yyyy_mm = '$year-$month'";
-        } elseif ($year > 0) {
-            $havingClause = "HAVING content_yyyy = '$year'";
-        } else {
-            $havingClause = "";
-        }
-        
-        $result = $CMS->ResultQuery("
-            SELECT DATE_FORMAT(create_date, '%Y-%m') AS content_yyyy_mm,
-            DATE_FORMAT(create_date, '%Y') AS content_yyyy,
-            DATE_FORMAT(create_date, '%m') AS content_mm,
-            DATE_FORMAT(create_date, '%M %Y') AS content_date_desc,
-            count(*) AS count
-            FROM {IFW_TBL_CONTENT}
-            WHERE content_status = 'Published'
-            GROUP BY content_yyyy_mm
-            $havingClause
-            ORDER BY create_date DESC
-        ", basename(__FILE__), __LINE__);
-        
-        return $result;
-        
-    }
-    
-    /**
-     * Gets a list of the site content for the Archives page
-     * @param $year
-     * @param $month
-     * @return array
-     */
-    function getArchivesContent($year = 0, $month = 0) {
-        
-        global $CMS;
-        
-        $year  = $CMS->FilterNumeric($year);
-        $month = $CMS->FilterNumeric($month);
-        
-        if (($year > 0) && ($month > 0)) {
-            $whereClause = "AND DATE_FORMAT(create_date, '%Y-%m') = '$year-$month'";
-        } elseif ($year > 0) {
-            $whereClause = "AND DATE_FORMAT(create_date, '%Y') = '$year'";
-        } else {
-            $whereClause = "";
-        }
-        
-        $dateFormat = $CMS->SYS->GetDateFormat();
-        
-        $result = $CMS->ResultQuery("
-            SELECT DATE_FORMAT(create_date, '%M %Y') AS content_yyyy_mm,
-            DATE_FORMAT(create_date, '%Y') AS content_yyyy,
-            DATE_FORMAT(create_date, '%m') AS content_mm,
-            id, content_area_id, title,
-            DATE_FORMAT(create_date, '$dateFormat') AS content_date_full
-            FROM {IFW_TBL_CONTENT}
-            WHERE content_status = 'Published'
-            $whereClause
-            ORDER BY create_date DESC
-        ", basename(__FILE__), __LINE__);
-        
-        return $result;
-        
-    }
-    
 }
-?>

@@ -1,8 +1,8 @@
 <?php
 /*
-  Injader - Content management for everyone
-  Copyright (c) 2005-2009 Ben Barden
-  Please go to http://www.injader.com if you have questions or need help.
+  Injader
+  Copyright (c) 2005-2015 Ben Barden
+
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
   }
   
   $strHTML = <<<MainContentStart
-<h1>$strPageTitle</h1>
+<h1 class="page-header">$strPageTitle</h1>
 <p>This page displays all of your avatars. <a href="{FN_ADM_UPLOAD_AVATAR}">Upload a new avatar</a></p>
 $strNoAvatarText
 
@@ -47,14 +47,8 @@ MainContentStart;
     $intID = $arrAvatars[$i]['id'];
     if ($i == 0) {
       $strHTML .= <<<TableHeader
-<table id="tblSysResults" class="OptionTable" cellspacing="1">
-  <colgroup>
-    <col class="BaseColour" />
-    <col class="BaseColour" />
-    <col class="BaseColour" />
-    <col class="BaseColour" />
-    <col class="BaseColour" />
-  </colgroup> 
+<div class="table-responsive">
+<table class="table table-striped" style="width: 400px;">
 
 TableHeader;
     }
@@ -86,8 +80,7 @@ TableHeader;
   }
   
   if ($i > 0) {
-    $strHTML .= "</table>\n";
+    $strHTML .= "</table></div>\n";
   }
 
   $CMS->AP->Display($strHTML);
-?>

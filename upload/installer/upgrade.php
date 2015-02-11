@@ -17,6 +17,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+    // Check files exist to prevent errors
+    if (!file_exists('../data/secure/db_vars.php') || !file_exists('../data/secure/config.ini')) {
+        header('Location: /installer');
+        exit;
+    }
+
   require 'InstallPage.php';
   $IJP = new InstallPage;
   
@@ -67,7 +73,7 @@ htaccess;
 
   // Prevent upgrade to max version
   if ($strVersion == $strMaxVersion) {
-    $IJP->Display("<h1>Upgrade Error</h1>\n\n<p>The upgrade script could not start because your site is already
+    $IJP->Display("<p>The upgrade script could not start because your site is already
     using Jewel CMS $strMaxVersion.</p>\n\n
     <p><i>Source: &lt;upgrade.php, version $strMaxVersion&gt;</i></p>", "Error");
   }
@@ -80,7 +86,7 @@ htaccess;
     case "2.5.0": $strUpgradeTo = "3.0.0"; $blnFile = true; break;
     default:
       // Not a supported upgrade route
-      $IJP->Display("<h1>Upgrade Error</h1>
+      $IJP->Display("
         <p>You cannot upgrade from Jewel CMS $strVersion to Jewel CMS $strMaxVersion.</p>
         <p><i>Source: &lt;upgrade.php, version $strMaxVersion&gt;</i></p>", "Error");
       break;
@@ -103,7 +109,7 @@ htaccess;
   if ($strFile) {
     @ $strInstallFile = file_get_contents($strFile);
     if (!$strInstallFile) {
-      $IJP->Display("<h1>Upgrade Error</h1>\n\n<p>Cannot open $strFile.</p>\n\n
+      $IJP->Display("<p>Cannot open $strFile.</p>\n\n
       <p><i>Source: &lt;upgrade.php, version $strUpgradeTo&gt;</i></p>", "Error");
     }
     $blnSuccess = $CMS->MultiQuery($strInstallFile);
@@ -121,14 +127,12 @@ htaccess;
   
   if ($strUpgradeTo == $strMaxVersion) {
     // Complete
-    $strHTML = "<h1>Upgrade Complete!</h1>\n\n
-    <p>You are now running Jewel CMS $strUpgradeTo.</p>\n\n
-    <p><b>IMPORTANT:</b> Delete the installer folder from your site, 
-    and unlock the system.</p>\n\n
+    $strHTML = "<p>You are now running Jewel CMS $strUpgradeTo.</p>\n\n
+    <p>Remember to delete the installer folder from your site.</p>\n\n
     <p><a href=\"".FN_INDEX."\">Go to your site</a>.</p>";
   } else {
     // More to do
-    $strHTML = "<h1>Multi-stage upgrade still in progress</h1>\n\n
+    $strHTML = "
     <p>The upgrade script is attempting to upgrade your site to version $strMaxVersion. 
     So far, it's reached version $strUpgradeTo. Please refresh the page to continue.
     </p>\n";
@@ -138,4 +142,3 @@ htaccess;
   
   $IJP->Display($strHTML, $strPageTitle);
 
-?>

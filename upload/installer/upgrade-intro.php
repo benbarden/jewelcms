@@ -17,6 +17,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+    // Check files exist to prevent errors
+    if (!file_exists('../data/secure/db_vars.php') || !file_exists('../data/secure/config.ini')) {
+        header('Location: /installer');
+        exit;
+    }
+
   require 'InstallPage.php';
   $IJP = new InstallPage;
   
@@ -30,12 +36,13 @@
 
   // Prevent upgrade to max version
   if ($strVersion == $strMaxVersion) {
-    $IJP->Display("<h1>Upgrade Aborted</h1>\n\n<p>Your site cannot be upgraded because you're already running Jewel CMS $strMaxVersion.</p>\n\n<ul>\n<li>Target version: $strMaxVersion</li>\n<li>Your site: $strVersion</li>\n</ul>", $strPageTitle);
+    $IJP->Display("<p>Your site cannot be upgraded because you're already running Jewel CMS $strMaxVersion.</p>", 'Error');
   } else {
     $strWarning = "";
     if ($strMaxVersion == "x.x.x") {
         //
     }
-    $IJP->Display("<h1>System Upgrade</h1>\n\n<p>You are about to upgrade your site from Jewel CMS $strVersion to Jewel CMS $strMaxVersion.</p>\n\n$strWarning<p><a href=\"upgrade.php\">Run the upgrade script</a>.</p>", $strPageTitle);
+    $IJP->Display("<p>You are about to upgrade your site from Jewel CMS $strVersion to Jewel CMS $strMaxVersion.</p>".
+    '<p><a href="upgrade.php">Run the upgrade script</a>.</p>', 'Upgrade');
   }
   

@@ -16,10 +16,11 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-    
-    // Check if installed
-    if (file_exists("data/secure/db_vars.php") == false) {
-        header("Location: installer/");
+
+    // Check files exist to prevent errors
+    if (!file_exists('data/secure/db_vars.php') || !file_exists('data/secure/config.ini')) {
+        header('Location: /installer');
+        exit;
     }
     
     require 'sys/header.php';

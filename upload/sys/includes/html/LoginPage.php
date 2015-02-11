@@ -19,7 +19,6 @@
 
   class LoginPage extends Helper {
     var $strTitle = "Error";
-    var $strContent;
     // Main functions
     function SetTitle($strNewTitle) {
       $this->strTitle = $strNewTitle;
@@ -27,75 +26,48 @@
     function GetTitle() {
       return $this->strTitle;
     }
-    function Display($strContentOverride = "") {
-      $dteStartTime = $this->MicrotimeFloat();
+    function Display($bodyHtml) {
       global $CMS;
       $RC = new ReplaceConstants;
-      if ($strContentOverride) {
-        $strBody = $strContentOverride;
-      } else {
-        $strBody = $this->strContent;
-      }
-      $strHTMLToPrint = $this->GetHeader().$strBody.$this->GetFooter();
-      $strHTMLToPrint = $RC->DoAll($strHTMLToPrint);
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      global $strExecutionTime; // Set in header.php
-      if ($strExecutionTime) {
-        $strQueryTimeData = <<<ExecTime
-<div id="majQueryTimeData">
-<p>Query Execution Time</p>
-<ul>
-$strExecutionTime
-</ul>
-</div>
-ExecTime;
-      } else {
-        $strQueryTimeData = "";
-      }
-      global $blnOverrideQT; // Allows the variable to be put in sys templates without being evaluated
-      if (!$blnOverrideQT) {
-        $strHTMLToPrint = str_replace('$cmsQueryTime', $strQueryTimeData, $strHTMLToPrint);
-      }
-      print($strHTMLToPrint);
+        $pageTitle = $this->GetTitle();
+        $loginPageHtml = <<<loginPageHtml
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>$pageTitle</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/bootstrap/signin.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+    $bodyHtml
+    </div> <!-- /container -->
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
+
+loginPageHtml;
+      $outputHtml = $RC->DoAll($loginPageHtml);
+      print($outputHtml);
       $CMS->IQ->Disconnect();
       exit;
     }
-    function GetHeader() {
-      global $CMS;
-      $dteStartTime = $this->MicrotimeFloat();
-      $strPageTitle = $this->GetTitle();
-      // Index
-      $strIndexURL   = str_replace("index.php", "", FN_INDEX);
-      $strHeaderHTML = <<<CMSHeader
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<title>$strPageTitle</title>
-<link rel="stylesheet" type="text/css" href="{URL_ROOT}sys/loginpage.css" />
-</head>
-<body>
-<div id="mPage">
-
-CMSHeader;
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $strHeaderHTML;
-    }
-    // ** Footer ** //
-    function GetFooter() {
-      $dteStartTime = $this->MicrotimeFloat();
-      $strFooter = <<<Footer
-<p style="text-align: center;">Powered by <a href="http://www.jewelcms.com">Jewel CMS</a></p>
-</div>
-</body>
-</html>
-Footer;
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $strFooter;
-    }
   }
-?>

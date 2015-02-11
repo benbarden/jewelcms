@@ -24,31 +24,33 @@
   $strMissingPassword = "";
   $strUsername = "";
   $strPassword = "";
-  $strReferrer = "";
+  $formReferrer = "";
+
+$errorMsg = "";
   
   if ($_POST) {
     $blnSubmitForm = true;
-    if (!empty($_POST['txtUsername'])) {
-      $strUsername = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['txtUsername'], C_CHARS_USERNAME));
+    if (!empty($_POST['login-user'])) {
+      $strUsername = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['login-user'], C_CHARS_USERNAME));
       $strUsername = strip_tags($strUsername);
     }
-    if (!empty($_POST['txtPassword'])) {
-      $strPassword = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['txtPassword'], C_CHARS_USERNAME));
+    if (!empty($_POST['login-pass'])) {
+      $strPassword = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['login-pass'], C_CHARS_USERNAME));
       $strPassword = strip_tags($strPassword);
     }
     if (!$strUsername) {
       $blnSubmitForm = false;
-      $strMissingUsername = $CMS->AC->InvalidFormData("");
+        $errorMsg .= $CMS->AC->InvalidFormData("");
     }
     if (!$strPassword) {
       $blnSubmitForm = false;
-      $strMissingPassword = $CMS->AC->InvalidFormData("");
+        $errorMsg .= $CMS->AC->InvalidFormData("");
     }
-    $strReferrer = empty($_POST['txtReferrer']) ? "" : $CMS->FilterAlphanumeric($_POST['txtReferrer'], "\:\/\.");
+    $formReferrer = empty($_POST['form-referrer']) ? "" : $CMS->FilterAlphanumeric($_POST['form-referrer'], "\:\/\.");
   } else {
-    $strReferrer = empty($_SERVER['HTTP_REFERER']) ? "" : $CMS->FilterAlphanumeric($_SERVER['HTTP_REFERER'], "\:\/\.");
-    if (strpos($strReferrer, 'install.php') !== false) {
-      $strReferrer = "";
+    $formReferrer = empty($_SERVER['HTTP_REFERER']) ? "" : $CMS->FilterAlphanumeric($_SERVER['HTTP_REFERER'], "\:\/\.");
+    if (strpos($formReferrer, 'install.php') !== false) {
+      $formReferrer = "";
     }
   }
 
@@ -59,7 +61,8 @@
       $blnAlreadyLoggedIn = true;
       $intCurrentUserID = $CMS->RES->GetCurrentUserID();
     } else {
-      $CMS->Err_MFail(M_ERR_ALREADY_LOGGED_IN, "");
+        $errorMsg .= M_ERR_ALREADY_LOGGED_IN;
+      //$CMS->Err_MFail(M_ERR_ALREADY_LOGGED_IN, "");
     }
   }
 
@@ -67,7 +70,8 @@
     $intUserID = $CMS->US->ValidateLogin($strUsername, $strPassword);
     if ($intUserID) {
       if ($CMS->US->IsSuspended($intUserID)) {
-        $CMS->Err_MFail(M_ERR_USER_SUSPENDED, "");
+        //$CMS->Err_MFail(M_ERR_USER_SUSPENDED, "");
+          $errorMsg .= M_ERR_USER_SUSPENDED;
       }
       if (empty($_GET['redir'])) {
         $strRedirectURL = "";
@@ -86,9 +90,9 @@
         exit;
       }
       // ** Go back link ** //
-      $strReferrer = str_replace('http://'.SVR_HOST.URL_ROOT, '', $strReferrer);
-      if ($strReferrer) {
-        $strGoBack = "<li><a href=\"$strReferrer\">Go back to the page you were just viewing</a></li>";
+      $formReferrer = str_replace('http://'.SVR_HOST.URL_ROOT, '', $formReferrer);
+      if ($formReferrer) {
+        $strGoBack = "<li><a href=\"$formReferrer\">Go back to the page you were just viewing</a></li>";
       } else {
         $strGoBack = "";
       }
@@ -108,7 +112,8 @@ END;
     } else {
       $CMS->SYS->CreateAccessLog("Username: $strUsername", AL_TAG_USER_LOGIN_FAIL, 0, "");
       if ($CMS->RES->IsError()) {
-        $CMS->Err_MFail(M_ERR_LOGIN_FAILED, "");
+        //$CMS->Err_MFail(M_ERR_LOGIN_FAILED, "");
+          $errorMsg .= M_ERR_LOGIN_FAILED;
       }
     }
   }
@@ -117,6 +122,66 @@ END;
   
   $strLoginButton = $CMS->AC->LoginButton();
   $strCancelButton = $CMS->AC->CancelButton();
+
+if ($errorMsg) {
+    $errorHtml = '<div class="alert alert-danger" role="alert">'.$errorMsg.'</div>';
+} else {
+    $errorHtml = '';
+}
+
+$loginPageHtml = <<<loginPage
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Login</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/assets/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/assets/css/bootstrap/signin.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin" action="/login.php" method="post">
+        <input type="hidden" id="form-referrer" name="form-referrer" value="$formReferrer" />
+        <h2 class="form-signin-heading">Login</h2>
+        $errorHtml
+        <label for="login-user" class="sr-only">Username</label>
+        <input type="text" id="login-user" name="login-user" class="form-control" placeholder="Username" required autofocus>
+        <label for="login-pass" class="sr-only">Password</label>
+        <input type="password" id="login-pass" name="login-pass" class="form-control" placeholder="Password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+      <p style="text-align: center;"><em>Powered by Jewel CMS</em></p>
+
+    </div> <!-- /container -->
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/js/bootstrap/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
+
+loginPage;
+print($loginPageHtml);
+exit;
+
+
   
   $strHTML = <<<END
 <h1>$strPageTitle</h1>
@@ -129,7 +194,7 @@ END;
   <tr>
     <td class="InfoColour"><label for="txtUsername">Username:</label></td>
     <td>
-      <input type="hidden" id="txtReferrer" name="txtReferrer" value="$strReferrer" />
+      <input type="hidden" id="txtReferrer" name="txtReferrer" value="$formReferrer" />
       $strMissingUsername
       <input type="text" id="txtUsername" name="txtUsername" maxlength="45" size="35" />
     </td>

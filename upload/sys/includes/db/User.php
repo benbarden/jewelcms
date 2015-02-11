@@ -179,7 +179,6 @@
       if (password_verify($strPassword, $arrLoggedOn[0]['userpass'])) {
         return $arrLoggedOn[0]['id'];
       } else {
-          exit($strPassword."___".$arrLoggedOn[0]['userpass']);
         return null;
       }
     }

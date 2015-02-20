@@ -49,6 +49,21 @@ ALTER TABLE {IFW_TBL_CONTENT} ADD FULLTEXT content(content);
 ALTER TABLE {IFW_TBL_CONTENT} ADD FULLTEXT title_content(title, content);
 ALTER TABLE {IFW_TBL_CONTENT} ADD INDEX permalink (permalink ASC);
 
+DROP TABLE IF EXISTS {IFW_TBL_URL_MAPPING};
+CREATE TABLE IF NOT EXISTS {IFW_TBL_URL_MAPPING} (
+  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  relative_url varchar(255) NOT NULL,
+  is_active char(1) NOT NULL DEFAULT 'Y',
+  article_id int(10) NOT NULL DEFAULT '0',
+  category_id int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (id),
+  UNIQUE KEY relative_url (relative_url),
+  KEY is_active (is_active),
+  KEY article_id (article_id),
+  KEY category_id (category_id)
+);
+INSERT INTO {IFW_TBL_URL_MAPPING} (relative_url, is_active, article_id, category_id) VALUES('/general/', 'Y', 0, 1);
+
 DROP TABLE IF EXISTS {IFW_TBL_PERMISSION_PROFILES};
 CREATE TABLE {IFW_TBL_PERMISSION_PROFILES} (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -147,20 +162,6 @@ CREATE TABLE IF NOT EXISTS {IFW_TBL_UPLOADS} (
   INDEX is_avatar(is_avatar),
   INDEX is_siteimage(is_siteimage),
   INDEX article_id(article_id)
-);
-
-DROP TABLE IF EXISTS {IFW_TBL_URL_MAPPING};
-CREATE TABLE IF NOT EXISTS {IFW_TBL_URL_MAPPING} (
-  id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  relative_url varchar(255) NOT NULL,
-  is_active char(1) NOT NULL DEFAULT 'Y',
-  article_id int(10) NOT NULL DEFAULT '0',
-  category_id int(10) NOT NULL DEFAULT '0',
-  PRIMARY KEY (id),
-  UNIQUE KEY relative_url (relative_url),
-  KEY is_active (is_active),
-  KEY article_id (article_id),
-  KEY category_id (category_id)
 );
 
 DROP TABLE IF EXISTS {IFW_TBL_USERS};

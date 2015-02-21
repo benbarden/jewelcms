@@ -3,4 +3,5 @@ Thumbs.db
 .idea/
 private/
 upload/.htaccess
+upload/vendor/
 tests/test-config.ini

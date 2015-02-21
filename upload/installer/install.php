@@ -120,9 +120,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php/$1 [QSA,L]
 </IfModule>
 
-# END Jewel CMS
-
 Options -Indexes
+
+# END Jewel CMS
 
 htaccess;
             

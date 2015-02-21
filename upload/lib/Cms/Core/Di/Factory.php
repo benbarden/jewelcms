@@ -13,6 +13,8 @@ use Cms\Data\AccessLog\AccessLogRepository,
     Cms\Data\User\UserRepository,
     Cms\Data\UserSession\UserSessionRepository;
 
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
 
 class Factory
 {
@@ -42,15 +44,25 @@ class Factory
 
     public function buildContainer(Config $config)
     {
-        $dsn  = $config->getByKey('Database.DSN');
-        $user = $config->getByKey('Database.User');
-        $pw   = $config->getByKey('Database.Pass');
+        $dbDsn  = $config->getByKey('Database.DSN');
+        $dbSchema = $config->getByKey('Database.Schema');
+        $dbUser = $config->getByKey('Database.User');
+        $dbPass = $config->getByKey('Database.Pass');
+
+        // Doctrine
+        $dbParams = array(
+            'driver' => 'pdo_mysql', 'user' => $dbUser, 'password' => $dbPass, 'dbname' => $dbSchema,
+        );
+        $paths = array(ABS_ROOT.'lib/Cms/Entity/');
+        $isDevMode = false;
+        $doctrineConfig = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, null, null, false);
+        $entityManager = EntityManager::create($dbParams, $doctrineConfig);
 
         $themeCurrent = $config->getByKey('Theme.Current');
         $themeCache   = $config->getByKey('Theme.Cache');
         $engineCache  = ($themeCache == 'On') ? 1 : 0;
 
-        $pdo = new \PDO($dsn, $user, $pw, array(
+        $pdo = new \PDO($dbDsn, $dbUser, $dbPass, array(
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
         ));
 
@@ -97,6 +109,7 @@ class Factory
         }
         $serviceLocator->set('Cms.Config', $config);
         $serviceLocator->set('Cms.ThemeEngine', $cmsThemeEngine);
+        $serviceLocator->set('Cms.EntityManager', $entityManager);
         $serviceLocator->set('IA.LinkArea', $iaLinkArea);
         $serviceLocator->set('IA.LinkArticle', $iaLinkArticle);
         $serviceLocator->set('Repo.AccessLog', $repoAccessLog);

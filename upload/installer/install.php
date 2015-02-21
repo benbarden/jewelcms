@@ -275,6 +275,7 @@ DBVARS;
       $configIniData = <<<configIni
 [Database]
 DSN = 'mysql:host=$installDbHost;dbname=$installDbSchema'
+Schema = $installDbSchema
 User = $installDbUser
 Pass = $installDbPass
 

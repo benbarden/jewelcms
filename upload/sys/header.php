@@ -21,7 +21,9 @@
     ini_set('display_errors', true);
     date_default_timezone_set('Europe/London');
 
-    if (strpos($_SERVER['REQUEST_URI'], '/installer/install.php') !== false) {
+    if (defined('IS_CRON')) {
+        $isInstalling = false;
+    } elseif (strpos($_SERVER['REQUEST_URI'], '/installer/install.php') !== false) {
         $isInstalling = true;
     } else {
         $isInstalling = false;
@@ -72,6 +74,9 @@
 
     // inj Framework v3: Autoloader
     require ABS_ROOT.'lib/Cms/Core/Autoloader/Base.php';
+
+    // Vendor autoloader
+    require_once ABS_ROOT.'vendor/autoload.php';
 
     // Twig setup
     $twigCacheEnabled  = 0; // 1 = enabled; disable for dev purposes

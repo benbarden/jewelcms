@@ -109,7 +109,6 @@ class Engine
         $this->publicThemePath = sprintf('%sthemes/user/%s/', URL_ROOT, $current);
 
         // Instantiate Twig
-        require_once ABS_ROOT.'/vendor/twig/twig/lib/Twig/Autoloader.php';
         \Twig_Autoloader::register();
     }
 

@@ -44,6 +44,7 @@ class Factory
 
     public function buildContainer(Config $config)
     {
+        // DB params
         $dbDsn  = $config->getByKey('Database.DSN');
         $dbSchema = $config->getByKey('Database.Schema');
         $dbUser = $config->getByKey('Database.User');
@@ -58,10 +59,7 @@ class Factory
         $doctrineConfig = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, null, null, false);
         $entityManager = EntityManager::create($dbParams, $doctrineConfig);
 
-        $themeCurrent = $config->getByKey('Theme.Current');
-        $themeCache   = $config->getByKey('Theme.Cache');
-        $engineCache  = ($themeCache == 'On') ? 1 : 0;
-
+        // Old data layer
         $pdo = new \PDO($dbDsn, $dbUser, $dbPass, array(
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
         ));
@@ -87,6 +85,10 @@ class Factory
         $iaLinkUser    = new \Cms\Ia\Link\UserLink($linkStyle, $iaOptimiser);
 
         $themeBinding = new \Cms\Theme\Binding();
+
+        $themeCurrent = $config->getByKey('Theme.Current');
+        $themeCache   = $config->getByKey('Theme.Cache');
+        $engineCache  = ($themeCache == 'On') ? 1 : 0;
 
         $cmsThemeEngine = new \Cms\Theme\Engine($themeCurrent, $engineCache);
         $cmsThemeEngine->setIALinkArea($iaLinkArea);

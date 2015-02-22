@@ -4,7 +4,7 @@
 namespace Cms\Ia\Link;
 
 use Cms\Data\Area\Area,
-    Cms\Data\Article\Article;
+    Cms\Entity\Article;
 
 
 class ArticleLink extends Base

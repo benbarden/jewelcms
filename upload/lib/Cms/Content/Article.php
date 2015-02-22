@@ -3,14 +3,14 @@
 
 namespace Cms\Content;
 
-use Cms\Data\Article\Article as DataArticle,
+use Cms\Entity\Article as EntityArticle,
     Cms\Ia\Link\ArticleLink;
 
 
 class Article
 {
     /**
-     * @var DataArticle
+     * @var EntityArticle
      */
     private $article;
 
@@ -19,7 +19,7 @@ class Article
      */
     private $iaLink;
 
-    public function __construct(DataArticle $article, ArticleLink $iaLink)
+    public function __construct(EntityArticle $article, ArticleLink $iaLink)
     {
         $this->article = $article;
         $this->iaLink = $iaLink;

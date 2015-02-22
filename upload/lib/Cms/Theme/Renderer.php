@@ -188,13 +188,11 @@ class Renderer
 
                 $categoryRepo = $em->getRepository('Cms\Entity\Category');
                 /* @var \Cms\Repository\Category $categoryRepo */
-
-                $articleRepo = $this->container->getService('Repo.Article');
-                /* @var \Cms\Data\Article\ArticleRepository $articleRepo */
+                $articleRepo = $em->getRepository('Cms\Entity\Article');
+                /* @var \Cms\Repository\Article $articleRepo */
 
                 // Category setup
                 $category = $categoryRepo->find($this->itemId);
-                //$subareas = $areaRepo->getSubareas($this->itemId);
 
                 // Sort Rule setup
                 $sortField = $category->getSortRuleField();
@@ -227,17 +225,15 @@ class Renderer
                     $this->renderer->setCurrentPageNo($this->pageNo);
                     $this->renderer->setLastPageNo($lastPageNo);
                 }
-                /*
-                if ($subareas) {
-                    $this->renderer->setSubareas($subareas);
-                }
-                */
             break;
             case self::OBJECT_TYPE_ARTICLE:
 
-                $articleRepo = $this->container->getService('Repo.Article');
-                /* @var \Cms\Data\Article\ArticleRepository $articleRepo */
-                $article = $articleRepo->getById($this->itemId);
+                $em = $this->container->getService('Cms.EntityManager');
+
+                $articleRepo = $em->getRepository('Cms\Entity\Article');
+                /* @var \Cms\Repository\Article $articleRepo */
+
+                $article = $articleRepo->find($this->itemId);
 
                 $this->renderer = new \Cms\Theme\User\Article($this->container);
                 $this->renderer->setArticle($article);

@@ -113,21 +113,6 @@ class Category
         $bindings['Page']['WrapperId'] = sprintf('area-index-%s', $categoryId);
         $bindings['Page']['WrapperClass'] = 'area-index';
 
-        // Subareas
-        /*
-        if ($this->subareas) {
-            foreach ($this->subareas as $subareaItem) {
-                $subareaObject = new \Cms\Data\Area\Area($subareaItem);
-                $subareaRow = array(
-                    'Id' => $subareaObject->getAreaId(),
-                    'Name' => $subareaObject->getName(),
-                    'Desc' => $subareaObject->getAreaDescription()
-                );
-                $bindings['Area']['Subareas'][] = $subareaRow;
-            }
-        }
-        */
-
         // Date
         $dateFormat = $this->container->getSetting('DateFormat');
         $iaLink = $this->container->getService('IA.LinkArticle');
@@ -178,23 +163,23 @@ class Category
                 $bindings['Area']['Page']['List'] = $pageNumberArray;
             }
 
-            foreach ($this->areaContent as $contentItem) {
+            foreach ($this->areaContent as $article) {
 
-                $contentObject = new \Cms\Data\Article\Article($contentItem);
-                $contentArticle = new \Cms\Content\Article($contentObject, $iaLink);
-                $articleId = $contentObject->getId();
+                /* @var \Cms\Entity\Article $article */
+                $contentArticle = new \Cms\Content\Article($article, $iaLink);
+                $articleId = $article->getId();
                 // Author
-                $articleAuthor = $repoUser->getById($contentObject->getAuthorId());
+                $articleAuthor = $repoUser->getById($article->getAuthorId());
                 /* @var \Cms\Data\User\User $articleAuthor */
                 $authorId = $articleAuthor->getUserId();
                 $authorUsername = $articleAuthor->getUsername();
                 // Setup array
                 $contentRow = array(
                     'Id' => $articleId,
-                    'Title' => stripslashes($contentObject->getTitle()),
-                    'Permalink' => $contentObject->getPermalink(),
+                    'Title' => $article->getTitle(),
+                    'Permalink' => $article->getPermalink(),
                     'Body' => $contentArticle->getCategoryBody(),
-                    'Date' => date($dateFormat, strtotime($contentObject->getCreateDate())),
+                    'Date' => $article->getCreateDate()->format($dateFormat),
                     'AuthorId' => $authorId,
                     'AuthorUsername' => $authorUsername
                 );

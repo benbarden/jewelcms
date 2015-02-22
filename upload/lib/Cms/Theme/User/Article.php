@@ -3,7 +3,7 @@
 
 namespace Cms\Theme\User;
 
-use Cms\Data\Article\Article as DataArticle,
+use Cms\Entity\Article as EntityArticle,
     Cms\Core\Di\Container;
 
 
@@ -15,7 +15,7 @@ class Article
     private $container;
 
     /**
-     * @var \Cms\Data\Article\Article
+     * @var \Cms\Entity\Article
      */
     private $article;
 
@@ -40,7 +40,7 @@ class Article
         unset($this->container);
     }
 
-    public function setArticle(DataArticle $article)
+    public function setArticle(EntityArticle $article)
     {
         $this->article = $article;
     }
@@ -74,7 +74,7 @@ class Article
         $bindings['Article']['Title'] = $articleTitle;
         $bindings['Article']['Permalink'] = $articlePermalink;
         $bindings['Article']['Body'] = $contentArticle->getFullBody();
-        $bindings['Article']['Date'] = date($dateFormat, strtotime($this->article->getCreateDate()));
+        $bindings['Article']['Date'] = $this->article->getCreateDate()->format($dateFormat);
 
         $repoUser = $this->container->getService('Repo.User');
         $articleAuthor = $repoUser->getById($this->article->getAuthorId());

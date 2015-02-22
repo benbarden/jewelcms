@@ -112,5 +112,73 @@ class Article
      */
     private $articleExcerpt;
 
+    public function getId()
+    {
+        return $this->id;
+    }
 
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function getPermalink()
+    {
+        return $this->permalink;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    public function getAuthorId()
+    {
+        return $this->authorId;
+    }
+
+    public function getCategoryId()
+    {
+        return $this->categoryId;
+    }
+
+    public function getCreateDate()
+    {
+        return $this->createDate;
+    }
+
+    public function getLastUpdated()
+    {
+        return $this->lastUpdated;
+    }
+
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
+    public function getLinkUrl()
+    {
+        return $this->linkUrl;
+    }
+
+    public function getStatus()
+    {
+        return $this->contentStatus;
+    }
+
+    public function getTagsDeleted()
+    {
+        return $this->tagsDeleted;
+    }
+
+    public function getArticleOrder()
+    {
+        return $this->articleOrder;
+    }
+
+    public function getExcerpt()
+    {
+        return $this->articleExcerpt;
+    }
 }

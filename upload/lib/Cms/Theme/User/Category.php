@@ -3,8 +3,7 @@
 
 namespace Cms\Theme\User;
 
-use Cms\Data\Area\Area,
-    Cms\Core\Di\Container;
+use Cms\Core\Di\Container;
 
 
 class Category
@@ -15,7 +14,7 @@ class Category
     private $container;
 
     /**
-     * @var \Cms\Data\Category\Category
+     * @var \Cms\Entity\Category
      */
     private $category;
 
@@ -60,7 +59,7 @@ class Category
         unset($this->container);
     }
 
-    public function setCategory(\Cms\Data\Category\Category $category)
+    public function setCategory(\Cms\Entity\Category $category)
     {
         $this->category = $category;
     }

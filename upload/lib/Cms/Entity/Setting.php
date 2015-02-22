@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Setting
  *
  * @ORM\Table(name="Cms_Settings", indexes={@ORM\Index(name="preference", columns={"preference"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\Setting")
  */
 class Setting
 {

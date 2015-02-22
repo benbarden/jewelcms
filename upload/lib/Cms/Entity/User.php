@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * User
  *
  * @ORM\Table(name="Cms_Users", indexes={@ORM\Index(name="username", columns={"username"}), @ORM\Index(name="email", columns={"email"}), @ORM\Index(name="avatar_id", columns={"avatar_id"}), @ORM\Index(name="user_deleted", columns={"user_deleted"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\User")
  */
 class User
 {

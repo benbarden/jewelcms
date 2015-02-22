@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * UserSession
  *
  * @ORM\Table(name="Cms_UserSessions", indexes={@ORM\Index(name="user_id", columns={"user_id"}), @ORM\Index(name="session_id", columns={"session_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\UserSession")
  */
 class UserSession
 {

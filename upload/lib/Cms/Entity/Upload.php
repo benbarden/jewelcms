@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Upload
  *
  * @ORM\Table(name="Cms_Uploads", indexes={@ORM\Index(name="file_area_id", columns={"file_area_id"}), @ORM\Index(name="author_id", columns={"author_id"}), @ORM\Index(name="hits", columns={"hits"}), @ORM\Index(name="is_avatar", columns={"is_avatar"}), @ORM\Index(name="is_siteimage", columns={"is_siteimage"}), @ORM\Index(name="article_id", columns={"article_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\Upload")
  */
 class Upload
 {

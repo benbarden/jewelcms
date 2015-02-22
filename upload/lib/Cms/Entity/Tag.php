@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Tag
  *
  * @ORM\Table(name="Cms_Tags", indexes={@ORM\Index(name="tag", columns={"tag"}), @ORM\Index(name="tag_count", columns={"tag_count"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\Tag")
  */
 class Tag
 {

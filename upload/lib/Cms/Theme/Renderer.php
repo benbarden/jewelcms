@@ -184,13 +184,16 @@ class Renderer
             case self::OBJECT_TYPE_AREA:
             case self::OBJECT_TYPE_CATEGORY:
 
-                $categoryRepo = $this->container->getService('Repo.Category');
-                /* @var \Cms\Data\Category\CategoryRepository $categoryRepo */
+                $em = $this->container->getService('Cms.EntityManager');
+
+                $categoryRepo = $em->getRepository('Cms\Entity\Category');
+                /* @var \Cms\Repository\Category $categoryRepo */
+
                 $articleRepo = $this->container->getService('Repo.Article');
                 /* @var \Cms\Data\Article\ArticleRepository $articleRepo */
 
                 // Category setup
-                $category = $categoryRepo->getById($this->itemId);
+                $category = $categoryRepo->find($this->itemId);
                 //$subareas = $areaRepo->getSubareas($this->itemId);
 
                 // Sort Rule setup

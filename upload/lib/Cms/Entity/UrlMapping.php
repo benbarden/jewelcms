@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * UrlMapping
  *
  * @ORM\Table(name="Cms_UrlMapping", uniqueConstraints={@ORM\UniqueConstraint(name="relative_url", columns={"relative_url"})}, indexes={@ORM\Index(name="is_active", columns={"is_active"}), @ORM\Index(name="article_id", columns={"article_id"}), @ORM\Index(name="category_id", columns={"category_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\UrlMapping")
  */
 class UrlMapping
 {

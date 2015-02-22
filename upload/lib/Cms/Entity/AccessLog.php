@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * AccessLog
  *
  * @ORM\Table(name="Cms_AccessLog", indexes={@ORM\Index(name="tag", columns={"tag"}), @ORM\Index(name="ip_address", columns={"ip_address"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\AccessLog")
  */
 class AccessLog
 {

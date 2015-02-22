@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Permission
  *
  * @ORM\Table(name="Cms_Permissions", indexes={@ORM\Index(name="is_system", columns={"is_system"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\Permission")
  */
 class Permission
 {

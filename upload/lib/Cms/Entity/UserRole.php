@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * UserRole
  *
  * @ORM\Table(name="Cms_UserRoles", indexes={@ORM\Index(name="is_admin", columns={"is_admin"}), @ORM\Index(name="is_default", columns={"is_default"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\UserRole")
  */
 class UserRole
 {

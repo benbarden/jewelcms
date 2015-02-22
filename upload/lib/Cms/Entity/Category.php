@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Category
  *
  * @ORM\Table(name="Cms_Categories")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Cms\Repository\Category")
  */
 class Category
 {
@@ -63,5 +63,66 @@ class Category
      */
     private $sortRule;
 
+    // Dynamic fields - not in db
+    private $sortRuleField;
+    private $sortRuleDirection;
 
+    public function getCategoryId()
+    {
+        return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getPermalink()
+    {
+        return $this->permalink;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function getParentId()
+    {
+        return $this->parentId;
+    }
+
+    public function getItemsPerPage()
+    {
+        return $this->itemsPerPage;
+    }
+
+    public function getSortRule()
+    {
+        return $this->sortRule;
+    }
+
+    private function populateSortRuleData()
+    {
+        if ($this->sortRule) {
+            $sortRuleArray = explode("|", $this->sortRule);
+            $this->sortRuleField = $sortRuleArray[0];
+            $this->sortRuleDirection = $sortRuleArray[1];
+        } else {
+            $this->sortRuleField = "create_date";
+            $this->sortRuleDirection = "DESC";
+        }
+    }
+
+    public function getSortRuleField()
+    {
+        $this->populateSortRuleData();
+        return $this->sortRuleField;
+    }
+
+    public function getSortRuleDirection()
+    {
+        $this->populateSortRuleData();
+        return $this->sortRuleDirection;
+    }
 }

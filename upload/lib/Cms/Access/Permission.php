@@ -4,7 +4,7 @@
 namespace Cms\Access;
 
 use Cms\Core\Di\Container;
-use Cms\Data\User\User;
+use Cms\Entity\User;
 use Cms\Data\Permission\Permission as DataPermission;
 
 

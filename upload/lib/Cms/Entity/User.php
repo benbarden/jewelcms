@@ -147,5 +147,98 @@ class User
      */
     private $userModerate = 'Y';
 
+    public function getId()
+    {
+        return $this->id;
+    }
 
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    public function getUserpass()
+    {
+        return $this->userpass;
+    }
+
+    public function getForename()
+    {
+        return $this->forename;
+    }
+
+    public function getSurname()
+    {
+        return $this->surname;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    public function getOccupation()
+    {
+        return $this->occupation;
+    }
+
+    public function getInterests()
+    {
+        return $this->interests;
+    }
+
+    public function getHomepageLink()
+    {
+        return $this->homepageLink;
+    }
+
+    public function getHomepageText()
+    {
+        return $this->homepageText;
+    }
+
+    public function getAvatarId()
+    {
+        return $this->avatarId;
+    }
+
+    public function getJoinDate()
+    {
+        return $this->joinDate;
+    }
+
+    public function getIpAddress()
+    {
+        return $this->ipAddress;
+    }
+
+    public function getUserGroups()
+    {
+        return $this->userGroups;
+    }
+
+    public function getActivationKey()
+    {
+        return $this->activationKey;
+    }
+
+    public function getSeoUsername()
+    {
+        return $this->seoUsername;
+    }
+
+    public function getUserDeleted()
+    {
+        return $this->userDeleted;
+    }
+
+    public function getUserModerate()
+    {
+        return $this->userModerate;
+    }
 }

@@ -12,7 +12,7 @@ class Container
 
     private $settings;
 
-    public function __construct(IServiceLocator $serviceLocator)
+    public function __construct(ServiceLocator $serviceLocator)
     {
         $this->settings = array();
         $this->serviceLocator = $serviceLocator;
@@ -52,5 +52,10 @@ class Container
     public function hasSetting($key)
     {
         return array_key_exists($key, $this->settings);
+    }
+
+    public function getServiceLocator()
+    {
+        return $this->serviceLocator;
     }
 }

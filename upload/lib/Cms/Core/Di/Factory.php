@@ -19,25 +19,24 @@ use Doctrine\ORM\EntityManager;
 class Factory
 {
     /**
-     * @var \Cms\Data\User\User
+     * @var \Cms\Entity\User
      */
-    private $loggedInUser;
+    private $currentUser;
 
     /**
-     * @param UserSessionRepository $repoUserSession
-     * @param UserRepository $repoUser
+     * @param EntityManager $entityManager
      */
-    private function setupAuthLayer(
-        UserSessionRepository $repoUserSession,
-        UserRepository $repoUser)
+    private function setupCurrentUserEntity(EntityManager $entityManager)
     {
         $accessLogin = new \Cms\Access\Login();
         $cookie = $accessLogin->getCookie();
-        $userId = $repoUserSession->getValidUserId($cookie);
-        if ($userId) {
-            $user = $repoUser->getById($userId);
-            if ($user) {
-                $this->loggedInUser = $user;
+        $validSession = $entityManager->getRepository('Cms\Entity\UserSession')->getFromCookie($cookie);
+        if ($validSession) {
+            /* @var \Cms\Entity\UserSession $validSession */
+            $userId = $validSession->getUserId();
+            $userEntity = $entityManager->getRepository('Cms\Entity\User')->getById($userId);
+            if ($userEntity) {
+                $this->currentUser = $userEntity;
             }
         }
     }
@@ -74,7 +73,7 @@ class Factory
         $repoUser = new UserRepository($pdo);
         $repoUserSession = new UserSessionRepository($pdo);
 
-        $this->setupAuthLayer($repoUserSession, $repoUser);
+        $this->setupCurrentUserEntity($entityManager);
 
         $dateFormat = $repoSetting->getDateFormat();
         $linkStyle  = $repoSetting->getSettingLinkStyle();
@@ -97,8 +96,8 @@ class Factory
         $cmsThemeEngine->setRepoArea($repoArea);
         $cmsThemeEngine->setRepoArticle($repoArticle);
         $cmsThemeEngine->setRepoUser($repoUser);
-        if ($this->loggedInUser) {
-            $cmsThemeEngine->setLoggedInUser($this->loggedInUser);
+        if ($this->currentUser) {
+            $cmsThemeEngine->setLoggedInUser($this->currentUser);
         }
         $cmsThemeEngine->setDateFormat($dateFormat);
         $themeEngine       = $cmsThemeEngine->getEngine();
@@ -106,8 +105,8 @@ class Factory
         $themeEngineUT     = $cmsThemeEngine->getEngineUnitTesting();
 
         $serviceLocator = new ServiceLocator();
-        if ($this->loggedInUser) {
-            $serviceLocator->set('Auth.CurrentUser', $this->loggedInUser);
+        if ($this->currentUser) {
+            $serviceLocator->setAuthCurrentUser($this->currentUser);
         }
         $serviceLocator->set('Cms.Config', $config);
         $serviceLocator->set('Cms.ThemeEngine', $cmsThemeEngine);

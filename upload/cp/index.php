@@ -37,10 +37,10 @@ $cpBindings = array(); //array_merge($globalBindings, $userBindings);
 $cpBindings['CP']['Title'] = $strPageTitle;
 
 // User access
-if ($cmsContainer->hasService('Auth.CurrentUser')) {
-    $authCurrentUser = $cmsContainer->getService('Auth.CurrentUser');
+$authCurrentUser = $cmsContainer->getServiceLocator()->getAuthCurrentUser();
+if ($authCurrentUser) {
     $userArray = array(
-        'Id' => $authCurrentUser->getUserId(),
+        'Id' => $authCurrentUser->getId(),
         'Name' => $authCurrentUser->getUsername()
     );
     $cpBindings['Login']['User'] = $userArray;

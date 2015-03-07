@@ -9,7 +9,7 @@ use Cms\Ia\Link\AreaLink,
     Cms\Data\Area\AreaRepository,
     Cms\Data\Article\ArticleRepository,
     Cms\Data\User\UserRepository,
-    Cms\Data\User\User,
+    Cms\Entity\User,
     Cms\Exception\Theme\EngineException;
 
 

@@ -306,8 +306,8 @@ class Renderer
         $bindings['Nav']['TopLevelAreas'] = $this->processCategoryData($categoriesTopLevel);
 
         // User access
-        if ($this->container->hasService('Auth.CurrentUser')) {
-            $authCurrentUser = $this->container->getService('Auth.CurrentUser');
+        $authCurrentUser = $this->container->getServiceLocator()->getAuthCurrentUser();
+        if ($authCurrentUser) {
             $userArray = array(
                 'Name' => $authCurrentUser->getUsername()
             );

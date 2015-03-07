@@ -8,6 +8,7 @@ use Cms\Exception\Core\Di\ServiceLocatorException;
 
 class ServiceLocator implements IServiceLocator
 {
+    // *** CORE METHODS (GENERIC) *** //
     protected $services = array();
 
     public function set($name, $service)
@@ -46,5 +47,30 @@ class ServiceLocator implements IServiceLocator
     {
         $this->services = array();
         return $this;
+    }
+
+    // *** SERVICE KEYS *** //
+    const KEY_AUTH_CURRENT_USER = 'Auth.CurrentUser';
+
+    // *** HELPER METHODS (SPECIFIC) *** //
+
+    /**
+     * @param \Cms\Entity\User $user
+     */
+    public function setAuthCurrentUser(\Cms\Entity\User $user)
+    {
+        $this->set(self::KEY_AUTH_CURRENT_USER, $user);
+    }
+
+    /**
+     * @return \Cms\Entity\User
+     */
+    public function getAuthCurrentUser()
+    {
+        try {
+            return $this->get(self::KEY_AUTH_CURRENT_USER);
+        } catch (ServiceLocatorException $e) {
+            return null;
+        }
     }
 } 

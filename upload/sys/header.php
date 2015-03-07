@@ -159,9 +159,9 @@
 
     // Access permissions
     if (!$isInstalling) {
-        if ($cmsContainer->hasService('Auth.CurrentUser')) {
-            $currentUser = $cmsContainer->getService('Auth.CurrentUser');
-            $accessPermission = new \Cms\Access\Permission($cmsContainer, $currentUser);
+        $authCurrentUser = $cmsContainer->getServiceLocator()->getAuthCurrentUser();
+        if ($authCurrentUser) {
+            $accessPermission = new \Cms\Access\Permission($cmsContainer, $authCurrentUser);
         }
 
         // CPanel bindings

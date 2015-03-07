@@ -63,5 +63,38 @@ class UserSession
      */
     private $expiryDate = '0000-00-00 00:00:00';
 
+    public function getId()
+    {
+        return $this->id;
+    }
 
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    public function getIpAddress()
+    {
+        return $this->ipAddress;
+    }
+
+    public function getUserAgent()
+    {
+        return $this->userAgent;
+    }
+
+    public function getLoginDate()
+    {
+        return $this->loginDate;
+    }
+
+    public function getExpiryDate()
+    {
+        return $this->expiryDate;
+    }
 }

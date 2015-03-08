@@ -76,7 +76,7 @@ class GetUrl
             $modelArticle = new Article(array('id' => $this->id, 'title' => $this->title));
         }
 
-        $iaLinkArticle = $this->container->getService('IA.LinkArticle');
+        $iaLinkArticle = $this->container->getServiceLocator()->getIALinkArticle();
         $iaLinkArticle->setArticle($modelArticle);
         $articleUrl = $iaLinkArticle->generate();
         $dataArray['url'] = $articleUrl;

@@ -18,7 +18,7 @@
 */
 
   require '../sys/header.php';
-  $cpItemsPerPage = $cmsContainer->getService('Cms.Config')->getByKey('CP.ItemsPerPage');
+  $cpItemsPerPage = $cmsContainer->getServiceLocator()->getCmsConfig()->getByKey('CP.ItemsPerPage');
   if (!$CMS->RES->CanAddContent()) {
       $CMS->Err_MFail(M_ERR_UNAUTHORISED, "ViewManageContent");
   }

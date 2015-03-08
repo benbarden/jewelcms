@@ -18,7 +18,7 @@
 */
 
   require '../sys/header.php';
-  $cpItemsPerPage = $cmsContainer->getService('Cms.Config')->getByKey('CP.ItemsPerPage');
+  $cpItemsPerPage = $cmsContainer->getServiceLocator()->getCmsConfig()->getByKey('CP.ItemsPerPage');
   $CMS->RES->Admin();
   if ($CMS->RES->IsError()) {
     $CMS->Err_MFail(M_ERR_UNAUTHORISED, "Admin");

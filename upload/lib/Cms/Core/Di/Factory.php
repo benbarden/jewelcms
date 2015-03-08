@@ -58,6 +58,8 @@ class Factory
         $doctrineConfig = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, null, null, false);
         $entityManager = EntityManager::create($dbParams, $doctrineConfig);
 
+        $this->setupCurrentUserEntity($entityManager);
+
         // Old data layer
         $pdo = new \PDO($dbDsn, $dbUser, $dbPass, array(
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
@@ -72,8 +74,6 @@ class Factory
         $repoUrlMapping = new UrlMappingRepository($pdo);
         $repoUser = new UserRepository($pdo);
         $repoUserSession = new UserSessionRepository($pdo);
-
-        $this->setupCurrentUserEntity($entityManager);
 
         $dateFormat = $repoSetting->getDateFormat();
         $linkStyle  = $repoSetting->getSettingLinkStyle();
@@ -108,11 +108,11 @@ class Factory
         if ($this->currentUser) {
             $serviceLocator->setAuthCurrentUser($this->currentUser);
         }
-        $serviceLocator->set('Cms.Config', $config);
-        $serviceLocator->set('Cms.ThemeEngine', $cmsThemeEngine);
-        $serviceLocator->set('Cms.EntityManager', $entityManager);
-        $serviceLocator->set('IA.LinkArea', $iaLinkArea);
-        $serviceLocator->set('IA.LinkArticle', $iaLinkArticle);
+        $serviceLocator->setCmsConfig($config);
+        $serviceLocator->setCmsThemeEngine($cmsThemeEngine);
+        $serviceLocator->setCmsEntityManager($entityManager);
+        $serviceLocator->setIALinkArea($iaLinkArea);
+        $serviceLocator->setIALinkArticle($iaLinkArticle);
         $serviceLocator->set('Repo.AccessLog', $repoAccessLog);
         $serviceLocator->set('Repo.Area', $repoArea);
         $serviceLocator->set('Repo.Article', $repoArticle);

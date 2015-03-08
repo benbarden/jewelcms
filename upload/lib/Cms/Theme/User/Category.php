@@ -115,7 +115,7 @@ class Category
 
         // Date
         $dateFormat = $this->container->getSetting('DateFormat');
-        $iaLink = $this->container->getService('IA.LinkArticle');
+        $iaLink = $this->container->getServiceLocator()->getIALinkArticle();
 
         // Content
         $repoUser = $this->container->getService('Repo.User');
@@ -124,7 +124,7 @@ class Category
 
             // Area URL
             //$area = $this->container->getService('Repo.Area')->getById($areaId);
-            //$iaLinkArea = $this->container->getService('IA.LinkArea');
+            //$iaLinkArea = $this->container->getServiceLocator()->getIALinkArea();
             //$iaLinkArea->setArea($area);
 
             if ($this->currentPageNo == 1) {

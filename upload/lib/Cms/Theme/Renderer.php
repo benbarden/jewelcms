@@ -177,14 +177,14 @@ class Renderer
 
     private function setupRenderer()
     {
+        $em = $this->container->getServiceLocator()->getCmsEntityManager();
+
         switch ($this->objectType) {
             case self::OBJECT_TYPE_HOMEPAGE:
                 $this->renderer = new \Cms\Theme\User\Homepage($this->container);
                 break;
             case self::OBJECT_TYPE_AREA:
             case self::OBJECT_TYPE_CATEGORY:
-
-                $em = $this->container->getService('Cms.EntityManager');
 
                 $categoryRepo = $em->getRepository('Cms\Entity\Category');
                 /* @var \Cms\Repository\Category $categoryRepo */
@@ -228,8 +228,6 @@ class Renderer
             break;
             case self::OBJECT_TYPE_ARTICLE:
 
-                $em = $this->container->getService('Cms.EntityManager');
-
                 $articleRepo = $em->getRepository('Cms\Entity\Article');
                 /* @var \Cms\Repository\Article $articleRepo */
 
@@ -258,7 +256,7 @@ class Renderer
     {
         $bindings = array();
 
-        $cmsThemeEngine = $this->container->getService('Cms.ThemeEngine');
+        $cmsThemeEngine = $this->container->getServiceLocator()->getCmsThemeEngine();
         $publicThemePath = $cmsThemeEngine->getPublicThemePath();
 
         $repoSetting = $this->container->getService('Repo.Setting');

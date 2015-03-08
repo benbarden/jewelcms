@@ -66,7 +66,7 @@ class Article
 
         // Date
         $dateFormat = $this->container->getSetting('DateFormat');
-        $iaLink = $this->container->getService('IA.LinkArticle');
+        $iaLink = $this->container->getServiceLocator()->getIALinkArticle();
 
         // Current page
         $contentArticle = new \Cms\Content\Article($this->article, $iaLink);
@@ -76,10 +76,10 @@ class Article
         $bindings['Article']['Body'] = $contentArticle->getFullBody();
         $bindings['Article']['Date'] = $this->article->getCreateDate()->format($dateFormat);
 
-        $repoUser = $this->container->getService('Repo.User');
-        $articleAuthor = $repoUser->getById($this->article->getAuthorId());
-        /* @var \Cms\Data\User\User $articleAuthor */
-        $bindings['Article']['Author']['Id'] = $articleAuthor->getUserId();
+        $articleAuthorId = $this->article->getAuthorId();
+        $articleAuthor = $this->container->getServiceLocator()->getCmsEntityManager()->getRepository('Cms\Entity\User')->getById($articleAuthorId);
+        /* @var \Cms\Entity\User $articleAuthor */
+        $bindings['Article']['Author']['Id'] = $articleAuthor->getId();
         $bindings['Article']['Author']['Username'] = $articleAuthor->getUsername();
 
         $this->bindings = $bindings;

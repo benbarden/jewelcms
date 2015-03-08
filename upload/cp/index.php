@@ -27,7 +27,7 @@
 
 // Purge access log
 // @todo move this to a cron
-$cpLogLimit = $cmsContainer->getService('Cms.Config')->getByKey('CP.LogLimit');
+$cpLogLimit = $cmsContainer->getServiceLocator()->getCmsConfig()->getByKey('CP.LogLimit');
 $repoAccessLog = $cmsContainer->getService('Repo.AccessLog');
 $repoAccessLog->purgeEntries($cpLogLimit);
 

@@ -12,6 +12,16 @@ use Doctrine\DBAL\Types\Type;
 
 class Article extends EntityRepository
 {
+    public function getById($articleId)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('Article')
+            ->from('Cms\Entity\Article', 'Article')
+            ->where($qb->expr()->eq('Article.id', ':id'))
+            ->setParameter('id', $articleId);
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
     public function countByCategoryPublic($categoryId)
     {
         return $this->countByCategory('public', $categoryId);

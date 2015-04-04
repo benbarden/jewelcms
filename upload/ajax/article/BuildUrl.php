@@ -65,14 +65,12 @@ class GetUrl
 
         if ($useDataModel) {
             // Load the article
-            $repoArticle = $this->container->getService('Repo.Article');
-            $modelArticle = $repoArticle->getById($this->id);
+            $modelArticle = $this->container->getServiceLocator()->getCmsEntityManager()->getRepository('Cms\Entity\Article')->getById($this->id);
             if (!$modelArticle) {
                 throw new AjaxException(sprintf('Article not found: %s', $this->id));
             }
         } else {
             // Create a stub
-            //$modelArticle = new Article(array('id' => $this->id, 'title' => $this->title));
             $modelArticle = new Article;
             $modelArticle->setTitle($this->title);
         }

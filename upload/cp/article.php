@@ -160,7 +160,7 @@ if ($_POST) {
             $dbData['link_url'] = $postLinkUrl;
             $dbData['article_excerpt'] = $postExcerpt;
             if ($isCreate) {
-                $dbData['author_id'] = $currentUser->getUserId();
+                $dbData['author_id'] = $authCurrentUser->getId();
             } elseif ($articleData) {
                 $dbData['author_id'] = $articleData->getAuthorId();
             }

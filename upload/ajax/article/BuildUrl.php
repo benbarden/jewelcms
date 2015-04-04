@@ -3,8 +3,7 @@
 require '../../sys/header.php';
 
 use \Cms\Exception\Ajax\AjaxException,
-    \Cms\Data\Article\Article,
-    \Cms\Data\Article\ArticleRepository,
+    \Cms\Entity\Article,
     \Cms\Core\Di\Container;
 
 class GetUrl
@@ -73,7 +72,9 @@ class GetUrl
             }
         } else {
             // Create a stub
-            $modelArticle = new Article(array('id' => $this->id, 'title' => $this->title));
+            //$modelArticle = new Article(array('id' => $this->id, 'title' => $this->title));
+            $modelArticle = new Article;
+            $modelArticle->setTitle($this->title);
         }
 
         $iaLinkArticle = $this->container->getServiceLocator()->getIALinkArticle();

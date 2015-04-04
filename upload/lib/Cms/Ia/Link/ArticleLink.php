@@ -91,8 +91,7 @@ class ArticleLink extends Base
      */
     protected function generateLinkStyleDateAndTime()
     {
-        $createDate = $this->article->getCreateDate();
-        $articleDate = new \DateTime($createDate);
+        $articleDate = $this->article->getCreateDate();
         $articleYY = $articleDate->format('Y');
         $articleMM = $articleDate->format('m');
         $articleDD = $articleDate->format('d');

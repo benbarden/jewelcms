@@ -27,26 +27,23 @@ DROP TABLE IF EXISTS {IFW_TBL_CONTENT};
 CREATE TABLE IF NOT EXISTS {IFW_TBL_CONTENT} (
   id int(10) unsigned NOT NULL auto_increment,
   title varchar(125) NOT NULL default '',
-  permalink VARCHAR(255) NOT NULL,
-  content mediumtext NOT NULL,
-  author_id int(10) unsigned NOT NULL default 0,
-  category_id int(10) unsigned NULL default 0,
-  create_date datetime NOT NULL default '0000-00-00 00:00:00',
-  last_updated datetime NOT NULL default '0000-00-00 00:00:00',
-  tags TEXT NOT NULL,
-  link_url VARCHAR(150) NOT NULL default '',
+  permalink VARCHAR(255) NULL,
+  content mediumtext NULL,
+  author_id int(10) unsigned NOT NULL,
+  category_id int(10) unsigned NULL,
+  create_date datetime NULL,
+  last_updated datetime NULL,
+  tags TEXT NULL,
+  link_url VARCHAR(150) NULL,
   content_status VARCHAR(20) NOT NULL,
-  tags_deleted TEXT NOT NULL,
-  article_order INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  article_excerpt TEXT NOT NULL,
+  tags_deleted TEXT NULL,
+  article_order INT(10) UNSIGNED NULL,
+  article_excerpt TEXT NULL,
   PRIMARY KEY(id),
   INDEX author_id(author_id), 
   INDEX category_id(category_id),
   INDEX content_status(content_status)
 ) ENGINE = MyISAM;
-ALTER TABLE {IFW_TBL_CONTENT} ADD FULLTEXT title(title);
-ALTER TABLE {IFW_TBL_CONTENT} ADD FULLTEXT content(content);
-ALTER TABLE {IFW_TBL_CONTENT} ADD FULLTEXT title_content(title, content);
 ALTER TABLE {IFW_TBL_CONTENT} ADD INDEX permalink (permalink ASC);
 
 DROP TABLE IF EXISTS {IFW_TBL_URL_MAPPING};

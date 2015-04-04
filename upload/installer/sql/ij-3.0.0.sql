@@ -75,3 +75,18 @@ ALTER TABLE Cms_UrlMapping CHANGE COLUMN area_id category_id INT(10) NOT NULL DE
 
 ALTER TABLE Cms_UrlMapping ADD COLUMN id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT FIRST, DROP PRIMARY KEY, ADD PRIMARY KEY (id);
 ALTER TABLE Cms_UrlMapping ADD UNIQUE INDEX relative_url (relative_url ASC);
+
+ALTER TABLE Cms_Content DROP INDEX title_content, DROP INDEX content, DROP INDEX title;
+
+ALTER TABLE Cms_Content
+CHANGE COLUMN permalink permalink VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL ,
+CHANGE COLUMN content content MEDIUMTEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL ,
+CHANGE COLUMN author_id author_id INT(10) UNSIGNED NOT NULL ,
+CHANGE COLUMN category_id category_id INT(10) UNSIGNED NULL ,
+CHANGE COLUMN create_date create_date DATETIME NULL ,
+CHANGE COLUMN last_updated last_updated DATETIME NULL ,
+CHANGE COLUMN tags tags TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL ,
+CHANGE COLUMN link_url link_url VARCHAR(150) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL ,
+CHANGE COLUMN tags_deleted tags_deleted TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL ,
+CHANGE COLUMN article_order article_order INT(10) UNSIGNED NULL ,
+CHANGE COLUMN article_excerpt article_excerpt TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL ;

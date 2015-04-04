@@ -63,22 +63,32 @@ class GetUrl
             $useDataModel = false;
         }
 
+        $em = $this->container->getServiceLocator()->getCmsEntityManager();
+
         if ($useDataModel) {
             // Load the article
-            $modelArticle = $this->container->getServiceLocator()->getCmsEntityManager()->getRepository('Cms\Entity\Article')->getById($this->id);
+            $modelArticle = $em->getRepository('Cms\Entity\Article')->getById($this->id);
             if (!$modelArticle) {
                 throw new AjaxException(sprintf('Article not found: %s', $this->id));
             }
         } else {
-            // Create a stub
+            // Create a draft. We need this for the id in the URL.
+            $authorId = $this->container->getServiceLocator()->getAuthCurrentUser()->getId();
             $modelArticle = new Article;
             $modelArticle->setTitle($this->title);
+            $modelArticle->setAuthorId($authorId);
+            $modelArticle->setCreateDate(new \DateTime("now"));
+            $modelArticle->setLastUpdated(new \DateTime("now"));
+            $modelArticle->setStatusAutosave();
+            $em->persist($modelArticle);
+            $em->flush();
         }
 
         $iaLinkArticle = $this->container->getServiceLocator()->getIALinkArticle();
         $iaLinkArticle->setArticle($modelArticle);
         $articleUrl = $iaLinkArticle->generate();
         $dataArray['url'] = $articleUrl;
+        $dataArray['id'] = $modelArticle->getId();
         print(json_encode($dataArray));
     }
 }

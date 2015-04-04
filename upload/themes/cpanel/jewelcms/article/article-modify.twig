@@ -6,7 +6,7 @@
 
     {% include "core/form-errors.twig" %}
 
-    <form class="form-horizontal" action="{{ Form.Action }}" method="post">
+    <form class="form-horizontal" name="article-modify" action="{{ Form.Action }}" method="post">
         <div class="form-group">
             <label for="name" class="col-sm-2 control-label">Title</label>
             <div class="col-sm-10">
@@ -114,6 +114,11 @@
                     var urlObject = $.parseJSON(json);
                     if (urlObject.error == '') {
                         articleUrl = urlObject.url;
+                        articleId = urlObject.id;
+                        formAction = $('form[name=article-modify]').prop('action');
+                        if (formAction.indexOf('/cp/article.php?action=create') > -1) {
+                            $('form[name=article-modify]').prop('action', '/cp/article.php?action=edit&id=' + articleId);
+                        }
                         $('#permalink').val(articleUrl);
                     } else {
                         $('#permalink').val('');
@@ -121,6 +126,10 @@
                 });
 
             });
+
+            if ((articleId != '') && ($('#permalink').val() == '')) {
+                $('#permalink').blur();
+            }
         });
 
     </script>

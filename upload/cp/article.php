@@ -255,6 +255,11 @@ if ($_POST) {
     $formPrefill[] = array('Field' => 'create-date-time', 'Value' => $createDateArray[1]);
     // CKEditor prefill needs to be done differently
     $cpBindings['Form']['CKEditor']['Body'] = $dbContent;
+} else {
+    // New articles - default to today's date
+    $todaysDate = new \DateTime("now");
+    $formPrefill[] = array('Field' => 'create-date-day', 'Value' => $todaysDate->format('Y-m-d'));
+    $formPrefill[] = array('Field' => 'create-date-time', 'Value' => $todaysDate->format('H:i:s'));
 }
 
 $cpBindings['Form']['Errors'] = $formErrors;

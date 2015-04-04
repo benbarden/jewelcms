@@ -12,6 +12,14 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Article
 {
+    const STATUS_PUBLISHED = 'Published';
+    const STATUS_AUTOSAVE = 'Autosave';
+    const STATUS_DRAFT = 'Draft';
+    const STATUS_REVIEW = 'Review';
+    const STATUS_SCHEDULED = 'Scheduled';
+    const STATUS_PRIVATE = 'Private';
+    const STATUS_DELETED = 'Deleted';
+
     /**
      * @var integer
      *
@@ -132,9 +140,19 @@ class Article
         return $this->permalink;
     }
 
+    public function setPermalink($permalink)
+    {
+        $this->permalink = $permalink;
+    }
+
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function setContent($content)
+    {
+        $this->content = $content;
     }
 
     public function getAuthorId()
@@ -142,9 +160,19 @@ class Article
         return $this->authorId;
     }
 
+    public function setAuthorId($authorId)
+    {
+        $this->authorId = $authorId;
+    }
+
     public function getCategoryId()
     {
         return $this->categoryId;
+    }
+
+    public function setCategoryId($categoryId)
+    {
+        $this->categoryId = $categoryId;
     }
 
     public function getCreateDate()
@@ -152,9 +180,19 @@ class Article
         return $this->createDate;
     }
 
+    public function setCreateDate($createDate)
+    {
+        $this->createDate = $createDate;
+    }
+
     public function getLastUpdated()
     {
         return $this->lastUpdated;
+    }
+
+    public function setLastUpdated($lastUpdated)
+    {
+        $this->lastUpdated = $lastUpdated;
     }
 
     public function getTags()
@@ -162,9 +200,19 @@ class Article
         return $this->tags;
     }
 
+    public function setTags($tags)
+    {
+        $this->tags = $tags;
+    }
+
     public function getLinkUrl()
     {
         return $this->linkUrl;
+    }
+
+    public function setLinkUrl($linkUrl)
+    {
+        $this->linkUrl = $linkUrl;
     }
 
     public function getStatus()
@@ -172,9 +220,59 @@ class Article
         return $this->contentStatus;
     }
 
+    public function isPublished()
+    {
+        return $this->contentStatus == self::STATUS_PUBLISHED;
+    }
+
+    public function setStatus($status)
+    {
+        $this->contentStatus = $status;
+    }
+
+    public function setStatusPublished()
+    {
+        $this->contentStatus = self::STATUS_PUBLISHED;
+    }
+
+    public function setStatusAutosave()
+    {
+        $this->contentStatus = self::STATUS_AUTOSAVE;
+    }
+
+    public function setStatusDraft()
+    {
+        $this->contentStatus = self::STATUS_DRAFT;
+    }
+
+    public function setStatusReview()
+    {
+        $this->contentStatus = self::STATUS_REVIEW;
+    }
+
+    public function setStatusScheduled()
+    {
+        $this->contentStatus = self::STATUS_SCHEDULED;
+    }
+
+    public function setStatusPrivate()
+    {
+        $this->contentStatus = self::STATUS_PRIVATE;
+    }
+
+    public function setStatusDeleted()
+    {
+        $this->contentStatus = self::STATUS_DELETED;
+    }
+
     public function getTagsDeleted()
     {
         return $this->tagsDeleted;
+    }
+
+    public function setTagsDeleted($tagsDeleted)
+    {
+        $this->tagsDeleted = $tagsDeleted;
     }
 
     public function getArticleOrder()
@@ -182,8 +280,18 @@ class Article
         return $this->articleOrder;
     }
 
+    public function setArticleOrder($order)
+    {
+        $this->articleOrder = $order;
+    }
+
     public function getExcerpt()
     {
         return $this->articleExcerpt;
+    }
+
+    public function setExcerpt($excerpt)
+    {
+        $this->articleExcerpt = $excerpt;
     }
 }

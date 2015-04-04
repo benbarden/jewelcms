@@ -40,19 +40,26 @@
             <tr>
                 <th class="col-md-1">Id</th>
                 <th class="col-md-3">Title</th>
-                <th class="col-md-3">Permalink</th>
+                <th class="col-md-2">Status</th>
+                <th class="col-md-2">Date</th>
                 <th class="col-md-2">Options</th>
             </tr>
             </thead>
             <tbody>
                 {% for Item in Page.ArticleList %}
                     <tr>
-                        <th>{{ Item.id }}</th>
-                        <td>{{ Item.title }}</td>
-                        <td>{{ Item.permalink }}</td>
+                        <th>{{ Item.getId }}</th>
                         <td>
-                            <a class="btn btn-default" href="{{ cpLink('article', {'action': 'edit', 'id': Item.id}) }}" role="button">Edit</a>
-                            <a class="btn btn-danger" href="{{ cpLink('article', {'action': 'delete', 'id': Item.id}) }}" role="button">Delete</a>
+                            {{ Item.getTitle }}
+                            {% if Item.getPermalink %}
+                            <br><small><a href="{{ Item.getPermalink }}" target="_blank" title="Opens in a new tab">{{ Item.getPermalink }}</a></small>
+                            {% endif %}
+                        </td>
+                        <td>{{ Item.getStatus }}</td>
+                        <td>{{ Item.getCreateDate.format('d M Y H:i') }}</td>
+                        <td>
+                            <a class="btn btn-default" href="{{ cpLink('article', {'action': 'edit', 'id': Item.getId}) }}" role="button">Edit</a>
+                            <a class="btn btn-danger" href="{{ cpLink('article', {'action': 'delete', 'id': Item.getId}) }}" role="button">Delete</a>
                         </td>
                     </tr>
                 {% endfor %}

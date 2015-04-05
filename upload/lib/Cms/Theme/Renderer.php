@@ -192,7 +192,10 @@ class Renderer
                 /* @var \Cms\Repository\Article $articleRepo */
 
                 // Category setup
-                $category = $categoryRepo->find($this->itemId);
+                $category = $categoryRepo->getById($this->itemId);
+                if (!$category) {
+                    throw new \Cms\Exception\Theme\RendererException(sprintf('Category not found: %s', $this->itemId));
+                }
 
                 // Sort Rule setup
                 $sortField = $category->getSortRuleField();
@@ -228,13 +231,28 @@ class Renderer
             break;
             case self::OBJECT_TYPE_ARTICLE:
 
+                $categoryRepo = $em->getRepository('Cms\Entity\Category');
+                /* @var \Cms\Repository\Category $categoryRepo */
                 $articleRepo = $em->getRepository('Cms\Entity\Article');
                 /* @var \Cms\Repository\Article $articleRepo */
 
-                $article = $articleRepo->find($this->itemId);
+                $article = $articleRepo->getById($this->itemId);
+                if (!$article) {
+                    throw new \Cms\Exception\Theme\RendererException(sprintf('Article not found: %s', $this->itemId));
+                }
+
+                $categoryId = $article->getCategoryId();
+                if ($categoryId) {
+                    $category = $categoryRepo->getById($categoryId);
+                } else {
+                    $category = null;
+                }
 
                 $this->renderer = new \Cms\Theme\User\Article($this->container);
                 $this->renderer->setArticle($article);
+                if ($category) {
+                    $this->renderer->setCategory($category);
+                }
 
                 break;
             case self::OBJECT_TYPE_FILE:

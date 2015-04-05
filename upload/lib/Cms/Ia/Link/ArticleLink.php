@@ -3,7 +3,7 @@
 
 namespace Cms\Ia\Link;
 
-use Cms\Data\Area\Area,
+use Cms\Entity\Category,
     Cms\Entity\Article;
 
 
@@ -15,14 +15,14 @@ class ArticleLink extends Base
     private $article;
 
     /**
-     * @var Area
+     * @var Category
      */
-    private $area;
+    private $category;
 
     public function __destruct()
     {
         unset($this->article);
-        unset($this->area);
+        unset($this->category);
         parent::__destruct();
     }
 
@@ -31,9 +31,9 @@ class ArticleLink extends Base
         $this->article = $article;
     }
 
-    public function setArea(Area $area)
+    public function setCategory(Category $category)
     {
-        $this->area = $area;
+        $this->category = $category;
     }
 
     private function getOptimisedArticleUrl()
@@ -41,9 +41,14 @@ class ArticleLink extends Base
         return $this->optimiser->optimise($this->article->getTitle());
     }
 
-    private function getOptimisedAreaUrl()
+    private function getOptimisedCategoryUrl()
     {
-        return $this->optimiser->optimise($this->area->getName());
+        if ($this->category) {
+            $categoryName = $this->category->getName();
+        } else {
+            $categoryName = 'no-category';
+        }
+        return $this->optimiser->optimise($categoryName);
     }
 
     /**
@@ -76,13 +81,13 @@ class ArticleLink extends Base
     }
 
     /**
-     * area-name/hello-world
+     * category-name/hello-world
      * @return string
      */
-    protected function generateLinkStyleAreaAndTitle()
+    protected function generateLinkStyleCategoryAndTitle()
     {
         return URL_ROOT.sprintf('%s/%s',
-            $this->getOptimisedAreaUrl(), $this->getOptimisedArticleUrl());
+            $this->getOptimisedCategoryUrl(), $this->getOptimisedArticleUrl());
     }
 
     /**

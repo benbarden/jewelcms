@@ -61,7 +61,7 @@ class UserLink extends Base
     /**
      * @return string
      */
-    protected function generateLinkStyleAreaAndTitle()
+    protected function generateLinkStyleCategoryAndTitle()
     {
         return $this->generateLinkStyleLong();
     }

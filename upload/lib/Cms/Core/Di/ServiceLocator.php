@@ -56,7 +56,7 @@ class ServiceLocator implements IServiceLocator
 
     const KEY_AUTH_CURRENT_USER = 'Auth.CurrentUser';
 
-    const KEY_IA_LINK_AREA = 'IA.LinkArea';
+    const KEY_IA_LINK_CATEGORY = 'IA.LinkCategory';
     const KEY_IA_LINK_ARTICLE = 'IA.LinkArticle';
 
     // *** HELPER METHODS (SPECIFIC) *** //
@@ -146,18 +146,18 @@ class ServiceLocator implements IServiceLocator
     }
 
     /**
-     * @param \Cms\Ia\Link\AreaLink $areaLink
+     * @param \Cms\Ia\Link\CategoryLink $categoryLink
      */
-    public function setIALinkArea(\Cms\Ia\Link\AreaLink $areaLink)
+    public function setIALinkCategory(\Cms\Ia\Link\CategoryLink $categoryLink)
     {
-        $this->set(self::KEY_IA_LINK_AREA, $areaLink);
+        $this->set(self::KEY_IA_LINK_CATEGORY, $categoryLink);
     }
 
     /**
-     * @return \Cms\Ia\Link\AreaLink
+     * @return \Cms\Ia\Link\CategoryLink
      */
-    public function getIALinkArea()
+    public function getIALinkCategory()
     {
-        return $this->get(self::KEY_IA_LINK_AREA);
+        return $this->get(self::KEY_IA_LINK_CATEGORY);
     }
 }

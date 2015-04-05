@@ -68,6 +68,7 @@
 
         var ckEditorElem = 'content-body';
         var articleId = '{{ Data.Article.id }}';
+        var categoryId = '{{ Data.Article.categoryId }}';
 
         $(document).ready(function() {
 
@@ -97,6 +98,10 @@
 
             $('#tabs').tabs();
 
+            $('#category-id').on('blur', function() {
+                categoryId = $(this).val();
+            });
+
             $('#title, #permalink').on('blur', function() {
 
                 var articleTitle = $('#title').val();
@@ -108,7 +113,8 @@
                 $.post('/ajax/article/BuildUrl.php', {
                     'id': articleId,
                     'title': articleTitle,
-                    'currentUrl': currentUrl
+                    'currentUrl': currentUrl,
+                    'categoryId': categoryId
                 }, function(json) {
                     console.log(json);
                     var urlObject = $.parseJSON(json);

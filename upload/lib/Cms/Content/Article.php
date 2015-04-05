@@ -4,6 +4,7 @@
 namespace Cms\Content;
 
 use Cms\Entity\Article as EntityArticle,
+    Cms\Entity\Category as EntityCategory,
     Cms\Ia\Link\ArticleLink;
 
 
@@ -15,15 +16,24 @@ class Article
     private $article;
 
     /**
+     * @var EntityCategory
+     */
+    private $category;
+
+    /**
      * @var ArticleLink
      */
     private $iaLink;
 
-    public function __construct(EntityArticle $article, ArticleLink $iaLink)
+    public function __construct(EntityArticle $article, ArticleLink $iaLink, EntityCategory $category = null)
     {
         $this->article = $article;
+        $this->category = $category;
         $this->iaLink = $iaLink;
         $this->iaLink->setArticle($this->article);
+        if ($this->category) {
+            $this->iaLink->setCategory($this->category);
+        }
     }
 
     public function __destruct()
@@ -34,8 +44,7 @@ class Article
 
     public function getFullBody()
     {
-        // @todo Remove stripslashes once article editor is rebuilt
-        return stripslashes($this->article->getContent());
+        return $this->article->getContent();
     }
 
     /**

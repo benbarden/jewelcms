@@ -166,7 +166,7 @@ class Category
             foreach ($this->areaContent as $article) {
 
                 /* @var \Cms\Entity\Article $article */
-                $contentArticle = new \Cms\Content\Article($article, $iaLink);
+                $contentArticle = new \Cms\Content\Article($article, $iaLink, $this->category);
                 $articleId = $article->getId();
                 // Author
                 $articleAuthor = $repoUser->getById($article->getAuthorId());

@@ -18,8 +18,8 @@ abstract class Base implements ILink
     // yoursite.com/hello-world
     const STYLE_TITLE_ONLY = 3;
 
-    // yoursite.com/area-name/hello-world
-    const STYLE_AREA_AND_TITLE = 4;
+    // yoursite.com/category-name/hello-world
+    const STYLE_CATEGORY_AND_TITLE = 4;
 
     // yoursite.com/2009/12/31/hello-world
     const STYLE_DATE_AND_TIME = 5;
@@ -57,8 +57,8 @@ abstract class Base implements ILink
             case self::STYLE_TITLE_ONLY:
                 $functionName = 'generateLinkStyleTitleOnly';
                 break;
-            case self::STYLE_AREA_AND_TITLE:
-                $functionName = 'generateLinkStyleAreaAndTitle';
+            case self::STYLE_CATEGORY_AND_TITLE:
+                $functionName = 'generateLinkStyleCategoryAndTitle';
                 break;
             case self::STYLE_DATE_AND_TIME:
                 $functionName = 'generateLinkStyleDateAndTime';
@@ -95,7 +95,7 @@ abstract class Base implements ILink
     /**
      * @return string
      */
-    abstract protected function generateLinkStyleAreaAndTitle();
+    abstract protected function generateLinkStyleCategoryAndTitle();
 
     /**
      * @return string

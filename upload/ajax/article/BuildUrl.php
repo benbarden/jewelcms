@@ -38,6 +38,11 @@ class GetUrl
      */
     private $currentUrl;
 
+    /**
+     * @var integer
+     */
+    private $categoryId;
+
     public function __construct($container)
     {
         $this->container = $container;
@@ -52,9 +57,12 @@ class GetUrl
 
         $currentUrl = isset($_POST['currentUrl']) ? $_POST['currentUrl'] : "";
 
+        $categoryId = isset($_POST['categoryId']) ? (int) $_POST['categoryId'] : 0;
+
         $this->id = $id;
         $this->title = $title;
         $this->currentUrl = $currentUrl;
+        $this->categoryId = $categoryId;
 
         $this->validateAccess();
     }
@@ -100,6 +108,10 @@ class GetUrl
             if (!$modelArticle) {
                 throw new AjaxException(sprintf('Article not found: %s', $this->id));
             }
+            // Allow existing articles to have a URL regenerated
+            if (!$this->currentUrl) {
+                $modelArticle->setTitle($this->title);
+            }
         } else {
             // Create a draft. We need this for the id in the URL.
             $authorId = $this->authCurrentUser->getId();
@@ -113,8 +125,17 @@ class GetUrl
             $this->em->flush();
         }
 
+        if ($this->categoryId) {
+            $modelCategory = $this->em->getRepository('Cms\Entity\Category')->getById($this->categoryId);
+        } else {
+            $modelCategory = null;
+        }
+
         $iaLinkArticle = $this->container->getServiceLocator()->getIALinkArticle();
         $iaLinkArticle->setArticle($modelArticle);
+        if ($modelCategory) {
+            $iaLinkArticle->setCategory($modelCategory);
+        }
         $articleUrl = $iaLinkArticle->generate();
         $dataArray['url'] = $articleUrl;
         $dataArray['id'] = $modelArticle->getId();

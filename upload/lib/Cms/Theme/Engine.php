@@ -3,13 +3,13 @@
 
 namespace Cms\Theme;
 
-use Cms\Ia\Link\AreaLink,
+use Cms\Ia\Link\CategoryLink,
     Cms\Ia\Link\ArticleLink,
     Cms\Ia\Link\UserLink,
-    Cms\Data\Area\AreaRepository,
-    Cms\Data\Article\ArticleRepository,
     Cms\Data\User\UserRepository,
     Cms\Entity\User,
+    Cms\Repository\Category as RepoCategory,
+    Cms\Repository\Article as RepoArticle,
     Cms\Exception\Theme\EngineException;
 
 
@@ -36,9 +36,9 @@ class Engine
     private $publicThemePath;
 
     /**
-     * @var AreaLink
+     * @var CategoryLink
      */
-    private $iaLinkArea;
+    private $iaLinkCategory;
 
     /**
      * @var ArticleLink
@@ -51,14 +51,14 @@ class Engine
     private $iaLinkUser;
 
     /**
-     * @var ArticleRepository
+     * @var RepoArticle
      */
     private $repoArticle;
 
     /**
-     * @var AreaRepository
+     * @var RepoCategory
      */
-    private $repoArea;
+    private $repoCategory;
 
     /**
      * @var UserRepository
@@ -112,9 +112,9 @@ class Engine
         \Twig_Autoloader::register();
     }
 
-    public function setIALinkArea(AreaLink $iaLinkArea)
+    public function setIALinkCategory(CategoryLink $iaLinkCategory)
     {
-        $this->iaLinkArea = $iaLinkArea;
+        $this->iaLinkCategory = $iaLinkCategory;
     }
 
     public function setIALinkArticle(ArticleLink $iaLinkArticle)
@@ -127,12 +127,12 @@ class Engine
         $this->iaLinkUser = $iaLinkUser;
     }
 
-    public function setRepoArea(AreaRepository $repoArea)
+    public function setRepoCategory(RepoCategory $repoCategory)
     {
-        $this->repoArea = $repoArea;
+        $this->repoCategory = $repoCategory;
     }
 
-    public function setRepoArticle(ArticleRepository $repoArticle)
+    public function setRepoArticle(RepoArticle $repoArticle)
     {
         $this->repoArticle = $repoArticle;
     }
@@ -160,7 +160,7 @@ class Engine
         return $this->publicThemePath;
     }
 
-    private function setupFunctions($twig)
+    private function setupFunctions(\Twig_Environment $twig)
     {
         // cmsBlock
         $funcBlock = new \Twig_SimpleFunction('cmsBlock',
@@ -194,11 +194,11 @@ class Engine
             array('is_safe' => array('html')
         ));
         $twig->addFunction($funcLinkArticle);
-        $funcLinkArea = new \Twig_SimpleFunction('cmsLinkArea',
-            array($this, 'cmsLinkArea'),
+        $funcLinkCategory = new \Twig_SimpleFunction('cmsLinkCategory',
+            array($this, 'cmsLinkCategory'),
             array('is_safe' => array('html')
         ));
-        $twig->addFunction($funcLinkArea);
+        $twig->addFunction($funcLinkCategory);
         $funcLinkUser = new \Twig_SimpleFunction('cmsLinkUser',
             array($this, 'cmsLinkUser'),
             array('is_safe' => array('html')
@@ -212,7 +212,7 @@ class Engine
         return $twig;
     }
 
-    private function setupCPanelFunctions($twig)
+    private function setupCPanelFunctions(\Twig_Environment $twig)
     {
         // cpLink
         $funcLink = new \Twig_SimpleFunction('cpLink',
@@ -247,31 +247,31 @@ class Engine
         return 'http://'.$_SERVER['HTTP_HOST'];
     }
 
-    public function cmsFormatDate($date, $format = '')
+    public function cmsFormatDate(\DateTime $date, $format = '')
     {
         if ($format) {
-            return date($format, strtotime($date));
+            return $date->format($format);
         } else {
-            return date($this->dateFormat, strtotime($date));
+            return $date->format($this->dateFormat);
         }
     }
 
     public function cmsLinkArticle($itemId)
     {
         $article = $this->repoArticle->getById($itemId);
-        $areaId = $article->getContentAreaId();
-        $area = $this->repoArea->getById($areaId);
-        $this->iaLinkArticle->setArea($area);
+        $categoryId = $article->getCategoryId();
+        $category = $this->repoCategory->getById($categoryId);
+        $this->iaLinkArticle->setCategory($category);
         $this->iaLinkArticle->setArticle($article);
         $outputHtml = $this->iaLinkArticle->generate();
         return $outputHtml;
     }
 
-    public function cmsLinkArea($itemId)
+    public function cmsLinkCategory($itemId)
     {
-        $area = $this->repoArea->getById($itemId);
-        $this->iaLinkArea->setArea($area);
-        $outputHtml = $this->iaLinkArea->generate();
+        $category = $this->repoCategory->getById($itemId);
+        $this->iaLinkCategory->setCategory($category);
+        $outputHtml = $this->iaLinkCategory->generate();
         return $outputHtml;
     }
 

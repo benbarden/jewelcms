@@ -78,10 +78,10 @@ class Factory
         $dateFormat = $repoSetting->getDateFormat();
         $linkStyle  = $repoSetting->getSettingLinkStyle();
 
-        $iaOptimiser   = new \Cms\Ia\Tools\OptimiseUrl();
-        $iaLinkArticle = new \Cms\Ia\Link\ArticleLink($linkStyle, $iaOptimiser);
-        $iaLinkArea    = new \Cms\Ia\Link\AreaLink($linkStyle, $iaOptimiser);
-        $iaLinkUser    = new \Cms\Ia\Link\UserLink($linkStyle, $iaOptimiser);
+        $iaOptimiser    = new \Cms\Ia\Tools\OptimiseUrl();
+        $iaLinkArticle  = new \Cms\Ia\Link\ArticleLink($linkStyle, $iaOptimiser);
+        $iaLinkCategory = new \Cms\Ia\Link\CategoryLink($linkStyle, $iaOptimiser);
+        $iaLinkUser     = new \Cms\Ia\Link\UserLink($linkStyle, $iaOptimiser);
 
         $themeBinding = new \Cms\Theme\Binding();
 
@@ -90,11 +90,11 @@ class Factory
         $engineCache  = ($themeCache == 'On') ? 1 : 0;
 
         $cmsThemeEngine = new \Cms\Theme\Engine($themeCurrent, $engineCache);
-        $cmsThemeEngine->setIALinkArea($iaLinkArea);
+        $cmsThemeEngine->setIALinkCategory($iaLinkCategory);
         $cmsThemeEngine->setIALinkArticle($iaLinkArticle);
         $cmsThemeEngine->setIALinkUser($iaLinkUser);
-        $cmsThemeEngine->setRepoArea($repoArea);
-        $cmsThemeEngine->setRepoArticle($repoArticle);
+        $cmsThemeEngine->setRepoCategory($entityManager->getRepository('Cms\Entity\Category'));
+        $cmsThemeEngine->setRepoArticle($entityManager->getRepository('Cms\Entity\Article'));
         $cmsThemeEngine->setRepoUser($repoUser);
         if ($this->currentUser) {
             $cmsThemeEngine->setLoggedInUser($this->currentUser);
@@ -111,7 +111,7 @@ class Factory
         $serviceLocator->setCmsConfig($config);
         $serviceLocator->setCmsThemeEngine($cmsThemeEngine);
         $serviceLocator->setCmsEntityManager($entityManager);
-        $serviceLocator->setIALinkArea($iaLinkArea);
+        $serviceLocator->setIALinkCategory($iaLinkCategory);
         $serviceLocator->setIALinkArticle($iaLinkArticle);
         $serviceLocator->set('Repo.AccessLog', $repoAccessLog);
         $serviceLocator->set('Repo.Area', $repoArea);

@@ -4,6 +4,7 @@
 namespace Cms\Theme\User;
 
 use Cms\Entity\Article as EntityArticle,
+    Cms\Entity\Category as EntityCategory,
     Cms\Core\Di\Container;
 
 
@@ -18,6 +19,11 @@ class Article
      * @var \Cms\Entity\Article
      */
     private $article;
+
+    /**
+     * @var \Cms\Entity\Category
+     */
+    private $category;
 
     /**
      * @var string
@@ -38,11 +44,18 @@ class Article
     public function __destruct()
     {
         unset($this->container);
+        unset($this->article);
+        unset($this->category);
     }
 
     public function setArticle(EntityArticle $article)
     {
         $this->article = $article;
+    }
+
+    public function setCategory(EntityCategory $category)
+    {
+        $this->category = $category;
     }
 
     public function setupBindings()
@@ -69,7 +82,7 @@ class Article
         $iaLink = $this->container->getServiceLocator()->getIALinkArticle();
 
         // Current page
-        $contentArticle = new \Cms\Content\Article($this->article, $iaLink);
+        $contentArticle = new \Cms\Content\Article($this->article, $iaLink, $this->category);
         $bindings['Article']['Id'] = $articleId;
         $bindings['Article']['Title'] = $articleTitle;
         $bindings['Article']['Permalink'] = $articlePermalink;

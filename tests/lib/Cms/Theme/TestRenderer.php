@@ -7,12 +7,14 @@ class TestRenderer extends ContainerBase
     public function testObjectCategory()
     {
         $renderer = new Renderer($this->container);
+        $renderer->setItemId(1);
         $renderer->setObjectCategory();
         $this->assertTrue($renderer->isObjectCategory());
     }
     public function testObjectArticle()
     {
         $renderer = new Renderer($this->container);
+        $renderer->setItemId(1);
         $renderer->setObjectArticle();
         $this->assertTrue($renderer->isObjectArticle());
     }
@@ -37,9 +39,9 @@ class TestRenderer extends ContainerBase
     public function testCategoryWithId()
     {
         $renderer = new Renderer($this->container);
+        $renderer->setItemId(1);
         $renderer->setObjectCategory();
-        $renderer->setItemId(5);
         $this->assertTrue($renderer->isObjectCategory());
-        $this->assertEquals(5, $renderer->getItemId());
+        $this->assertEquals(1, $renderer->getItemId());
     }
 }

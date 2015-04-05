@@ -72,9 +72,19 @@ class Category
         return $this->id;
     }
 
+    public function setCategoryId($id)
+    {
+        $this->id = $id;
+    }
+
     public function getName()
     {
         return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
     public function getPermalink()
@@ -82,9 +92,19 @@ class Category
         return $this->permalink;
     }
 
+    public function setPermalink($permalink)
+    {
+        $this->permalink = $permalink;
+    }
+
     public function getDescription()
     {
         return $this->description;
+    }
+
+    public function setDescription($desc)
+    {
+        $this->description = $desc;
     }
 
     public function getParentId()
@@ -92,14 +112,29 @@ class Category
         return $this->parentId;
     }
 
+    public function setParentId($parentId)
+    {
+        $this->parentId = $parentId;
+    }
+
     public function getItemsPerPage()
     {
         return $this->itemsPerPage;
     }
 
+    public function setItemsPerPage($perPage)
+    {
+        $this->itemsPerPage = $perPage;
+    }
+
     public function getSortRule()
     {
         return $this->sortRule;
+    }
+
+    public function setSortRule($sortRule)
+    {
+        $this->sortRule = $sortRule;
     }
 
     private function populateSortRuleData()

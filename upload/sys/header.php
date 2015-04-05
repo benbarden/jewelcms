@@ -161,10 +161,9 @@
     if (!$isInstalling) {
         $authCurrentUser = $cmsContainer->getServiceLocator()->getAuthCurrentUser();
         $entityManager = $cmsContainer->getServiceLocator()->getCmsEntityManager();
-        if ($authCurrentUser) {
-            $repoPermission = $entityManager->getRepository('Cms\Entity\Permission');
-            $accessPermission = new \Cms\Access\Permission($repoPermission, $authCurrentUser);
-        }
+
+        $repoPermission = $entityManager->getRepository('Cms\Entity\Permission');
+        $accessPermission = new \Cms\Access\Permission($repoPermission, $authCurrentUser);
 
         // CPanel bindings
         $cpBindings = array();

@@ -160,8 +160,10 @@
     // Access permissions
     if (!$isInstalling) {
         $authCurrentUser = $cmsContainer->getServiceLocator()->getAuthCurrentUser();
+        $entityManager = $cmsContainer->getServiceLocator()->getCmsEntityManager();
         if ($authCurrentUser) {
-            $accessPermission = new \Cms\Access\Permission($cmsContainer, $authCurrentUser);
+            $repoPermission = $entityManager->getRepository('Cms\Entity\Permission');
+            $accessPermission = new \Cms\Access\Permission($repoPermission, $authCurrentUser);
         }
 
         // CPanel bindings

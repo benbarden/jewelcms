@@ -14,6 +14,16 @@ class GetUrl
     private $container;
 
     /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    /**
+     * @var \Cms\Entity\User
+     */
+    private $authCurrentUser;
+
+    /**
      * @var integer
      */
     private $id;
@@ -31,6 +41,7 @@ class GetUrl
     public function __construct($container)
     {
         $this->container = $container;
+        $this->em = $this->container->getServiceLocator()->getCmsEntityManager();
 
         $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
 
@@ -44,11 +55,31 @@ class GetUrl
         $this->id = $id;
         $this->title = $title;
         $this->currentUrl = $currentUrl;
+
+        $this->validateAccess();
     }
 
     public function __destruct()
     {
         unset($this->container);
+        unset($this->em);
+        unset($this->authCurrentUser);
+    }
+
+    public function validateAccess()
+    {
+        $authCurrentUser = $this->container->getServiceLocator()->getAuthCurrentUser();
+        if (!$authCurrentUser) {
+            throw new AjaxException('Access denied');
+        }
+
+        $repoPermission = $this->em->getRepository('Cms\Entity\Permission');
+        $accessPermission = new \Cms\Access\Permission($repoPermission, $authCurrentUser);
+        if (!$accessPermission->canCreateArticle()) {
+            throw new AjaxException('Access denied');
+        }
+
+        $this->authCurrentUser = $authCurrentUser;
     }
 
     public function render()
@@ -63,25 +94,23 @@ class GetUrl
             $useDataModel = false;
         }
 
-        $em = $this->container->getServiceLocator()->getCmsEntityManager();
-
         if ($useDataModel) {
             // Load the article
-            $modelArticle = $em->getRepository('Cms\Entity\Article')->getById($this->id);
+            $modelArticle = $this->em->getRepository('Cms\Entity\Article')->getById($this->id);
             if (!$modelArticle) {
                 throw new AjaxException(sprintf('Article not found: %s', $this->id));
             }
         } else {
             // Create a draft. We need this for the id in the URL.
-            $authorId = $this->container->getServiceLocator()->getAuthCurrentUser()->getId();
+            $authorId = $this->authCurrentUser->getId();
             $modelArticle = new Article;
             $modelArticle->setTitle($this->title);
             $modelArticle->setAuthorId($authorId);
             $modelArticle->setCreateDate(new \DateTime("now"));
             $modelArticle->setLastUpdated(new \DateTime("now"));
             $modelArticle->setStatusAutosave();
-            $em->persist($modelArticle);
-            $em->flush();
+            $this->em->persist($modelArticle);
+            $this->em->flush();
         }
 
         $iaLinkArticle = $this->container->getServiceLocator()->getIALinkArticle();

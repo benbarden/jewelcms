@@ -5,15 +5,15 @@ namespace Cms\Access;
 
 use Cms\Core\Di\Container;
 use Cms\Entity\User;
-use Cms\Data\Permission\Permission as DataPermission;
+use Cms\Repository\Permission as RepoPermission;
 
 
 class Permission
 {
     /**
-     * @var Container
+     * @var RepoPermission
      */
-    private $container;
+    private $permission;
 
     /**
      * @var User
@@ -21,35 +21,28 @@ class Permission
     private $user;
 
     /**
-     * @var DataPermission
-     */
-    private $permission;
-
-    /**
-     * @param Container $container
+     * @param RepoPermission $permission
      * @param User $user
      * @return void
      */
-    public function __construct(Container $container, User $user = null)
+    public function __construct(RepoPermission $permission, User $user = null)
     {
-        $this->container = $container;
+        $this->permission = $permission;
         if ($user) {
             $this->user = $user;
         }
-
-        $repoPermission = $this->container->getService('Repo.Permission');
-        $this->permission = $repoPermission->get();
     }
 
     public function __destruct()
     {
-        unset($this->container);
+        unset($this->permission);
         unset($this->user);
     }
 
     private function userGroupMatch($allowedGroups)
     {
         if (!$this->user) return false;
+        if (!$allowedGroups) return false;
 
         $userGroupsArray = explode("|", $this->user->getUserGroups());
         $allowedGroupsArray = explode("|", $allowedGroups);
@@ -69,26 +62,36 @@ class Permission
 
     public function canCreateArticle()
     {
-        return $this->userGroupMatch($this->permission->getCreateArticle());
+        $userGroups = $this->permission->getCreateArticle();
+        if (!$userGroups) return false;
+        return $this->userGroupMatch($userGroups['createArticle']);
     }
 
     public function canPublishArticle()
     {
-        return $this->userGroupMatch($this->permission->getPublishArticle());
+        $userGroups = $this->permission->getPublishArticle();
+        if (!$userGroups) return false;
+        return $this->userGroupMatch($userGroups['publishArticle']);
     }
 
     public function canEditAllArticles()
     {
-        return $this->userGroupMatch($this->permission->getEditArticle());
+        $userGroups = $this->permission->getEditArticle();
+        if (!$userGroups) return false;
+        return $this->userGroupMatch($userGroups['editArticle']);
     }
 
     public function canDeleteArticle()
     {
-        return $this->userGroupMatch($this->permission->getDeleteArticle());
+        $userGroups = $this->permission->getDeleteArticle();
+        if (!$userGroups) return false;
+        return $this->userGroupMatch($userGroups['deleteArticle']);
     }
 
     public function canAttachFile()
     {
-        return $this->userGroupMatch($this->permission->getAttachFile());
+        $userGroups = $this->permission->getAttachFile();
+        if (!$userGroups) return false;
+        return $this->userGroupMatch($userGroups['attachFile']);
     }
 } 

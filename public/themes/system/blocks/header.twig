@@ -26,9 +26,6 @@
 {% if Area.FeedUrl %}
 <link rel="alternate" type="application/rss+xml" title="Area Feed - {{ Area.Name }} - {{ CMS.Settings.SiteTitle }}" href="{{ Area.FeedUrl }}">
 {% endif %}
-{% if Article.FeedUrl %}
-<link rel="alternate" type="application/rss+xml" title="Comment Feed - {{ Article.Title }} - {{ CMS.Settings.SiteTitle }}" href="{{ Article.FeedUrl }}">
-{% endif %}
 
 <!-- Bootstrap -->
 <link href="{{ URL.SiteRoot }}assets/css/bootstrap/bootstrap.min.css" rel="stylesheet">

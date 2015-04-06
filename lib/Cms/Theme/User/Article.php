@@ -69,8 +69,6 @@ class Article
         $bindings['Page']['Type'] = 'article';
         $bindings['Page']['Title'] = $articleTitle;
 
-        $bindings['Article']['FeedUrl'] = sprintf('%s?name=comments&id=%s', FN_FEEDS, $articleId);
-
         // Wrapper IDs and classes
         $bindings['Page']['WrapperId'] = sprintf('article-page-%s', $articleId);
         $bindings['Page']['WrapperClass'] = 'article-page';

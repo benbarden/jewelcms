@@ -66,7 +66,6 @@
         $intAuthorID      = $arrNewContent[$i]['author_id'];
         $strAuthorName    = $CMS->US->GetNameFromID($intAuthorID);
           $strArticleLink = $strRSSLinkRoot.$permalink;
-          $strCommentRSS = $strRSSLinkRoot.FN_FEEDS."?name=comments&amp;id=$intContentID";
           $strRSSFileContents .= <<<RSSFile
     <item>
       <title>$strContentTitle</title>
@@ -79,7 +78,6 @@
       </description>
       <pubDate>$dteRSS</pubDate>
       <dc:creator>$strAuthorName</dc:creator>
-      <wfw:commentRss>$strCommentRSS</wfw:commentRss>
     </item>
 
 RSSFile;
@@ -169,7 +167,6 @@ RSSFile;
         $strIncludeInFeed = $intAreaID ? "Y" : $arrNewContent[$i]['include_in_rss_feed'];
         if ($strIncludeInFeed == "Y") {
             $strArticleLink = $strRSSLinkRoot.$permalink;
-            $strCommentRSS = $strRSSLinkRoot.FN_FEEDS."?name=comments&amp;id=$intContentID";
             $strRSSFileContents .= <<<RSSFile
     <item>
       <title>$strContentTitle</title>
@@ -182,7 +179,6 @@ RSSFile;
       </description>
       <pubDate>$dteRSS</pubDate>
       <dc:creator>$strAuthorName</dc:creator>
-      <wfw:commentRss>$strCommentRSS</wfw:commentRss>
     </item>
 
 RSSFile;
@@ -195,89 +191,5 @@ RSSFile;
       return $strRSSFileContents;
 
     }
-    
-    /************************* COMMENTS **************************/
-    
-    function GetCommentRSS($intArticleID) {
-      $dteStartTime = $this->MicrotimeFloat();
-      $this->blnDisplay = true;
-      $strHTML = $this->BuildCommentRSS($intArticleID);
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $strHTML;
-    }
 
-    function BuildCommentRSS($intArticleID) {
-      global $CMS;
-      if (!$intArticleID) {
-        exit;
-      }
-      $dteStartTime = $this->MicrotimeFloat();
-      $dteToday     = $CMS->SYS->GetCurrentDateAndTime();
-      $strSiteTitle = $CMS->SYS->GetSysPref(C_PREF_SITE_TITLE);
-      $arrArticle   = $CMS->ART->GetArticle($intArticleID);
-      $strContTitle = $arrArticle['title'];
-      $intRSSCount  = $CMS->SYS->GetSysPref(C_PREF_RSS_COUNT);
-      $strRSSLinkAbout = "http://{SVR_HOST}{URL_ROOT}";
-      $strRSSLinkRoot  = "http://{SVR_HOST}";
-      if ($intArticleID) {
-        $strArticleClause = " AND story_id = $intArticleID ";
-      } else {
-        $strArticleClause = "";
-      }
-      $arrNewComments = $this->ResultQuery("
-        SELECT com.id, com.story_id, com.content, con.content_area_id, con.title AS con_title, con.permalink,
-        com.create_date AS rss_date, content_status
-        FROM {IFW_TBL_COMMENTS} com
-        LEFT JOIN {IFW_TBL_CONTENT} con ON com.story_id = con.id
-        WHERE comment_status = 'Approved' $strArticleClause
-        GROUP BY rss_date DESC LIMIT $intRSSCount
-      ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      
-      $strRSSFileContents = $CMS->AC->RSSHeader("Comments Feed - $strContTitle", $strRSSLinkAbout, "", $dteToday);
-
-      for ($j=0; $j<count($arrNewComments); $j++) {
-        $CMS->RES->ClearErrors();
-        $intCommentID   = $arrNewComments[$j]['id'];
-        $intArticleID   = $arrNewComments[$j]['story_id'];
-        //$strContentTitle  = $this->DoEntities($strContentTitle);
-        $strCommentBody = $arrNewComments[$j]['content'];
-        $strCommentBody = str_replace("<br><br>", " ", $strCommentBody);
-        $strCommentBody = str_replace("\r", " ", $strCommentBody);
-        //$strCommentBody = $this->DoEntities($strCommentBody);
-        $dteRSS           = $arrNewComments[$j]['rss_date'];
-        // D, j M Y H:i:s e
-        $dteRSS           = date('r', strtotime($dteRSS));
-        $intContentAreaID = $arrNewComments[$j]['content_area_id'];
-        if ($intArticleID > 0) {
-            $permalink = $arrNewComments[$j]['permalink'];
-            $strNewItemURL = $strRSSLinkRoot.$permalink."#c".$intCommentID;
-            $strCommentTitle = $arrNewComments[$j]['con_title'];
-            //$strCommentTitle = $this->DoEntities($strCommentTitle);
-        }
-        if ($strNewItemURL <> "") {
-          $strRSSFileContents .= <<<RSSFile
-    <item>
-      <title>$strCommentTitle</title>
-      <link>$strNewItemURL</link>
-      <guid>$strNewItemURL</guid>
-      <description>
-      <![CDATA[
-      $strCommentBody
-      ]]>
-      </description>
-      <pubDate>$dteRSS</pubDate>
-    </item>
-
-RSSFile;
-        }
-      }
-      $strRSSFileContents .= "  </channel>\n</rss>\n";
-      //$strRSSFileContents .= "</rdf:RDF>\n";
-      $strRSSFileContents = $CMS->RC->DoAll($strRSSFileContents);
-      $dteEndTime = $this->MicrotimeFloat();
-      $this->SetExecutionTime($dteStartTime, $dteEndTime, __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $strRSSFileContents;
-    }
-    
-  } 
+}

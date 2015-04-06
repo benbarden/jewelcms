@@ -71,7 +71,6 @@
       $strTitle = $arrFile[0]['title'];
       $this->UnlinkAll($intFileID);
       $this->Query("UPDATE {IFW_TBL_USERS} SET avatar_id = 0 WHERE avatar_id = $intFileID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $this->Query("DELETE FROM {IFW_TBL_COMMENTS} WHERE upload_id = $intFileID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       $this->Query("DELETE FROM {IFW_TBL_UPLOADS} WHERE id = $intFileID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       if (!$this->blnDeleteAll) {
         $this->F_Logger("Delete", $intFileID, $strTitle, $intUserID, $intUserIP);

@@ -162,9 +162,6 @@ class Article extends Helper {
         $arrArticle = $this->ResultQuery("SELECT title FROM {IFW_TBL_CONTENT} WHERE id = $intArticleID", 
             __CLASS__ . "::" . __FUNCTION__, __LINE__);
         $strTitle = $arrArticle[0]['title'];
-        // Delete attached comments
-        $this->Query("DELETE FROM {IFW_TBL_COMMENTS} WHERE story_id = $intArticleID", 
-            __CLASS__ . "::" . __FUNCTION__, __LINE__);
         // Delete URL mappings
         $this->Query("DELETE FROM {IFW_TBL_URL_MAPPING} WHERE article_id = $intArticleID", 
             __CLASS__ . "::" . __FUNCTION__, __LINE__);

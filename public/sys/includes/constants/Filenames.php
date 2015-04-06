@@ -24,7 +24,6 @@
     define('FN_INDEX',          URL_ROOT);
     define('FN_LOGIN',          URL_ROOT.'login.php');
     define('FN_LOGOUT',         URL_ROOT.'logout.php');
-    define('FN_PLEASE_WAIT',    URL_ROOT.'please_wait.php');
     define('FN_REGISTER',       URL_ROOT.'register.php');
     define('FN_RESET_PW',       URL_ROOT.'reset_pw.php');
     define('FN_SEARCH',         URL_ROOT.'search.php');

@@ -2,7 +2,7 @@
 {% set ContentRecent = cmsDataContentRecent(5) %}
 {% if ContentRecent %}
     {% for Item in ContentRecent %}
-        <strong>{{ cmsFormatDate(Item.getCreateDate, 'D jS M') }}</strong>:
+        <strong>{{ cmsFormatDate(Item.getCreateDate) }}</strong>:
         <a href="{{ Item.getPermalink }}">{{ Item.getTitle }}</a>
         <br>
     {% endfor %}

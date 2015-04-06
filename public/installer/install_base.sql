@@ -116,9 +116,9 @@ INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_ATTACH_MAX_S
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_AVATARS_PER_USER}', '1');
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_AVATAR_SIZE}', '100');
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_AVATAR_MAX_SIZE}', '100000');
-INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DIR_AVATARS}', 'data/avatars/');
-INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DIR_SITE_IMAGES}', 'data/site/');
-INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DIR_MISC}', 'data/attach/');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DIR_AVATARS}', 'uploads/avatars/');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DIR_SITE_IMAGES}', 'uploads/site/');
+INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_DIR_MISC}', 'uploads/attach/');
 
 INSERT INTO {IFW_TBL_SETTINGS}(preference, content) VALUES('{C_PREF_LINK_STYLE}', '1');
 

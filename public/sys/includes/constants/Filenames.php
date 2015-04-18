@@ -29,7 +29,6 @@
     define('FN_SEARCH',         URL_ROOT.'search.php');
     define('FN_SITEMAP',        URL_ROOT.'sitemap.php');
     define('FN_SITEMAPINDEX',   URL_ROOT.'sitemapindex.php');
-    define('FN_TAGMAP',         URL_ROOT.'tagmap.php');
 
     // Admin
     define('FN_ADM_ACCESS_LOG',          URL_ROOT.'cp/access_log.php');

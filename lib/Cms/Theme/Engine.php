@@ -287,7 +287,7 @@ class Engine
     {
         $outputHtml = ''; $url = '';
 
-        $supportedLinkTypes = array('archives', 'register', 'login', 'logout', 'tagmap', 'cp');
+        $supportedLinkTypes = array('archives', 'register', 'login', 'logout', 'cp');
 
         if (!in_array($link, $supportedLinkTypes)) {
             return sprintf('Unknown link: %s', $link);
@@ -323,12 +323,6 @@ class Engine
                 if ($this->loggedInUser) {
                     $url = URL_ROOT.'logout.php';
                 }
-                break;
-            case 'tagmap':
-                if (!$title) {
-                    $title = 'Tag Map';
-                }
-                $url = URL_ROOT.'tagmap.php';
                 break;
             case 'cp':
                 if (!$title) {

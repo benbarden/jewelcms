@@ -172,7 +172,7 @@ class Category
                 $articleAuthor = $repoUser->getById($article->getAuthorId());
                 /* @var \Cms\Data\User\User $articleAuthor */
                 $authorId = $articleAuthor->getUserId();
-                $authorUsername = $articleAuthor->getUsername();
+                $authorUsername = $articleAuthor->getDisplayName();
                 // Setup array
                 $contentRow = array(
                     'Id' => $articleId,

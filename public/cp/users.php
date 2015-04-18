@@ -40,14 +40,14 @@
   $blnSubmitForm = false;
   $blnShowAll    = false;
   $strGetURL     = "";
-  $strUsername   = "";
+$displayName   = "";
   $strIPAddress  = "";
   $strOrder      = "";
   $strDir        = "";
   $strMissingSearchParams = "";
 
   if ($_GET) {
-    $strUsername  = empty($_GET['un']) ? "" : $CMS->DoEntities($_GET['un']);
+      $displayName  = empty($_GET['un']) ? "" : $CMS->DoEntities($_GET['un']);
     $strIPAddress = empty($_GET['ip']) ? "" : $CMS->DoEntities($_GET['ip']);
     $strOrder     = empty($_GET['order']) ? "" : $CMS->DoEntities($_GET['order']);
     $strDir       = empty($_GET['dir']) ? "" : $CMS->DoEntities($_GET['dir']);
@@ -59,8 +59,8 @@
     if ($blnShowAll) {
       $strGetURL = "?action=showall";
     } else {
-      $strGetURL = "?un=$strUsername&amp;ip=$strIPAddress";
-      if ((!$strUsername) && (!$strIPAddress)) {
+      $strGetURL = "?un=$displayName&amp;ip=$strIPAddress";
+      if ((!$displayName) && (!$strIPAddress)) {
         $blnSubmitForm = false;
         $strMissingSearchParams = $CMS->AC->InvalidFormData(M_ERR_MISSING_SEARCH_PARAMS);
       }
@@ -86,10 +86,10 @@ $strMissingSearchParams
   </tr>
   <tr>
     <td>
-      <label for="un">Username</label>
+      <label for="un">Display name</label>
     </td>
     <td>
-      <input id="un" name="un" type="text" size="20" maxlength="100" value="$strUsername" />
+      <input id="un" name="un" type="text" size="20" maxlength="100" value="$displayName" />
     </td>
     <td>
       <label for="ip">IP Address</label>
@@ -149,9 +149,9 @@ END;
     if ($blnShowAll) {
       $strWhereClause = "";
     } else {
-      if ($strUsername) {
-        $strUsername  = $CMS->AddSlashesIFW($strUsername);
-        $strWhereClause = " WHERE UPPER(username) LIKE UPPER('%$strUsername%') ";
+      if ($displayName) {
+          $displayName  = $CMS->AddSlashesIFW($displayName);
+        $strWhereClause = " WHERE UPPER(display_name) LIKE UPPER('%$displayName%') ";
       } else {
         $strWhereClause = "";
       }
@@ -166,7 +166,7 @@ END;
     if (($strOrder) && ($strDir)) {
       switch ($strOrder) {
         case "id": $strOrderBy = " ORDER BY id "; break;
-        case "username": $strOrderBy = " ORDER BY username "; break;
+        case "username": $strOrderBy = " ORDER BY display_name "; break;
         default: $strOrderBy = " ORDER BY id "; break;
       }
       switch ($strDir) {
@@ -212,7 +212,7 @@ $strPageNumbers
 TableHeader;
       }
       $intUserID   = $arrUsers[$i]['id'];
-      $strUsername = $arrUsers[$i]['username'];
+        $displayName = $arrUsers[$i]['display_name'];
       $strSEOName  = $arrUsers[$i]['seo_username'];
       $CMS->PL->SetTitle($strSEOName);
       $strViewUser = $CMS->PL->ViewUser($intUserID);
@@ -236,7 +236,7 @@ TableHeader;
       $strHTML .= <<<TableRow
     <tr$strRowStyle class="$strRowClass">
       <td class="Centre">$intUserID</td>
-      <td class="Left"><a href="$strViewUser">$strUsername</a></td>
+      <td class="Left"><a href="$strViewUser">$displayName</a></td>
       <td class="Centre">$intUserIP</td>
       <td class="Centre">$strEditDelete</td>
       <td class="Centre"><a href="{FN_ADM_USER_CONTACT}?id=$intUserID">Contact</a></td>

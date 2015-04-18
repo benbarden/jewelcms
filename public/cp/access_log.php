@@ -105,7 +105,7 @@
     } else {
       $strMatch = "=";
     }
-    $strUser = $CMS->FilterAlphanumeric($_GET['user'], C_CHARS_USERNAME);
+    $strUser = $CMS->FilterAlphanumeric($_GET['user'], C_CHARS_DISPLAY_NAME);
     $intUserID = $CMS->US->GetIDFromName($strUser);
     if ($intUserID) {
       if (empty($strWhereClause)) {
@@ -208,7 +208,7 @@ END;
   $intContentPerPage = $cpItemsPerPage;
   $intStart = $CMS->PN->GetPageStart($intContentPerPage, $intPageNumber);
   // Get log items
-  $strSQL = "SELECT al.*, u.username, u.seo_username FROM {IFW_TBL_ACCESS_LOG} al LEFT JOIN {IFW_TBL_USERS} u ON al.user_id = u.id $strWhereClause ORDER BY al.id DESC LIMIT $intStart, $intContentPerPage";
+  $strSQL = "SELECT al.*, u.display_name, u.seo_username FROM {IFW_TBL_ACCESS_LOG} al LEFT JOIN {IFW_TBL_USERS} u ON al.user_id = u.id $strWhereClause ORDER BY al.id DESC LIMIT $intStart, $intContentPerPage";
   $arrLogs = $CMS->ResultQuery($strSQL, __FILE__, __LINE__);
   $arrLogCount = $CMS->ResultQuery("SELECT count(*) AS count FROM {IFW_TBL_ACCESS_LOG} al LEFT JOIN {IFW_TBL_USERS} u ON al.user_id = u.id $strWhereClause ORDER BY al.id DESC", basename(__FILE__), __LINE__);
   $intLogCount = $arrLogCount[0]['count'];
@@ -255,14 +255,14 @@ TableHeader;
       $strDetail   = $arrLogs[$i]['detail'];
       $strTag      = $arrLogs[$i]['tag'];
       $intUserID   = $arrLogs[$i]['user_id'];
-      $strUsername = $arrLogs[$i]['username'];
+        $displayName = $arrLogs[$i]['display_name'];
       $strSEOName  = $arrLogs[$i]['seo_username'];
       $dteLogDate  = $arrLogs[$i]['log_date'];
       $intUserIP   = $arrLogs[$i]['ip_address'];
       if ($strUsername) {
         $CMS->PL->SetTitle($strSEOName);
         $strViewUser = $CMS->PL->ViewUser($intUserID);
-        $strUserMsg = "<a href=\"$strViewUser\">$strUsername</a>";
+        $strUserMsg = "<a href=\"$strViewUser\">$displayName</a>";
       } else {
         $strUserMsg = "<i>Guest</i>";
       }

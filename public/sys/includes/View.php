@@ -796,7 +796,7 @@
         }
       }
       $CMS->TH->SetUser($arrUserProfile);
-      $strUserName = $arrUserProfile['username'];
+      $displayName = $arrUserProfile['display_name'];
       /* ********************************************** */
       /* *              Theme File Calls                */
       /* ********************************************** */
@@ -812,11 +812,11 @@
       /* ********************************************** */
       /* *              Header - Page Title             */
       /* ********************************************** */
-      $CMS->TH->SetHeaderPageTitle("View Profile - $strUserName");
+      $CMS->TH->SetHeaderPageTitle("View Profile - $displayName");
       /* ********************************************** */
       /* *              Header - Meta Desc              */
       /* ********************************************** */
-      $strMetaDesc = "$strUserName's profile";
+      $strMetaDesc = "$displayName's profile";
       $strHeaderMetaDesc = "<meta name=\"description\" content=\"$strMetaDesc\" />\n";
       $CMS->TH->SetHeaderMetaDesc($strHeaderMetaDesc);
       /* ********************************************** */

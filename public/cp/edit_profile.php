@@ -53,7 +53,7 @@
   $CMS->AP->SetTitle($strPageTitle);
 
   $arrUserProfile = $CMS->US->Get($intUserID);
-  $userName       = $arrUserProfile['username'];
+$displayName       = $arrUserProfile['display_name'];
   $userForename   = $arrUserProfile['forename'];
   $userSurname    = $arrUserProfile['surname'];
   $userEmail      = $arrUserProfile['email'];
@@ -72,9 +72,9 @@
 <div class="table-responsive">
 <table class="table table-striped">
   <tr>
-    <td><strong>Username:</strong></td>
+    <td><strong>Display name:</strong></td>
     <td>
-      $userName
+      $displayName
       <input type="hidden" name="txtUserID" value="$intUserID" />
     </td>
   </tr>

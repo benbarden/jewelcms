@@ -27,7 +27,6 @@
 
   $blnGet = false;
   $blnSubmitForm = false;
-  $strMissingUsername = "";
   $strMissingEmail = "";
   $intUserID = "";
   $strKey = "";

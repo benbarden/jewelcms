@@ -47,7 +47,7 @@
     }
     // ** Select ** //
     function GetAll() {
-      $arrSessions = $this->ResultQuery("SELECT us.id, us.session_id, us.user_id, u.username, u.seo_username, us.user_agent, us.login_date, us.expiry_date, us.ip_address FROM {IFW_TBL_USER_SESSIONS} us LEFT JOIN {IFW_TBL_USERS} u ON us.user_id = u.id ORDER BY u.username ASC, us.id ASC", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+      $arrSessions = $this->ResultQuery("SELECT us.id, us.session_id, us.user_id, u.display_name, u.seo_username, us.user_agent, us.login_date, us.expiry_date, us.ip_address FROM {IFW_TBL_USER_SESSIONS} us LEFT JOIN {IFW_TBL_USERS} u ON us.user_id = u.id ORDER BY u.username ASC, us.id ASC", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $arrSessions;
     }
   }

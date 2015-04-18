@@ -25,47 +25,45 @@
 
   $blnGet = false;
   $blnSubmitForm = false;
-  $strUsername = "";
   $strEmail = "";
-  $strMissingUsername = "";
   $strMissingEmail = "";
   
   if ($_POST) {
     // Check if OK to send activation key
     $blnSubmitForm = true;
-    $strUsername = $CMS->AddSlashesIFW($_POST['txtUsername']);
     $strEmail    = $CMS->AddSlashesIFW($_POST['txtEmail']);
-    if (!$strUsername) {
-      $blnSubmitForm = false;
-      $strMissingUsername = $CMS->AC->InvalidFormData("");
-    }
     if (!$strEmail) {
       $blnSubmitForm = false;
       $strMissingEmail = $CMS->AC->InvalidFormData("");
     }
     if ($blnSubmitForm) {
-      // Check if user exists
-      $intExistsUserID = $CMS->US->GetIDFromNameAndEmail($strUsername, $strEmail);
-      $blnExists = !empty($intExistsUserID) ? true : false;
-      if ($blnExists) {
-        $CMS->LP->SetTitle("Forgot Password - Results");
-        // Make activation key
-        $strKeyData = $CMS->US->MakeActivationKey($intExistsUserID);
-        // Send message
-        $strEmailDomain = str_replace("www.", "", SVR_HOST);
-        $strEmailFrom = "donotreply@".$strEmailDomain;
-        $strAuthorName = $CMS->StripSlashesIFW($strUsername);
-        $strEmailBody = "Hi $strAuthorName,\r\n\r\nWe have received a request to reset your password at $strEmailDomain.\r\n\r\nIf you requested this, please click the following link:\r\n\r\nhttp://".SVR_HOST.FN_RESET_PW."?uid=$intExistsUserID&key=$strKeyData\r\n\r\nIf you did not request this, please delete this email and do not click on the link.";
-        $intSentEmail = $CMS->SendEmail($strEmail, "Password reset - $strEmailDomain", $strEmailBody, $strEmailFrom);
-        // Confirmation page
-        if ($intSentEmail == 1) {
-          $strHTML = "<div id=\"pagecontent\">\n<h1>Forgot Password - Results</h1>\n<p>Thank you. A message has been sent to your email account with details of how to reset your password.</p>\n</div>\n";
-        } else {
-          $strHTML = "<div id=\"pagecontent\">\n<h1>Error</h1>\n<p>The message could not be delivered.</p>\n</div>\n";
-        }
-        $CMS->LP->Display($strHTML);
+        // Check if user exists
+        $repoUser = $cmsContainer->getServiceLocator()->getCmsEntityManager()->getRepository('Cms\Entity\User');
+        $validUserEntity = $repoUser->getByEmail($strEmail);
+        if ($validUserEntity) {
+            $CMS->LP->SetTitle("Forgot Password - Results");
+            // Make activation key
+            $validUserId = $validUserEntity->getId();
+            $displayName = $validUserEntity->getDisplayName();
+            $activationKey = $CMS->US->MakeActivationKey($validUserId);
+            // Send message
+            $strEmailDomain = str_replace("www.", "", SVR_HOST);
+            $strEmailFrom = "donotreply@".$strEmailDomain;
+            $strEmailBody = "Hi $displayName,\r\n\r\n".
+                "We have received a request to reset your password at $strEmailDomain.\r\n\r\n".
+                "If you requested this, please click the following link:\r\n\r\n".
+                "http://".SVR_HOST.FN_RESET_PW."?uid=$validUserId&key=$activationKey\r\n\r\n".
+                "If you did not request this, please delete this email and do not click on the link.";
+            $intSentEmail = $CMS->SendEmail($strEmail, "Password reset - $strEmailDomain", $strEmailBody, $strEmailFrom);
+            // Confirmation page
+            if ($intSentEmail == 1) {
+              $strHTML = "<div id=\"pagecontent\">\n<h1>Forgot Password - Results</h1>\n<p>Thank you. A message has been sent to your email account with details of how to reset your password.</p>\n</div>\n";
+            } else {
+              $strHTML = "<div id=\"pagecontent\">\n<h1>Error</h1>\n<p>The message could not be delivered.</p>\n</div>\n";
+            }
+            $CMS->LP->Display($strHTML);
       } else {
-        $CMS->Err_MFail(M_ERR_USERNAME_NOT_FOUND, "");
+        $CMS->Err_MFail('Email not found', "");
       }
     }
   }
@@ -77,20 +75,13 @@
   
   $strHTML = <<<END
 <h1>$strPageTitle</h1>
-<p>To reset your password, please enter your username and email address.</p>
+<p>To reset your password, please enter your email address.</p>
 <form action="{FN_FORGOT_PW}" method="post">
 <table class="OptionTable NarrowTable" cellspacing="1">
   <colgroup>
     <col class="InfoColour NarrowCell" />
     <col class="BaseColour" />
   </colgroup>
-  <tr>
-    <td class="InfoColour"><label for="txtUsername">Username:</label></td>
-    <td>
-      $strMissingUsername
-      <input type="text" id="txtUsername" name="txtUsername" maxlength="45" size="40" value="$strUsername" />
-    </td>
-  </tr>
   <tr>
     <td class="InfoColour"><label for="txtEmail">Email:</label></td>
     <td>
@@ -107,4 +98,3 @@
 END;
   $CMS->LP->SetTitle("Forgot Password");
   $CMS->LP->Display($strHTML);
-?>

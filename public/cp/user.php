@@ -46,7 +46,7 @@
   
   $CMS->AP->SetTitle($strPageTitle);
 
-  $strUsername          = "";
+$displayName          = "";
   $strPassword          = "";
   $strForename          = "";
   $strSurname           = "";
@@ -59,8 +59,7 @@
   $intAvatarID          = 0;
   $dteJoinDate          = "";
   $strUserIP            = "";
-  $strDuplicateUsername = "";
-  $strMissingUsername   = "";
+  $strMissingName   = "";
   $strMissingPassword   = "";
   $strMissingEmail      = "";
   $strInvalidEmail      = "";
@@ -71,11 +70,11 @@
   
   if ($_POST) {
     $arrPostData = $CMS->ArrayAddSlashes($_POST);
-    if (!empty($arrPostData['txtUsername'])) {
-      $strUsername = $arrPostData['txtUsername'];
+    if (!empty($arrPostData['txtDisplayName'])) {
+        $displayName = $arrPostData['txtDisplayName'];
     } else {
       $blnSubmitForm = false;
-      $strMissingUsername = $CMS->AC->InvalidFormData("");
+      $strMissingName = $CMS->AC->InvalidFormData("");
     }
     if ($blnCreate) {
       if (!empty($arrPostData['txtPassword'])) {
@@ -98,20 +97,6 @@
       $blnSubmitForm = false;
       $strMissingEmail = $CMS->AC->InvalidFormData("");
     }
-    // Check if a user already exists with this name
-    if ($strUsername) {
-      if ($blnEdit) {
-        $strWhereClause = "AND id <> $intUserID";
-      } else {
-        $strWhereClause = "";
-      }
-      $arrExists = $CMS->ResultQuery("SELECT count(*) AS count FROM {IFW_TBL_USERS} WHERE username = '$strUsername' $strWhereClause", basename(__FILE__), __LINE__);
-      $intUserCount = $arrExists[0]['count'];
-      if ($intUserCount > 0) {
-        $blnSubmitForm = false;
-        $strDuplicateUsername = $CMS->AC->InvalidFormData(M_ERR_USERNAME_IN_USE);
-      }
-    }
     // Other fields
     $strLocation     = $arrPostData['txtLocation'];
     $strOccupation   = $arrPostData['txtOccupation'];
@@ -125,10 +110,10 @@
     if ($blnSubmitForm) {
       $intUserIP = "";
       if ($blnCreate) {
-        $CMS->US->Create(FN_ADM_USER, $strUsername, $strPassword, $strForename, $strSurname, $strEmail, $strLocation, $strOccupation, $strInterests, $strHomepageLink, $strHomepageText, $intAvatarID, $dteJoinDate, $strUserIP, $strGroupList);
+        $CMS->US->Create(FN_ADM_USER, $displayName, $strPassword, $strForename, $strSurname, $strEmail, $strLocation, $strOccupation, $strInterests, $strHomepageLink, $strHomepageText, $intAvatarID, $dteJoinDate, $strUserIP, $strGroupList);
         $strMsg = "created";
       } elseif ($blnEdit) {
-        $CMS->US->Edit($intUserID, $strUsername, $strForename, $strSurname, $strEmail, $strLocation, $strOccupation, $strInterests, $strHomepageLink, $strHomepageText, $intAvatarID, $dteJoinDate, $strUserIP, $strGroupList);
+        $CMS->US->Edit($intUserID, $displayName, $strForename, $strSurname, $strEmail, $strLocation, $strOccupation, $strInterests, $strHomepageLink, $strHomepageText, $intAvatarID, $dteJoinDate, $strUserIP, $strGroupList);
         $strMsg = "updated";
       }
       $strHTML = "<h1>$strPageTitle</h1>\n<p>User was $strMsg successfully. <a href=\"{FN_ADM_USERS}\">View Users</a></p>";
@@ -140,7 +125,7 @@
   
   if ($_POST) {
     $arrUser = $CMS->ArrayStripSlashes($arrPostData);
-    $strUsername     = $arrUser['txtUsername'];
+      $displayName     = $arrUser['display_name'];
     $strForename     = $arrUser['txtForename'];
     $strSurname      = $arrUser['txtSurname'];
     $arrUserGroups   = explode("|", $strGroupList);
@@ -161,7 +146,7 @@
       } else {
         $arrUser = $CMS->ArrayStripSlashes($arrUser);
       }
-      $strUsername     = $arrUser['username'];
+        $displayName     = $arrUser['display_name'];
       $strForename     = $arrUser['forename'];
       $strSurname      = $arrUser['surname'];
       $strGroupList    = $arrUser['user_groups'];
@@ -220,11 +205,10 @@ $strFormTag
 <div class="table-responsive">
 <table class="table table-striped">
   <tr>
-    <td>* <label for="txtUsername">Username</label>:</td>
+    <td>* <label for="txtDisplayName">Display name</label>:</td>
     <td>
-      $strDuplicateUsername
-      $strMissingUsername
-      <input type="text" id="txtUsername" name="txtUsername" maxlength="45" size="45" value="$strUsername" />
+      $strMissingName
+      <input type="text" id="txtDisplayName" name="txtDisplayName" maxlength="45" size="45" value="$displayName" />
     </td>
   </tr>
   <tr>

@@ -20,9 +20,9 @@
   require '../lib/Cms/Legacy/Header.php';
 
   $blnSubmitForm = false;
-  $strMissingUsername = "";
+  $strMissingEmail = "";
   $strMissingPassword = "";
-  $strUsername = "";
+  $strEmail = "";
   $strPassword = "";
   $formReferrer = "";
 
@@ -30,15 +30,15 @@ $errorMsg = "";
   
   if ($_POST) {
     $blnSubmitForm = true;
-    if (!empty($_POST['login-user'])) {
-      $strUsername = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['login-user'], C_CHARS_USERNAME));
-      $strUsername = strip_tags($strUsername);
+    if (!empty($_POST['login-email'])) {
+      $strEmail = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['login-email'], C_CHARS_DISPLAY_NAME));
+      $strEmail = strip_tags($strEmail);
     }
     if (!empty($_POST['login-pass'])) {
-      $strPassword = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['login-pass'], C_CHARS_USERNAME));
+      $strPassword = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['login-pass'], C_CHARS_DISPLAY_NAME));
       $strPassword = strip_tags($strPassword);
     }
-    if (!$strUsername) {
+    if (!$strEmail) {
       $blnSubmitForm = false;
         $errorMsg .= $CMS->AC->InvalidFormData("");
     }
@@ -67,7 +67,7 @@ $errorMsg = "";
   }
 
   if ($blnSubmitForm) {
-    $intUserID = $CMS->US->ValidateLogin($strUsername, $strPassword);
+    $intUserID = $CMS->US->ValidateLogin($strEmail, $strPassword);
     if ($intUserID) {
       if ($CMS->US->IsSuspended($intUserID)) {
         //$CMS->Err_MFail(M_ERR_USER_SUSPENDED, "");
@@ -110,7 +110,7 @@ END;
       $CMS->LP->SetTitle("Login Results");
       $CMS->LP->Display($strHTML);
     } else {
-      $CMS->SYS->CreateAccessLog("Username: $strUsername", AL_TAG_USER_LOGIN_FAIL, 0, "");
+      $CMS->SYS->CreateAccessLog("Email: $strEmail", AL_TAG_USER_LOGIN_FAIL, 0, "");
       if ($CMS->RES->IsError()) {
         //$CMS->Err_MFail(M_ERR_LOGIN_FAILED, "");
           $errorMsg .= M_ERR_LOGIN_FAILED;
@@ -161,8 +161,8 @@ $loginPageHtml = <<<loginPage
         <input type="hidden" id="form-referrer" name="form-referrer" value="$formReferrer" />
         <h2 class="form-signin-heading">Login</h2>
         $errorHtml
-        <label for="login-user" class="sr-only">Username</label>
-        <input type="text" id="login-user" name="login-user" class="form-control" placeholder="Username" required autofocus>
+        <label for="login-email" class="sr-only">Email</label>
+        <input type="text" id="login-email" name="login-email" class="form-control" placeholder="Email" required autofocus>
         <label for="login-pass" class="sr-only">Password</label>
         <input type="password" id="login-pass" name="login-pass" class="form-control" placeholder="Password" required>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
@@ -180,43 +180,3 @@ $loginPageHtml = <<<loginPage
 loginPage;
 print($loginPageHtml);
 exit;
-
-
-  
-  $strHTML = <<<END
-<h1>$strPageTitle</h1>
-<form action="{FN_LOGIN}" method="post">
-<table class="OptionTable NarrowTable" cellspacing="1">
-  <colgroup>
-    <col class="NarrowCell" />
-    <col class="BaseColour" />
-  </colgroup>
-  <tr>
-    <td class="InfoColour"><label for="txtUsername">Username:</label></td>
-    <td>
-      <input type="hidden" id="txtReferrer" name="txtReferrer" value="$formReferrer" />
-      $strMissingUsername
-      <input type="text" id="txtUsername" name="txtUsername" maxlength="45" size="35" />
-    </td>
-  </tr>
-  <tr>
-    <td class="InfoColour"><label for="txtPassword">Password:</label></td>
-    <td>
-      $strMissingPassword
-      <input type="password" id="txtPassword" name="txtPassword" maxlength="45" size="35" />
-    </td>
-  </tr>
-  <tr>
-    <td class="FootColour" colspan="2">$strLoginButton $strCancelButton</td>
-  </tr>
-</table>
-</form>
-<p>Help, <a href="{FN_FORGOT_PW}">I forgot my password</a>!</p>
-<p><b>Privacy Alert</b>: By logging in you accept that a cookie will be used to remember your details. You can clear
-the cookie at any time by logging out. Most web browsers will allow the cookie automatically, but if you have cookies
-disabled, you will not be able to log in. <a href="{FN_INF_COOKIES}">How to enable cookies</a></p>
-
-END;
-
-  $CMS->LP->SetTitle($strPageTitle);
-  $CMS->LP->Display($strHTML);

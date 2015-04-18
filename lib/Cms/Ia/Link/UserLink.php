@@ -26,7 +26,7 @@ class UserLink extends Base
 
     private function getOptimisedUserUrl()
     {
-        return $this->optimiser->optimise($this->user->getUsername());
+        return $this->optimiser->optimise($this->user->getDisplayName());
     }
 
     /**

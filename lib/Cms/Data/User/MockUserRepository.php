@@ -16,7 +16,7 @@ class MockUserRepository implements IRepository
     public function getById($id)
     {
         if ($this->exists($id)) {
-            return new User(array('id' => $id, 'username' => 'Ben'));
+            return new User(array('id' => $id, 'display_name' => 'Ben'));
         } else {
             throw new DataException(sprintf('User %s does not exist.', $id));
         }

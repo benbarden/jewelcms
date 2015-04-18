@@ -120,7 +120,7 @@ class ArticleRepository extends BaseRepository
         try {
 
             switch (strtolower($sortField)) {
-                case "author_name":   $pdoSortField = "username";      break;
+                case "author_name":   $pdoSortField = "display_name";  break;
                 case "create_date":   $pdoSortField = "create_date";   break;
                 case "last_updated":  $pdoSortField = "last_updated";  break;
                 case "article_title": $pdoSortField = "title";         break;

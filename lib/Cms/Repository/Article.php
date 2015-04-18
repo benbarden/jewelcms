@@ -75,7 +75,7 @@ class Article extends EntityRepository
     private function getSortField($field)
     {
         switch (strtolower($field)) {
-            case "author_name":   $dbField = "a.username";     break;
+            case "author_name":   $dbField = "a.displayName";  break;
             case "create_date":   $dbField = "a.createDate";   break;
             case "last_updated":  $dbField = "a.lastUpdated";  break;
             case "article_title": $dbField = "a.title";        break;

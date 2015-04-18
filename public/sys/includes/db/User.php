@@ -22,7 +22,9 @@
     var $arrUser;
     var $blnForceDB = false;
     // Insert, Update, Delete //
-    function Create($strCaller, $strUsername, $strPassword, $strForename, $strSurname, $strEmail, $strLocation, $strOccupation, $strInterests, $strHomepageLink, $strHomepageText, $intAvatarID, $dteJoinDate, $strUserIP, $strUserGroups) {
+    function Create($strCaller, $displayName, $strPassword, $strForename, $strSurname, $strEmail, $strLocation,
+                    $strOccupation, $strInterests, $strHomepageLink, $strHomepageText, $intAvatarID, $dteJoinDate,
+                    $strUserIP, $strUserGroups) {
       global $CMS;
       $strPassword = password_hash($strPassword, PASSWORD_BCRYPT);
       if (empty($intAvatarID)) {
@@ -37,12 +39,20 @@
         $dteJoinDate = $CMS->SYS->GetCurrentDateAndTime();
       }
       $strHomepageLink = $CMS->AutoLink($strHomepageLink);
-      $strSEOUsername = $this->MakeSEOTitle($strUsername);
-      $intUserID = $this->Query("INSERT INTO {IFW_TBL_USERS}(username, userpass, forename, surname, email, location, occupation, interests, homepage_link, homepage_text, avatar_id, join_date, ip_address, user_groups, seo_username, user_deleted, user_moderate) VALUES ('$strUsername', '$strPassword', '$strForename', '$strSurname', '$strEmail', '$strLocation', '$strOccupation', '$strInterests', '$strHomepageLink', '$strHomepageText', $intAvatarID, '$dteJoinDate', '$strUserIP', '$strUserGroups', '$strSEOUsername', 'N', 'Y')", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $CMS->AL->Build(AL_TAG_USER_REGISTER, $intUserID, $strUsername);
+      $strSEOUsername = $this->MakeSEOTitle($displayName);
+      $intUserID = $this->Query("
+          INSERT INTO {IFW_TBL_USERS}
+          (display_name, userpass, forename, surname, email, location,
+          occupation, interests, homepage_link, homepage_text,
+          avatar_id, join_date, ip_address, user_groups, seo_username, user_deleted, user_moderate)
+          VALUES ('$displayName', '$strPassword', '$strForename', '$strSurname', '$strEmail', '$strLocation',
+          '$strOccupation', '$strInterests', '$strHomepageLink', '$strHomepageText',
+          $intAvatarID, '$dteJoinDate', '$strUserIP', '$strUserGroups', '$strSEOUsername', 'N', 'Y')
+      ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+      $CMS->AL->Build(AL_TAG_USER_REGISTER, $intUserID, $displayName);
       return $intUserID;
     }
-    function Edit($intUserID, $strUsername, $strForename, $strSurname, $strEmail, $strLocation, $strOccupation, $strInterests, $strHomepageLink, $strHomepageText, $intAvatarID, $dteJoinDate, $strUserIP, $strUserGroups) {
+    function Edit($intUserID, $displayName, $strForename, $strSurname, $strEmail, $strLocation, $strOccupation, $strInterests, $strHomepageLink, $strHomepageText, $intAvatarID, $dteJoinDate, $strUserIP, $strUserGroups) {
       global $CMS;
       if (empty($intAvatarID)) {
         $intAvatarID = 0;
@@ -51,9 +61,26 @@
         $dteJoinDate = $CMS->SYS->GetCurrentDateAndTime();
       }
       $strHomepageLink = $CMS->AutoLink($strHomepageLink);
-      $strSEOUsername = $this->MakeSEOTitle($strUsername);
-      $this->Query("UPDATE {IFW_TBL_USERS} SET username = '$strUsername', forename = '$strForename', surname = '$strSurname', email = '$strEmail', location = '$strLocation', occupation = '$strOccupation', interests = '$strInterests', homepage_link = '$strHomepageLink', homepage_text = '$strHomepageText', avatar_id = $intAvatarID, join_date = '$dteJoinDate', ip_address = '$strUserIP', user_groups = '$strUserGroups', seo_username = '$strSEOUsername' WHERE id = $intUserID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      $CMS->AL->Build(AL_TAG_USER_EDIT, $intUserID, $strUsername);
+      $strSEOUsername = $this->MakeSEOTitle($displayName);
+      $this->Query("
+          UPDATE {IFW_TBL_USERS}
+          SET display_name = '$displayName',
+          forename = '$strForename',
+          surname = '$strSurname',
+          email = '$strEmail',
+          location = '$strLocation',
+          occupation = '$strOccupation',
+          interests = '$strInterests',
+          homepage_link = '$strHomepageLink',
+          homepage_text = '$strHomepageText',
+          avatar_id = $intAvatarID,
+          join_date = '$dteJoinDate',
+          ip_address = '$strUserIP',
+          user_groups = '$strUserGroups',
+          seo_username = '$strSEOUsername'
+          WHERE id = $intUserID
+      ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+      $CMS->AL->Build(AL_TAG_USER_EDIT, $intUserID, $displayName);
       return $intUserID;
     }
     function EditPassword($intUserID, $strPassword) {
@@ -141,7 +168,7 @@
       if (!isset($this->arrUser[$intUserID])) {
         $this->Get($intUserID);
       }
-      return $this->arrUser[$intUserID]['username'];
+      return $this->arrUser[$intUserID]['display_name'];
     }
     function GetUserGroups($intUserID) {
       if (!isset($this->arrUser[$intUserID])) {
@@ -156,37 +183,31 @@
       return $this->arrUser[$intUserID]['user_deleted'] == 'Y' ? true : false;
     }
     // ** Checking ** //
-    function GetIDFromNameAndEmail($strUsername, $strEmail) {
+    function GetIDFromNameAndEmail($displayName, $strEmail) {
       global $CMS;
-      $strUsername = $CMS->AddSlashesIFW($strUsername);
-      $arrResult = $this->ResultQuery("SELECT id, email FROM {IFW_TBL_USERS} WHERE username = '$strUsername' AND email = '$strEmail'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+        $displayName = $CMS->AddSlashesIFW($displayName);
+      $arrResult = $this->ResultQuery("SELECT id, email FROM {IFW_TBL_USERS} WHERE display_name = '$displayName' AND email = '$strEmail'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $arrResult[0]['id'];
     }
-    function GetIDFromName($strUsername) {
+    function GetIDFromName($displayName) {
       global $CMS;
-      $strUsername = $CMS->AddSlashesIFW($strUsername);
-      $arrResult = $this->ResultQuery("SELECT id FROM {IFW_TBL_USERS} WHERE username = '$strUsername'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+        $displayName = $CMS->AddSlashesIFW($displayName);
+      $arrResult = $this->ResultQuery("SELECT id FROM {IFW_TBL_USERS} WHERE display_name = '$displayName'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $arrResult[0]['id'];
     }
     function GetNewestUserIP() {
       $arrResult = $this->ResultQuery("SELECT ip_address FROM {IFW_TBL_USERS} ORDER BY id DESC LIMIT 1", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $arrResult[0]['ip_address'];
     }
-    function ValidateLogin($strUsername, $strPassword) {
+    function ValidateLogin($strEmail, $strPassword) {
       global $CMS;
-      $strUsername = $CMS->AddSlashesIFW($strUsername);
-      $arrLoggedOn = $this->ResultQuery("SELECT id, userpass FROM {IFW_TBL_USERS} WHERE username = '$strUsername'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+        $strEmail = $CMS->AddSlashesIFW($strEmail);
+      $arrLoggedOn = $this->ResultQuery("SELECT id, userpass FROM {IFW_TBL_USERS} WHERE email = '$strEmail'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       if (password_verify($strPassword, $arrLoggedOn[0]['userpass'])) {
         return $arrLoggedOn[0]['id'];
       } else {
         return null;
       }
-    }
-    function IsUniqueUsername($strUsername) {
-      global $CMS;
-      $strUsername = $CMS->AddSlashesIFW($strUsername);
-      $arrUserInfo = $this->ResultQuery("SELECT count(*) AS count FROM {IFW_TBL_USERS} WHERE username = '$strUsername'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return $arrUserInfo[0]['count'] == 0 ? true : false;
     }
     function IsUniqueEmail($strEmail) {
       global $CMS;
@@ -194,35 +215,22 @@
       $arrUserInfo = $this->ResultQuery("SELECT count(*) AS count FROM {IFW_TBL_USERS} WHERE email = '$strEmail'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $arrUserInfo[0]['count'] == 0 ? true : false;
     }
-    function IsUsernameLengthValid($strUsername) {
-      if ((strlen($strUsername) >= 3) && (strlen($strUsername) <= 45)) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    function IsUsernameInUse($strGuestName, $strGuestEmail) {
-      global $CMS;
-      $strGuestName = $CMS->AddSlashesIFW($strGuestName);
-      $arrUserDetails = $this->ResultQuery("SELECT id FROM {IFW_TBL_USERS} WHERE username = '$strGuestName' AND email = '$strGuestEmail'", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-      return empty($arrUserDetails[0]['id']) ? "" : $arrUserDetails[0]['id'];
-    }
     // ** Bulk, suspend/reinstate, moderate ** //
     function Suspend($intUserID) {
       global $CMS;
       if ($intUserID) {
-        $strUsername = $this->GetNameFromID($intUserID);
+          $displayName = $this->GetNameFromID($intUserID);
         $this->Query("UPDATE {IFW_TBL_USERS} SET user_deleted = 'Y' WHERE id = $intUserID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
         $CMS->USess->DeleteAllUserSessions($intUserID);
-        $CMS->AL->Build(AL_TAG_USER_SUSPEND, $intUserID, $strUsername);
+        $CMS->AL->Build(AL_TAG_USER_SUSPEND, $intUserID, $displayName);
       }
     }
     function Reinstate($intUserID) {
       global $CMS;
       if ($intUserID) {
-        $strUsername = $this->GetNameFromID($intUserID);
+        $displayName = $this->GetNameFromID($intUserID);
         $this->Query("UPDATE {IFW_TBL_USERS} SET user_deleted = 'N' WHERE id = $intUserID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
-        $CMS->AL->Build(AL_TAG_USER_REINSTATE, $intUserID, $strUsername);
+        $CMS->AL->Build(AL_TAG_USER_REINSTATE, $intUserID, $displayName);
       }
     }
     function BulkSuspend($strUserIDs) {

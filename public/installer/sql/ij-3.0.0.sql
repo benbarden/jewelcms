@@ -90,3 +90,8 @@ CHANGE COLUMN link_url link_url VARCHAR(150) CHARACTER SET 'utf8' COLLATE 'utf8_
 CHANGE COLUMN tags_deleted tags_deleted TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL ,
 CHANGE COLUMN article_order article_order INT(10) UNSIGNED NULL ,
 CHANGE COLUMN article_excerpt article_excerpt TEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL ;
+
+ALTER TABLE Cms_Users
+CHANGE COLUMN email email VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL DEFAULT '' AFTER id,
+CHANGE COLUMN username display_name VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL DEFAULT '',
+CHANGE COLUMN userpass userpass VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NOT NULL DEFAULT '' AFTER email;

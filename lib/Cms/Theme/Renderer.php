@@ -325,7 +325,7 @@ class Renderer
         $authCurrentUser = $this->container->getServiceLocator()->getAuthCurrentUser();
         if ($authCurrentUser) {
             $userArray = array(
-                'Name' => $authCurrentUser->getUsername()
+                'Name' => $authCurrentUser->getDisplayName()
             );
             $bindings['Login']['User'] = $userArray;
         }

@@ -1,0 +1,26 @@
+{% extends 'auth/base.twig' %}
+
+{% block auth_page_title %}Register{% endblock auth_page_title %}
+
+{% block auth_page_content %}
+    <form class="form-signin" action="/register.php" method="post">
+        <h2 class="form-signin-heading">Register</h2>
+        {% if ErrorList %}
+        <div class="alert alert-danger" role="alert">
+            The following errors occurred:
+            <ul>
+                {% for Error in ErrorList %}
+                <li>{{ Error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        <label for="register-email" class="sr-only">Email</label>
+        <input type="text" id="register-email" name="register-email" class="form-control" placeholder="Email" maxlength="100"  autofocus value="{{ Email }}">
+        <label for="register-name" class="sr-only">Display name</label>
+        <input type="text" id="register-name" name="register-name" class="form-control" placeholder="Display name" maxlength="100"  value="{{ DisplayName }}">
+        <label for="register-pass" class="sr-only">Password</label>
+        <input type="password" id="register-pass" name="register-pass" class="form-control" placeholder="Password">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+    </form>
+{% endblock auth_page_content %}

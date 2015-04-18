@@ -98,7 +98,7 @@
       $strGetURL .= "&amp;user=$intUserID";
     }
   } else {
-    $strUser = $CMS->FilterAlphanumeric($_GET['user'], C_CHARS_USERNAME);
+    $strUser = $CMS->FilterAlphanumeric($_GET['user'], C_CHARS_DISPLAY_NAME);
     $intUserID = $CMS->US->GetIDFromName($strUser);
     if ($intUserID) {
       $strWhereClause .= " AND c.author_id = $intUserID ";

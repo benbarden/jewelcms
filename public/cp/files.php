@@ -66,7 +66,7 @@
   
   $strUserWhereClause = "";
   if (!empty($_GET['user'])) {
-    $strUser = $CMS->FilterAlphanumeric($_GET['user'], C_CHARS_USERNAME);
+    $strUser = $CMS->FilterAlphanumeric($_GET['user'], C_CHARS_DISPLAY_NAME);
     $intUserID = $CMS->US->GetIDFromName($strUser);
     if ($intUserID) {
       $strUserWhereClause = " AND u.id = $intUserID ";

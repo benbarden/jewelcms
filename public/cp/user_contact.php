@@ -35,11 +35,11 @@
 
   if ($_POST) {
     $blnSubmitForm = true;
-    $strUsername = $_POST['txtUsername'];
+      $displayName = $_POST['txtDisplayName'];
     $strEmail    = $_POST['txtEmail'];
     $strSubject  = $CMS->StripSlashesIFW($_POST['txtSubject']);
     $strBody     = $CMS->StripSlashesIFW($_POST['txtMessageBody']);
-    if (!$strUsername || !$strEmail) {
+    if (!$displayName || !$strEmail) {
       $blnSubmitForm = false;
     }
     if (!$strSubject) {
@@ -74,7 +74,7 @@
   if (!is_array($arrUserDetails)) {
     $CMS->Err_MFail(M_ERR_NO_ROWS_RETURNED, "User: $intUserID");
   }
-  $strUsername = $arrUserDetails['username'];
+$displayName = $arrUserDetails['display_name'];
   $strEmail    = $arrUserDetails['email'];
 
   $strSubmitButton = $CMS->AC->Submit(M_BTN_SEND_MESSAGE);
@@ -86,10 +86,10 @@
 <div class="table-responsive">
 <table class="table table-striped">
   <tr>
-    <td><strong>Username:</strong></td>
+    <td><strong>Display name:</strong></td>
     <td>
-      $strUsername
-      <input type="hidden" name="txtUsername" value="$strUsername" />
+      $displayName
+      <input type="hidden" name="txtDisplayName" value="$displayName" />
     </td>
   </tr>
   <tr>

@@ -48,14 +48,14 @@
 <table class="table table-striped" style="width: 400px;">
   <tr class="separator-row">
     <td>ID</td>
-    <td>Username</td>
+    <td>Display name</td>
     <td>Maintain</td>
   </tr>
 
 GroupHeader;
       }
       $intUserID   = $arrUsers[$i]['id'];
-      $strUsername = $arrUsers[$i]['username'];
+        $displayName = $arrUsers[$i]['display_name'];
       $strSEOName  = $arrUsers[$i]['seo_username'];
       $strDeleted  = $arrUsers[$i]['user_deleted'];
       if ($strDeleted != "Y") {
@@ -64,7 +64,7 @@ GroupHeader;
         $strHTML .= <<<TableRow
   <tr>
     <td class="Centre">$intUserID</td>
-    <td class="Left"><a href="$strViewUser">$strUsername</a></td>
+    <td class="Left"><a href="$strViewUser">$displayName</a></td>
     <td class="Centre"><a href="{FN_ADM_USER}?action=edit&amp;id=$intUserID">Edit</a></td>
   </tr>
 

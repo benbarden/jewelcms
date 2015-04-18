@@ -18,7 +18,6 @@
 */
 
   // Allowable characters
-  define('C_CHARS_USERNAME', " .,+'-_@");
+  define('C_CHARS_DISPLAY_NAME', " .,+'-_@");
   define('C_CHARS_SEARCH',   " .,+'");
 
-?>

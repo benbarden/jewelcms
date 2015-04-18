@@ -24,9 +24,9 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="username", type="string", length=100, nullable=false)
+     * @ORM\Column(name="email", type="string", length=100, nullable=false)
      */
-    private $username = '';
+    private $email = '';
 
     /**
      * @var string
@@ -34,6 +34,13 @@ class User
      * @ORM\Column(name="userpass", type="string", length=100, nullable=false)
      */
     private $userpass = '';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="display_name", type="string", length=100, nullable=false)
+     */
+    private $displayName = '';
 
     /**
      * @var string
@@ -48,13 +55,6 @@ class User
      * @ORM\Column(name="surname", type="string", length=45, nullable=false)
      */
     private $surname = '';
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=100, nullable=false)
-     */
-    private $email = '';
 
     /**
      * @var string
@@ -152,14 +152,19 @@ class User
         return $this->id;
     }
 
-    public function getUsername()
+    public function getEmail()
     {
-        return $this->username;
+        return $this->email;
     }
 
     public function getUserpass()
     {
         return $this->userpass;
+    }
+
+    public function getDisplayName()
+    {
+        return $this->displayName;
     }
 
     public function getForename()
@@ -170,11 +175,6 @@ class User
     public function getSurname()
     {
         return $this->surname;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
     }
 
     public function getLocation()

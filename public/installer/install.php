@@ -41,7 +41,8 @@ switch ($intStep) {
         $installDbSchema = "";
         $installDbUser   = "";
         $installDbPass   = "";
-        $installCmsUser  = "";
+        $installCmsEmail = "";
+        $installCmsName  = "";
         $installCmsPass  = "";
         break;
 }
@@ -55,7 +56,8 @@ switch ($intStep) {
         $installDbSchema  = $_POST['install-db-name'];
         $installDbUser    = $_POST['install-db-user'];
         $installDbPass    = $_POST['install-db-pass'];
-        $installCmsUser   = $_POST['install-cms-user'];
+        $installCmsEmail  = $_POST['install-cms-email'];
+        $installCmsName   = $_POST['install-cms-name'];
         $installCmsPass   = $_POST['install-cms-pass'];
         $blnSubmitForm    = true;
         $blnMissingHost   = false;
@@ -76,9 +78,13 @@ switch ($intStep) {
           $blnMissingUser = true;
           $blnSubmitForm = false;
         }
-        if (!$installCmsUser) {
-          $blnMissingCmsUser = true;
+        if (!$installCmsEmail) {
+          $blnMissingCmsEmail = true;
           $blnSubmitForm = false;
+        }
+        if (!$installCmsName) {
+            $blnMissingCmsName = true;
+            $blnSubmitForm = false;
         }
         if (!$installCmsPass) {
           $blnMissingCmsPass = true;
@@ -171,7 +177,7 @@ htaccess;
       $strInputStyles = "font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 100%;";
       $strErrorStyles = "background-color: transparent; color: #f00; display: none; font-size: 100%; font-style: italic;";
       $strHTML = <<<STEP2
-    <p>Enter your MySQL database credentials below. Then choose a username and password for your Jewel CMS site.</p>
+    <p>Enter your MySQL database credentials below. Then set up an admin login for your site.</p>
     <form class="form-horizontal" name="frmInstall2" action="?step=2" method="post">
         <div class="form-group">
             <label for="install-db-host" class="col-sm-4 control-label">Database host</label>
@@ -198,9 +204,15 @@ htaccess;
             </div>
         </div>
         <div class="form-group">
-            <label for="install-cms-user" class="col-sm-4 control-label">Jewel CMS user</label>
+            <label for="install-cms-email" class="col-sm-4 control-label">Jewel CMS email</label>
             <div class="col-sm-6">
-                <input type="text" class="form-control" id="install-cms-user" name="install-cms-user" placeholder="CMS user" size="20" maxlength="50" value="$installCmsUser">
+                <input type="text" class="form-control" id="install-cms-email" name="install-cms-email" placeholder="CMS email" size="20" maxlength="50" value="$installCmsEmail">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="install-cms-name" class="col-sm-4 control-label">Jewel CMS display name</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="install-cms-name" name="install-cms-name" placeholder="CMS display name" size="20" maxlength="50" value="$installCmsName">
             </div>
         </div>
         <div class="form-group">
@@ -307,13 +319,15 @@ configIni;
                 <p>Please <a href=\"javascript:history.go(-1);\">go back</a> and try again.</p>
                 <p><em>Source: &lt;install.php, step $intStep&gt;</em></p>
                 ", "Installation Error"));
-      // Store username and password for next step
-      $newCmsUser = $_POST['install-cms-user'];
+      // Store email, display name and password for next step
+      $newCmsEmail = $_POST['install-cms-email'];
+      $newCmsName = $_POST['install-cms-name'];
       $newCmsPass = $_POST['install-cms-pass'];
       // Success
       $IJP->Display("<p>The installer has successfully connected to the database.</p>".
         '<form name="frmInstall3" action="?step=4" method="post">'.
-        '<input type="hidden" name="install-cms-user" value="'.$newCmsUser.'" />'.
+        '<input type="hidden" name="install-cms-email" value="'.$newCmsEmail.'" />'.
+        '<input type="hidden" name="install-cms-name" value="'.$newCmsName.'" />'.
         '<input type="hidden" name="install-cms-pass" value="'.$newCmsPass.'" />'.
         '<button type="submit" class="btn btn-success">Proceed to Step 4</button></form>', "Step 3");
       break;
@@ -332,13 +346,14 @@ configIni;
                 <p><em>Source: &lt;install.php, step $intStep&gt;</em></p>
                 ", "Installation Error");
       }
-      // Store username and password
-      $newCmsUser = addslashes($_POST['install-cms-user']);
+      // Store email, display name and password
+      $newCmsEmail = addslashes($_POST['install-cms-email']);
+      $newCmsName = addslashes($_POST['install-cms-name']);
       $pwHash = password_hash($_POST['install-cms-pass'], PASSWORD_BCRYPT);
       // Create user
       $intNewUserID = $CMS->Query("
-        INSERT INTO {IFW_TBL_USERS}(username, userpass, forename, surname, email, location, occupation, interests, homepage_link, homepage_text, avatar_id, user_groups, user_moderate)
-        VALUES ('$newCmsUser', '$pwHash', '', '', 'admin@yoursite.com', '', '', '', '', '', 0, '1|2|3', 'N')
+        INSERT INTO {IFW_TBL_USERS}(email, userpass, display_name, forename, surname, location, occupation, interests, homepage_link, homepage_text, avatar_id, user_groups, user_moderate)
+        VALUES ('$newCmsEmail', '$pwHash', '$newCmsName', '', '', '', '', '', '', '', 0, '1|2|3', 'N')
       ", basename(__FILE__), __LINE__);
       // Build link mapping table
       //$CMS->UM->rebuildAll();

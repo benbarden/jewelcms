@@ -27,98 +27,66 @@
   }
   $strPageTitle = "Register";
 
-  $strMissingUsername = "";
-  $strDuplicateUsername = "";
-  $strUsernameTooShort = "";
-  $strUsernameInvalidChars = "";
-  $strUsername = "";
-  $strPassword = "";
-  $strMissingPassword = "";
-  $strPWInvalidChars = "";
-  $strForename = "";
-  $strSurname = "";
-  $strMissingEmail = "";
-  $strEmailInUse = "";
-  $strEmail = "";
+  $displayName = "";
+  $email = "";
+  $password = "";
+
+$errorList = array();
 
   if ($_POST) {
-    // Prevent multiple usernames being created in a row
-    // Disabled for now.
-    /*
-    $intUserIP = $_SERVER['REMOTE_ADDR'];
-    $intNewestUserIP = $CMS->US->GetNewestUserIP();
-    if (($intNewestUserIP != 0) && ($intNewestUserIP != "")) {
-      if ($intUserIP == $intNewestUserIP) {
-        $CMS->Err_MFail(M_ERR_REGISTER_MULTIPLE, "");
-      }
+    if (!empty($_POST['register-name'])) {
+        $displayName = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['register-name'], C_CHARS_DISPLAY_NAME));
     }
-    */
-    if (!empty($_POST['txtRegisterUsername'])) {
-      $strUsername = $CMS->AddSlashesIFW($CMS->FilterAlphanumeric($_POST['txtRegisterUsername'], C_CHARS_USERNAME));
+    if (!empty($_POST['register-pass'])) {
+        $password = $CMS->AddSlashesIFW($_POST['register-pass']);
     }
-    if (!empty($_POST['txtRegisterPassword'])) {
-      $strPassword = $CMS->AddSlashesIFW($_POST['txtRegisterPassword']);
-    }
-    if (!empty($_POST['txtForename'])) {
-      $strForename = $CMS->AddSlashesIFW($_POST['txtForename']);
-      $strForename = strip_tags($strForename);
-    }
-    if (!empty($_POST['txtSurname'])) {
-      $strSurname = $CMS->AddSlashesIFW($_POST['txtSurname']);
-      $strSurname = strip_tags($strSurname);
-    }
-    if (!empty($_POST['txtEmail'])) {
-      $strEmail = $CMS->AddSlashesIFW($_POST['txtEmail']);
-      $strEmail = strip_tags($strEmail);
+    if (!empty($_POST['register-email'])) {
+        $email = $CMS->AddSlashesIFW($_POST['register-email']);
+        $email = strip_tags($email);
     }
     $blnSubmitForm   = true;
-    // Check for missing username
-    if (!$strUsername) {
-      $strMissingUsername = $CMS->AC->InvalidFormData("");
+      // Check for missing email
+      if (!$email) {
+          $errorList[] = 'Missing email';
+          $blnSubmitForm = false;
+      } else {
+          // Check e-mail address isn't already in use
+          if ($email) {
+              if (!$CMS->US->IsUniqueEmail($email)) {
+                  $errorList[] = 'Email already registered. Do you already have an account?';
+                  $blnSubmitForm = false;
+              }
+          }
+      }
+    // Check for missing display name
+    if (!$displayName) {
+        $errorList[] = 'Missing display name';
       $blnSubmitForm = false;
     } else {
-      // Check username doesn't already exist
-      if (!$CMS->US->IsUniqueUsername($strUsername)) {
-        $strDuplicateUsername = $CMS->AC->InvalidFormData(M_ERR_USERNAME_IN_USE);
-        $blnSubmitForm = false;
-      }
-      // Check for invalid username
-      if (!$CMS->US->IsUsernameLengthValid($strUsername)) {
-        $strUsernameTooShort = $CMS->AC->InvalidFormData(M_ERR_USERNAME_TOO_SHORT);
-        $blnSubmitForm = false;
-      } else {
-        $strFilteredUsername = $CMS->FilterAlphanumeric($strUsername, C_CHARS_USERNAME);
-        if ($strFilteredUsername != $strUsername) {
-          $strUsernameInvalidChars = $CMS->AC->InvalidFormData(M_ERR_INVALID_CHARS);
+      // Check for invalid display name
+      if ((strlen($displayName) >= 3) && (strlen($displayName) <= 100)) {
+        $filteredName = $CMS->FilterAlphanumeric($displayName, C_CHARS_DISPLAY_NAME);
+        if ($filteredName != $displayName) {
+            $errorList[] = M_ERR_INVALID_CHARS;
           $blnSubmitForm = false;
-          $strUsername = $strFilteredUsername;
+            $displayName = $filteredName;
         }
+      } else {
+          $errorList[] = 'Display name must be at least 3 characters long';
+          $blnSubmitForm = false;
       }
     }
     // Check for missing password
-    if (!$strPassword) {
-      $strMissingPassword = $CMS->AC->InvalidFormData("");
+    if (!$password) {
+        $errorList[] = 'Missing password';
       $blnSubmitForm = false;
     } else {
       // Check for invalid password characters
-      $strFilteredPW = $CMS->FilterAlphanumeric($strPassword, C_CHARS_USERNAME);
-      if ($strFilteredPW != $strPassword) {
-        $strPWInvalidChars = $CMS->AC->InvalidFormData(M_ERR_INVALID_CHARS);
+      $filteredPW = $CMS->FilterAlphanumeric($password, C_CHARS_DISPLAY_NAME);
+      if ($filteredPW != $password) {
+          $errorList[] = M_ERR_INVALID_CHARS;
         $blnSubmitForm = false;
-        $strPassword = "";
-      }
-    }
-    // Check for missing email
-    if (!$strEmail) {
-      $strMissingEmail = $CMS->AC->InvalidFormData("");
-      $blnSubmitForm = false;
-    } else {
-      // Check e-mail address isn't already in use
-      if (!$strMissingEmail) {
-        if (!$CMS->US->IsUniqueEmail($strEmail)) {
-          $strEmailInUse = $CMS->AC->InvalidFormData(M_ERR_EMAIL_IN_USE);
-          $blnSubmitForm = false;
-        }
+          $password = "";
       }
     }
     // Proceed if there were no errors
@@ -126,75 +94,22 @@
       $strPageTitle .= " - Results";
       $CMS->LP->SetTitle($strPageTitle);
       $dteJoinDate = $CMS->SYS->GetCurrentDateAndTime();
-      $CMS->US->Create(FN_REGISTER, $CMS->AddSlashesIFW($strUsername), $strPassword, $CMS->AddSlashesIFW($strForename), $CMS->AddSlashesIFW($strSurname), $strEmail, "", "", "", "", "", 0, $dteJoinDate, $intUserIP, "");
+        if (isset($_SERVER['REMOTE_ADDR'])) {
+            $userIP = $_SERVER['REMOTE_ADDR'];
+        } else {
+            $userIP = '';
+        }
+      $CMS->US->Create(FN_REGISTER, $CMS->AddSlashesIFW($displayName), $password, '', '', $email, "", "", "", "", "", 0, $dteJoinDate, $userIP, "");
       $strHTML = "<h1>$strPageTitle</h1>\n<p>Registration was successful.</p>\n<ul>\n<li><a href=\"{FN_LOGIN}\">Login</a></li>\n<li><a href=\"{FN_INDEX}\">Back to the home page</a></li>\n</ul>\n";
       $CMS->LP->Display($strHTML);
     }
-  }  
-  
-  $CMS->LP->SetTitle($strPageTitle);
-  
-  $strRegisterButton = $CMS->AC->RegisterButton();
-  $strCancelButton = $CMS->AC->CancelButton();
+  }
 
-  $strHTML = <<<END
-<h1>$strPageTitle</h1>
-<form action="{FN_REGISTER}" method="post">
-<table class="OptionTable MediumForm" cellspacing="1">
-  <colgroup>
-    <col class="InfoColour NarrowCell" />
-    <col class="BaseColour WideCell" />
-  </colgroup> 
-  <tr>
-    <td class="InfoColour"><label for="txtRegisterUsername">Username:</label></td>
-    <td>
-      $strMissingUsername
-      $strDuplicateUsername
-      $strUsernameTooShort
-      $strUsernameInvalidChars
-      <input type="text" id="txtRegisterUsername" name="txtRegisterUsername" value="$strUsername" maxlength="45" size="30" />
-    </td>
-  </tr>
-  <tr>
-    <td class="InfoColour"><label for="txtRegisterPassword">Password:</label></td>
-    <td>
-      $strMissingPassword
-      $strPWInvalidChars
-      <input type="password" id="txtRegisterPassword" name="txtRegisterPassword" value="" maxlength="45" size="30" />
-    </td>
-  </tr>
-  <tr>
-    <td class="InfoColour">
-      <label for="txtForename">Forename:</label>
-      <br /><em>Optional</em>
-    </td>
-    <td>
-      <input type="text" id="txtForename" name="txtForename" value="$strForename" maxlength="45" size="30" />
-    </td>
-  </tr>
-  <tr>
-    <td class="InfoColour">
-      <label for="txtSurname">Surname:</label>
-      <br /><em>Optional</em>
-    </td>
-    <td>
-      <input type="text" id="txtSurname" name="txtSurname" value="$strSurname" maxlength="45" size="30" />
-    </td>
-  </tr>
-  <tr>
-    <td class="InfoColour"><label for="txtEmail">Email:</label></td>
-    <td>
-      $strMissingEmail
-      $strEmailInUse
-      <input type="text" id="txtEmail" name="txtEmail" value="$strEmail" maxlength="100" size="30" />
-    </td>
-  </tr>
-  <tr>
-    <td class="FootColour" colspan="2">$strRegisterButton $strCancelButton</td>
-  </tr>
-</table>
-</form>
+$bindings['ErrorList'] = $errorList;
+$bindings['DisplayName'] = $displayName;
+$bindings['Email'] = $email;
 
-END;
-
-  $CMS->LP->Display($strHTML);
+$engine = $cmsContainer->getService('Theme.Engine');
+$outputHtml = $engine->render('auth/register.twig', $bindings);
+print($outputHtml);
+exit;

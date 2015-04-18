@@ -164,11 +164,11 @@ CREATE TABLE IF NOT EXISTS {IFW_TBL_UPLOADS} (
 DROP TABLE IF EXISTS {IFW_TBL_USERS};
 CREATE TABLE IF NOT EXISTS {IFW_TBL_USERS} (
   id int(10) unsigned NOT NULL auto_increment,
-  username varchar(100) NOT NULL default '',
+  email varchar(100) NOT NULL default '',
   userpass varchar(100) NOT NULL default '',
+  display_name varchar(100) NOT NULL default '',
   forename varchar(45) NOT NULL default '',
   surname varchar(45) NOT NULL default '',
-  email varchar(100) NOT NULL default '',
   location varchar(100) NOT NULL default '',
   occupation varchar(100) NOT NULL default '',
   interests text NOT NULL,
@@ -183,9 +183,7 @@ CREATE TABLE IF NOT EXISTS {IFW_TBL_USERS} (
   user_deleted CHAR(1) NOT NULL DEFAULT 'N',
   user_moderate CHAR(1) NOT NULL DEFAULT 'Y',
   PRIMARY KEY(id),
-  INDEX username(username),
   INDEX email(email),
-  INDEX avatar_id(avatar_id),
   INDEX user_deleted(user_deleted)
 );
 

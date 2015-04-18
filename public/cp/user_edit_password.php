@@ -26,11 +26,11 @@
   if (!$intUserID) {
     $CMS->Err_MFail(M_ERR_MISSINGPARAMS_SYSTEM, "ID");
   }
-  $arrUser = $CMS->ResultQuery("SELECT username FROM {IFW_TBL_USERS} WHERE id = $intUserID", basename(__FILE__), __LINE__);
+  $arrUser = $CMS->ResultQuery("SELECT display_name FROM {IFW_TBL_USERS} WHERE id = $intUserID", basename(__FILE__), __LINE__);
   if (count($arrUser) == 0) {
     $CMS->Err_MFail(M_ERR_NO_ROWS_RETURNED, "User: $intUserID");
   }
-  $strUserName = $arrUser[0]['username'];
+  $displayName = $arrUser[0]['display_name'];
 
   $strPageTitle = "Edit Password";
   $strMissingPassword = "";
@@ -61,8 +61,8 @@
 <div class="table-responsive">
 <table class="table table-striped">
   <tr>
-    <td><strong>Username:</strong></td>
-    <td>$strUserName</td>
+    <td><strong>Display name:</strong></td>
+    <td>$displayName</td>
   </tr>
   <tr>
     <td><label for="txtEditPass">New password:</label></td>

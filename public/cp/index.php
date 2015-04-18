@@ -41,7 +41,7 @@ $authCurrentUser = $cmsContainer->getServiceLocator()->getAuthCurrentUser();
 if ($authCurrentUser) {
     $userArray = array(
         'Id' => $authCurrentUser->getId(),
-        'Name' => $authCurrentUser->getUsername()
+        'Name' => $authCurrentUser->getDisplayName()
     );
     $cpBindings['Login']['User'] = $userArray;
 }

@@ -19,4 +19,14 @@ class User extends EntityRepository
             ->setParameter('id', $userId);
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+    public function getByEmail($email)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('User')
+            ->from('Cms\Entity\User', 'User')
+            ->where($qb->expr()->eq('User.email', ':email'))
+            ->setParameter('email', $email);
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }

@@ -30,7 +30,7 @@ Create an empty MySQL database. Create a MySQL user and give the user access to 
 
 Now enter the database name, database username and password in the installer.
 
-At this point, you will also need to create an admin username and password for your new Jewel CMS installation.
+At this point, you will also need to create an admin login for your new Jewel CMS installation.
 
 ## Installer Step 3
 

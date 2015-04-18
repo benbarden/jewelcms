@@ -91,7 +91,7 @@ class Article
         $articleAuthor = $this->container->getServiceLocator()->getCmsEntityManager()->getRepository('Cms\Entity\User')->getById($articleAuthorId);
         /* @var \Cms\Entity\User $articleAuthor */
         $bindings['Article']['Author']['Id'] = $articleAuthor->getId();
-        $bindings['Article']['Author']['Username'] = $articleAuthor->getUsername();
+        $bindings['Article']['Author']['Username'] = $articleAuthor->getDisplayName();
 
         $this->bindings = $bindings;
     }

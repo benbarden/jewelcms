@@ -117,7 +117,11 @@ if ($_POST) {
         $postPermalink = $_POST['permalink'];
         $postBody = $_POST['content-body'];
         $postCategoryId = (int) $_POST['category-id'];
-        $postCreateDate = sprintf('%s %s', $_POST['create-date-day'], $_POST['create-date-time']);
+        if ($_POST['create-date-day'] && $_POST['create-date-time']) {
+            $postCreateDate = sprintf('%s %s', $_POST['create-date-day'], $_POST['create-date-time']);
+        } else {
+            $postCreateDate = null;
+        }
         $postLinkUrl = $_POST['link-url'];
         $postExcerpt = $_POST['excerpt'];
 
@@ -129,6 +133,9 @@ if ($_POST) {
         }
         if (!$postBody) {
             $formErrors[] = array('Field' => 'content-body', 'Message' => 'Missing body');
+        }
+        if (!$postCreateDate) {
+            $formErrors[] = array('Field' => 'create-date-day', 'Message' => 'Missing date');
         }
         // Validate permalink
         if (!$isDelete) {
@@ -237,9 +244,11 @@ if ($_POST) {
     }
     $formPrefill[] = array('Field' => 'excerpt', 'Value' => $postExcerpt);
     $formPrefill[] = array('Field' => 'link-url', 'Value' => $postLinkUrl);
-    $createDateArray = explode(' ', $postCreateDate);
-    $formPrefill[] = array('Field' => 'create-date-day', 'Value' => $createDateArray[0]);
-    $formPrefill[] = array('Field' => 'create-date-time', 'Value' => $createDateArray[1]);
+    if ($postCreateDate) {
+        $createDateArray = explode(' ', $postCreateDate);
+        $formPrefill[] = array('Field' => 'create-date-day', 'Value' => $createDateArray[0]);
+        $formPrefill[] = array('Field' => 'create-date-time', 'Value' => $createDateArray[1]);
+    }
     // CKEditor prefill needs to be done differently
     $cpBindings['Form']['CKEditor']['Body'] = $postBody;
 } elseif ($articleData && $isEdit) {

@@ -9,8 +9,6 @@ Jewel CMS is a fast, modern system aimed at tech-savvy users and developers. It 
 
 Jewel is built in PHP and uses jQuery, Twig and Bootstrap.
 
-Jewel aims to provide a lightweight alternative to more mainstream products, such as WordPress and Drupal.
-
 # A brief history
 
 Jewel CMS is a fork of Injader 2.5.0. The work that was originally intended for Injader v3 has been repackaged as

@@ -15,6 +15,7 @@ Changes since then:
 * New: Option to use Disqus comments
 * New: Themes now use Twig
 * New: Archives page can now be customised
+* New: Login with email instead of username
 * New: Introduced Bootstrap for public-facing themes and for the Control Panel
 * New: Introduced many new helper functions for themes
 * New: Replaced TinyMCE with CKEditor

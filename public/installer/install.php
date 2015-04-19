@@ -360,7 +360,7 @@ configIni;
       // ** Confirm completion ** //
       $IJP->Display("<p>Installation completed successfully.</p>
       <p><b>IMPORTANT:</b> Please complete the following steps before continuing:</p>
-      <p>1. CHMOD the data/secure directory to 755</p>
+      <p>1. CHMOD the public/uploads directory to 755</p>
       <p>2. Delete the installer directory</p>".
       '<p><a class="btn btn-lg btn-success" href="/login.php" role="button">Login to your site!</a></p>', "Step 4");
 

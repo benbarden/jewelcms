@@ -19,4 +19,13 @@ class Category extends EntityRepository
             ->setParameter('id', $categoryId);
         return $qb->getQuery()->getOneOrNullResult();
     }
+
+    public function getTopLevel()
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('Category')
+            ->from('Cms\Entity\Category', 'Category')
+            ->where('Category.parentId IS NULL');
+        return $qb->getQuery()->getResult();
+    }
 }

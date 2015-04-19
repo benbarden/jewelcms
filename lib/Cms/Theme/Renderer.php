@@ -291,7 +291,6 @@ class Renderer
 
         $repoCategory = $this->container->getService('Repo.Category');
         /* @var \Cms\Data\Category\CategoryRepository $repoCategory */
-        $categoriesTopLevel = $repoCategory->getTopLevel();
 
         // Default RSS URL
         $siteRSSArticlesUrl = FN_FEEDS."?name=articles";
@@ -318,9 +317,6 @@ class Renderer
         $bindings['URL']['SiteRoot'] = URL_ROOT;
         $bindings['URL']['ThemeRoot'] = $publicThemePath;
 
-        //$bindings['Nav']['TopLevelAreas'] = $this->processAreaData($areasTopLevel);
-        $bindings['Nav']['TopLevelAreas'] = $this->processCategoryData($categoriesTopLevel);
-
         // User access
         $authCurrentUser = $this->container->getServiceLocator()->getAuthCurrentUser();
         if ($authCurrentUser) {
@@ -331,44 +327,5 @@ class Renderer
         }
 
         return $bindings;
-    }
-
-    private function processAreaData($areaData)
-    {
-        $areaArray = array();
-
-        if ($areaData) {
-            foreach ($areaData as $areaItem) {
-                $areaObject = new \Cms\Data\Area\Area($areaItem);
-                /* @var \Cms\Data\Area\Area $areaObject */
-                $areaRow = array(
-                    'Id' => $areaObject->getAreaId(),
-                    'Name' => $areaObject->getName(),
-                    'Desc' => $areaObject->getAreaDescription()
-                );
-                $areaArray[] = $areaRow;
-            }
-        }
-
-        return $areaArray;
-    }
-
-    private function processCategoryData($catData)
-    {
-        $catArray = array();
-
-        if ($catData) {
-            foreach ($catData as $catItem) {
-                $catObject = new \Cms\Data\Category\Category($catItem);
-                $catArray[] = array(
-                    'Id' => $catObject->getCategoryId(),
-                    'Name' => $catObject->getName(),
-                    'Desc' => $catObject->getDescription(),
-                    'Url' => $catObject->getPermalink()
-                );;
-            }
-        }
-
-        return $catArray;
     }
 }

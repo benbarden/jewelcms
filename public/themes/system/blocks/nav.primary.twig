@@ -1,9 +1,8 @@
-{% if Nav.TopLevelAreas %}
-    <ul>
-        {% for Item in Nav.TopLevelAreas %}
-            <li>
-                {{ Item.Name }}
-            </li>
-        {% endfor %}
-    </ul>
+{% set NavPrimary = cmsDataCategoryTopLevel(5) %}
+{% if NavPrimary %}
+    {# put class=active after blog-nav-item for a nice arrow! #}
+    <a class="blog-nav-item" href="/">Home</a>
+    {% for Item in NavPrimary %}
+        <a class="blog-nav-item" href="{{ Item.getPermalink }}">{{ Item.getName }}</a>
+    {% endfor %}
 {% endif %}

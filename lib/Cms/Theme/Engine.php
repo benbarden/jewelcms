@@ -162,6 +162,7 @@ class Engine
 
     private function setupFunctions(\Twig_Environment $twig)
     {
+
         // cmsBlock
         $funcBlock = new \Twig_SimpleFunction('cmsBlock',
             array($this, 'cmsBlock'),
@@ -169,13 +170,24 @@ class Engine
             'needs_environment' => true,
             'needs_context' => true
         ));
+
         $twig->addFunction($funcBlock);
-        // cmsData
-        $funcCmsDataContentRecent = new \Twig_SimpleFunction('cmsDataContentRecent',
-            array($this, 'cmsDataContentRecent'),
-            array('is_safe' => array('html')
-        ));
-        $twig->addFunction($funcCmsDataContentRecent);
+
+        // Functions list
+        $cmsCustomFunctions = array(
+            'cmsDataContentRecent',
+            'cmsDataCategoryTopLevel'
+        );
+
+        // Map Twig functions
+        foreach ($cmsCustomFunctions as $custFunc) {
+            $twigFunction = new \Twig_SimpleFunction($custFunc,
+                array($this, $custFunc),
+                array('is_safe' => array('html')
+                ));
+            $twig->addFunction($twigFunction);
+        }
+
         // cmsDomainFull
         $funcDomainFull = new \Twig_SimpleFunction('cmsDomainFull',
             array($this, 'cmsDomainFull'),
@@ -240,6 +252,12 @@ class Engine
     {
         $contentArray = $this->repoArticle->getRecentPublic($limit);
         return $contentArray;
+    }
+
+    public function cmsDataCategoryTopLevel($limit)
+    {
+        $categoryArray = $this->repoCategory->getTopLevel();
+        return $categoryArray;
     }
 
     public function cmsDomainFull()

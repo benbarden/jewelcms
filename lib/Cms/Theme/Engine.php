@@ -176,7 +176,13 @@ class Engine
         // Functions list
         $cmsCustomFunctions = array(
             'cmsDataContentRecent',
-            'cmsDataCategoryTopLevel'
+            'cmsDataCategoryTopLevel',
+            'cmsDomainFull',
+            'cmsFormatDate',
+            'cmsLinkArticle',
+            'cmsLinkCategory',
+            'cmsLinkUser',
+            'cmsLinkPage',
         );
 
         // Map Twig functions
@@ -188,39 +194,6 @@ class Engine
             $twig->addFunction($twigFunction);
         }
 
-        // cmsDomainFull
-        $funcDomainFull = new \Twig_SimpleFunction('cmsDomainFull',
-            array($this, 'cmsDomainFull'),
-            array('is_safe' => array('html')
-        ));
-        $twig->addFunction($funcDomainFull);
-        // cmsFormatDate
-        $funcFormatDate = new \Twig_SimpleFunction('cmsFormatDate',
-            array($this, 'cmsFormatDate'),
-            array('is_safe' => array('html')
-        ));
-        $twig->addFunction($funcFormatDate);
-        // cmsLink
-        $funcLinkArticle = new \Twig_SimpleFunction('cmsLinkArticle',
-            array($this, 'cmsLinkArticle'),
-            array('is_safe' => array('html')
-        ));
-        $twig->addFunction($funcLinkArticle);
-        $funcLinkCategory = new \Twig_SimpleFunction('cmsLinkCategory',
-            array($this, 'cmsLinkCategory'),
-            array('is_safe' => array('html')
-        ));
-        $twig->addFunction($funcLinkCategory);
-        $funcLinkUser = new \Twig_SimpleFunction('cmsLinkUser',
-            array($this, 'cmsLinkUser'),
-            array('is_safe' => array('html')
-        ));
-        $twig->addFunction($funcLinkUser);
-        $funcLinkPage = new \Twig_SimpleFunction('cmsLinkPage',
-            array($this, 'cmsLinkPage'),
-            array('is_safe' => array('html')
-        ));
-        $twig->addFunction($funcLinkPage);
         return $twig;
     }
 

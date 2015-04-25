@@ -1,13 +1,12 @@
 <?php
-// Current directory - /sys
-$systemDir = dirname(__FILE__).'/../../../../public/sys/';
-
-// Root directory
-$rootDir = str_replace("/sys", "", $systemDir);
+$wwwRoot    = dirname(__FILE__).'/../../../../';
+$publicRoot = $wwwRoot.'public/';
+$publicSys  = $wwwRoot.'public/sys/';
 
 // Core constants
-define('ABS_ROOT', $rootDir);
-define('ABS_SYS_ROOT', $systemDir);
+define('ABS_ROOT', $publicRoot);
+define('ABS_SYS_ROOT', $publicSys);
+define('WWW_ROOT', $wwwRoot);
 
 // Hostname
 if (isset($_SERVER['HTTP_HOST'])) {

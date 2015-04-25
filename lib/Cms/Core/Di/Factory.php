@@ -53,9 +53,11 @@ class Factory
         $dbParams = array(
             'driver' => 'pdo_mysql', 'user' => $dbUser, 'password' => $dbPass, 'dbname' => $dbSchema,
         );
-        $paths = array(ABS_ROOT.'lib/Cms/Entity/');
+        $paths = array(WWW_ROOT.'lib/Cms/Entity/');
+        $proxyDir = WWW_ROOT.'data/cache/';
         $isDevMode = false;
-        $doctrineConfig = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, null, null, false);
+        $doctrineConfig = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode, $proxyDir, null, false);
+        $doctrineConfig->setAutoGenerateProxyClasses(true);
         $entityManager = EntityManager::create($dbParams, $doctrineConfig);
 
         $this->setupCurrentUserEntity($entityManager);

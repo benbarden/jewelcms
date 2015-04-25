@@ -25,7 +25,7 @@
 
     function getCacheFilePath($name)
     {
-        return ABS_ROOT.'data/cache/'.$name;
+        return WWW_ROOT.'data/cache/'.$name;
     }
 
   	/**

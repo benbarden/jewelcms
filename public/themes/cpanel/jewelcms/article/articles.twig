@@ -40,6 +40,7 @@
             <tr>
                 <th class="col-md-1">Id</th>
                 <th class="col-md-3">Title</th>
+                <th class="col-md-2">Category</th>
                 <th class="col-md-2">Status</th>
                 <th class="col-md-2">Date</th>
                 <th class="col-md-2">Options</th>
@@ -53,6 +54,13 @@
                             {{ Item.getTitle }}
                             {% if Item.getPermalink %}
                             <br><small><a href="{{ Item.getPermalink }}" target="_blank" title="Opens in a new tab">{{ Item.getPermalink }}</a></small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if Item.getCategory %}
+                                {{ Item.getCategory.getName }}
+                            {% else %}
+                                <em>No category</em>
                             {% endif %}
                         </td>
                         <td>{{ Item.getStatus }}</td>

@@ -20,6 +20,18 @@ class Article
     const STATUS_PRIVATE = 'Private';
     const STATUS_DELETED = 'Deleted';
 
+    // *** ASSOCIATIONS *** //
+    /**
+     * @ORM\OneToOne(targetEntity="Cms\Entity\Category")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     **/
+    private $category;
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
     /**
      * @var integer
      *

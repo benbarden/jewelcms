@@ -3,9 +3,9 @@
 {% block cms_content %}
 <div class="blog-post">
     <p class="blog-post-meta">
-        {{ Article.Date }}
-        | By <a href="{{ cmsLinkUser(Article.Author.Id) }}">{{ Article.Author.Username }}</a>
+        by {{ Article.Author.Username }}
         | <a href="{{ Article.Permalink }}">Permalink</a>
+        | {{ Article.Date }}
     </p>
     {{ Article.Body|raw }}
     {{ cmsBlock('comments.disqus') }}

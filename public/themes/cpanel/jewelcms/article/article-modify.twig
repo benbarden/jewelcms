@@ -81,18 +81,25 @@
             {% endif %}
             {% if Form.Prefill %}
             {% for Item in Form.Prefill %}
-                tagName = $('#{{ Item.Field }}').prop('tagName');
-                savedValue = '{{ Item.Value }}';
+                // {{ Item.Field }}
+                fieldName = '{{ Item.Field }}';
+                tagName = $('#' + fieldName).prop('tagName');
+                {% if Item.Field == 'title' %}
+                    savedValue = "{{ Item.Value|replace({'\"': '\\"', '&quot;': '\\"'})|raw }}";
+                {% else %}
+                    savedValue = '{{ Item.Value }}';
+                {% endif %}
                 if (tagName == 'select') {
-                    $('#{{ Item.Field }}').each(function(elem) {
+                    $('#' + fieldName).each(function(elem) {
                         if ($(elem).val() == savedValue) {
                             $(elem).prop('selected', 'selected');
                             return;
                         }
                     });
                 } else {
-                    $('#{{ Item.Field }}').val(savedValue);
+                    $('#' + fieldName).val(savedValue);
                 }
+
             {% endfor %}
             {% endif %}
 

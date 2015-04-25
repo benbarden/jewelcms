@@ -7,6 +7,14 @@
         | <a href="{{ Article.Permalink }}">Permalink</a>
         | {{ Article.Date }}
     </p>
+    <div class="row">
+        <div class="col-md-2">
+            {{ cmsBlock('social.twitter', {'SocialUrl': cmsDomainFull()~Article.Permalink, 'SocialTitle': Article.Title, 'SocialVia': 'jewelcms'}) }}
+        </div>
+        <div class="col-md-2">
+            {{ cmsBlock('social.facebook', {'SocialUrl': cmsDomainFull()~Article.Permalink}) }}
+        </div>
+    </div>
     {{ Article.Body|raw }}
     {{ cmsBlock('comments.disqus') }}
 </div>

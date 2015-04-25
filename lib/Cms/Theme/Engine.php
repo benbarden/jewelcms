@@ -208,8 +208,11 @@ class Engine
         return $twig;
     }
 
-    public function cmsBlock(\Twig_Environment $twig, $context, $blockFile)
+    public function cmsBlock(\Twig_Environment $twig, $context, $blockFile, $customBindings = array())
     {
+        if ($customBindings) {
+            $context = array_merge($context, $customBindings);
+        }
         $urlThemeRoot = $context['URL']['ThemeRoot'];
         $absSysBlockPath  = sprintf(ABS_ROOT.'themes/system/blocks/%s.twig', $blockFile);
         $absUserBlockPath = sprintf(ABS_ROOT.$urlThemeRoot.'blocks/%s.twig', $blockFile);

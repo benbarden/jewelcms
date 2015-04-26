@@ -30,14 +30,17 @@
 
 END;
   
-  $arrDirList = $CMS->Dir(ABS_ROOT."data/logs", "files", false);
+  $arrDirList = $CMS->Dir(WWW_ROOT."data/logs", "files", false);
+$ignoreList = array(
+    'index.php', '.gitignore'
+);
   
   $blnFoundItems = false;
   $blnFirstItem  = true;
   if (is_array($arrDirList)) {
     for ($i=0; $i<count($arrDirList); $i++) {
       $strDir = $arrDirList[$i];
-      if ($strDir != "index.php") {
+      if (!in_array($strDir, $ignoreList)) {
         if ($blnFirstItem) {
           $blnFirstItem  = false;
           $blnFoundItems = true;

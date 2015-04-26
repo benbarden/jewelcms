@@ -34,7 +34,7 @@
     $CMS->Err_MFail(M_ERR_MISSINGPARAMS_SYSTEM, "strFile");
   }
   
-  $strLogFilePath = ABS_ROOT."data/logs/".$strFile;
+  $strLogFilePath = WWW_ROOT."data/logs/".$strFile;
   if (file_exists($strLogFilePath) !== true) {
     $CMS->Err_MFail("File not found.", $strLogFilePath);
   }

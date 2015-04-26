@@ -58,9 +58,6 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Settings <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="{{ cpLink('edit_profile') }}">Edit Profile</a></li>
-                        {% if Login.User %}
-                        <li><a href="{{ cmsLinkUser(Login.User.Id) }}">View Profile</a></li>
-                        {% endif %}
                         <li><a href="{{ cpLink('change_password') }}">Change Password</a></li>
                         <li><a href="{{ cpLink('manage_avatars') }}">Manage Avatars</a></li>
                     </ul>

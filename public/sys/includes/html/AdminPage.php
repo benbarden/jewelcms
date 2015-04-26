@@ -79,9 +79,6 @@ ExecTime;
       // CP LINKS
       $controlPanelLinks = array();
 
-      $currentUserId = $CMS->RES->GetCurrentUserID();
-      $viewProfileLink = $CMS->PL->ViewUser($currentUserId);
-
       // New article
       // Content
         $strNewArticleLink = "";
@@ -205,7 +202,6 @@ AdminLinks;
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Settings <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="/cp/edit_profile.php">Edit Profile</a></li>
-                        <li><a href="$viewProfileLink">View Profile</a></li>
                         <li><a href="/cp/change_password.php">Change Password</a></li>
                         <li><a href="/cp/manage_avatars.php">Manage Avatars</a></li>
                     </ul>

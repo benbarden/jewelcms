@@ -162,22 +162,19 @@ MainContentStart;
     $strWhereClause = " AND is_avatar = 'Y' ";
   }
   // Get content
-  $arrImages = $CMS->ResultQuery("SELECT up.id AS upload_id, u.id AS user_id, u.username, u.seo_username, up.title, DATE_FORMAT(create_date, '$strDateFormat') AS create_date, create_date AS create_date_raw, up.location, up.thumb_small, up.thumb_medium, up.thumb_large, up.upload_size FROM ({IFW_TBL_UPLOADS} up, {IFW_TBL_USERS} u) WHERE up.author_id = u.id $strWhereClause $strUserWhereClause $strOrderBy LIMIT $intStart, $intContentPerPage", basename(__FILE__), __LINE__);
+  $arrImages = $CMS->ResultQuery("SELECT up.id AS upload_id, u.id AS user_id, u.display_name, up.title, DATE_FORMAT(create_date, '$strDateFormat') AS create_date, create_date AS create_date_raw, up.location, up.thumb_small, up.thumb_medium, up.thumb_large, up.upload_size FROM ({IFW_TBL_UPLOADS} up, {IFW_TBL_USERS} u) WHERE up.author_id = u.id $strWhereClause $strUserWhereClause $strOrderBy LIMIT $intStart, $intContentPerPage", basename(__FILE__), __LINE__);
   $arrImageCount = $CMS->ResultQuery("SELECT count(*) AS count FROM ({IFW_TBL_UPLOADS} up, {IFW_TBL_USERS} u) WHERE up.author_id = u.id $strWhereClause $strUserWhereClause", basename(__FILE__), __LINE__);
   $intImageCount = $arrImageCount[0]['count'];
   // Page number links
   $intNumPages = $CMS->PN->GetTotalPages($intContentPerPage, $intImageCount);
   $strPageNumbers = $CMS->PNN->Make($intNumPages, $intPageNumber, basename(__FILE__)."$strGetURL");
-	for ($i=0; $i<count($arrImages); $i++) {
+    for ($i=0; $i<count($arrImages); $i++) {
     $intID       = $arrImages[$i]['upload_id'];
     $strTitle    = $CMS->DoEntities($arrImages[$i]['title']);
     $intUserID   = $arrImages[$i]['user_id'];
-    $strUser     = $arrImages[$i]['username'];
-    $strSEOUser  = $arrImages[$i]['seo_username'];
+    $strUser     = $arrImages[$i]['display_name'];
     $dteCreated  = $arrImages[$i]['create_date'];
     $strFileSize = $CMS->MakeFileSize($arrImages[$i]['upload_size']);
-    $CMS->PL->SetTitle($strSEOUser);
-    $strViewUser = $CMS->PL->ViewUser($intUserID);
     if ($i == 0) {
       $strHTML .= <<<TableHeader
 $strPageNumbers
@@ -247,7 +244,7 @@ TableHeader;
         <b>File ID</b>: $intID<br />
         <b>Title</b>: $strTitle<br />
         <b>Size</b>: $strFileSize<br />
-        <b>Author</b>: <a href="$strViewUser">$strUser</a><br />
+        <b>Author</b>: $strUser<br />
         <b>Created</b>: $dteCreated
         <br /><br />
         <b>Options</b>: <a href="{FN_ADM_FILES_SITE_UPLOAD}?action=edit&amp;id=$intID">Edit</a> <a href="{FN_ADMIN_TOOLS}?action=deletefile&amp;id=$intID&amp;back={FN_ADM_FILES}$strBack">Delete</a>

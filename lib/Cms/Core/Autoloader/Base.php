@@ -1,6 +1,6 @@
 <?php
 
-function injAutoloader($className)
+function cmsAutoloader($className)
 {
     $filePath = str_replace('\\', '/', $className);
     $fullPath = sprintf('%s../lib/%s.php', ABS_ROOT, $filePath);
@@ -8,4 +8,4 @@ function injAutoloader($className)
         require_once $fullPath;
     }
 }
-spl_autoload_register('injAutoloader');
+spl_autoload_register('cmsAutoloader');

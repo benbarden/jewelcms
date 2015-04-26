@@ -256,13 +256,10 @@ TableHeader;
       $strTag      = $arrLogs[$i]['tag'];
       $intUserID   = $arrLogs[$i]['user_id'];
         $displayName = $arrLogs[$i]['display_name'];
-      $strSEOName  = $arrLogs[$i]['seo_username'];
       $dteLogDate  = $arrLogs[$i]['log_date'];
       $intUserIP   = $arrLogs[$i]['ip_address'];
-      if ($strUsername) {
-        $CMS->PL->SetTitle($strSEOName);
-        $strViewUser = $CMS->PL->ViewUser($intUserID);
-        $strUserMsg = "<a href=\"$strViewUser\">$displayName</a>";
+      if ($displayName) {
+        $strUserMsg = "$displayName";
       } else {
         $strUserMsg = "<i>Guest</i>";
       }

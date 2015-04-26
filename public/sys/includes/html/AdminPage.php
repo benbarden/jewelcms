@@ -165,6 +165,9 @@ AdminLinks;
     <!-- Bootstrap core CSS -->
     <link href="{URL_ROOT}assets/css/bootstrap/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Font Awesome -->
+    <link href="{URL_ROOT}assets/css/font-awesome/font-awesome.min.css" rel="stylesheet">
+
     <!-- Custom styles for this template -->
     <link href="{URL_ROOT}assets/css/bootstrap/dashboard.css" rel="stylesheet">
 
@@ -196,15 +199,7 @@ AdminLinks;
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                <a href="{FN_ADM_INDEX}"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Dashboard</a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Settings <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="/cp/edit_profile.php">Edit Profile</a></li>
-                        <li><a href="/cp/change_password.php">Change Password</a></li>
-                        <li><a href="/cp/manage_avatars.php">Manage Avatars</a></li>
-                    </ul>
+                <a href="{FN_ADM_INDEX}"><span class="fa fa-home" aria-hidden="true"></span> Dashboard</a>
                 </li>
                 $strNewArticleLink
                 $strAdminLinks

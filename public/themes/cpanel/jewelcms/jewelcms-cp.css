@@ -11,3 +11,19 @@ select.ij-text {padding: 10px;}
 
 /* Errors */
 .errortext {color: #ff0000; font-weight: bold;}
+
+/* Dashboard */
+.panel-heading h2 {
+    font-size: 17px;
+    text-transform: none;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+table.mini-stats-grid tr td {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    vertical-align: middle;
+}

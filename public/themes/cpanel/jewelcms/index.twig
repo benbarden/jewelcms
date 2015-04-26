@@ -4,62 +4,114 @@
 
     <h1 class="page-header">Dashboard</h1>
 
-    <table width="100%;">
-        <tr>
-            <td style="vertical-align: top; width: 40%;">
-                <h2 class="sub-header">Overview</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <tr class="separator-row">
-                            <td colspan="2">Content</td>
-                        </tr>
-                        <tr>
-                            <td style="width: 50%;">
-                                {% if Auth.CanWriteContent %}
-                                    <a href="{{ cpLink('articles') }}">Articles</a>
-                                {% else %}
-                                    Articles
-                                {% endif %}
-                            </td>
-                            <td>{{ Page.ArticleCount }}</td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {% if Auth.IsAdmin %}
-                                    <a href="{{ cpLink('users', {'action': 'showall'}) }}">Active Users</a>
-                                {% else %}
-                                    Active Users
-                                {% endif %}
-                            </td>
-                            <td>{{ Page.UserCount }}</td>
-                        </tr>
-                        <tr>
-                            <td>Site Files</td>
-                            <td>{{ Page.SiteFileCount }}</td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-            <td style="vertical-align: top; width: 55%;">
-                <h2 class="sub-header">Useful info</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <tr class="separator-row">
-                            <td>Field</td>
-                            <td>Details</td>
-                        </tr>
-                        <tr>
-                            <td>Sitemap URL</td>
-                            <td>
-                                <a href="{{ Page.SitemapUrl }}">{{ Page.SitemapUrl }}</a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-        </tr>
-    </table>
+    {% if Page.ArticleCount == 1 %}
+        {% set ArticleDesc = 'article' %}
+    {% else %}
+        {% set ArticleDesc = 'articles' %}
+    {% endif %}
+    {% if Page.UserCount == 1 %}
+        {% set UserDesc = 'user' %}
+    {% else %}
+        {% set UserDesc = 'users' %}
+    {% endif %}
+    {% if Page.SiteFileCount == 1 %}
+        {% set SiteFileDesc = 'file' %}
+    {% else %}
+        {% set SiteFileDesc = 'files' %}
+    {% endif %}
 
+    <div class="row">
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2><i class="fa fa-bar-chart"></i> Overview</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-2">
+                            <span class="lead">{{ Page.ArticleCount }}</span>
+                        </div>
+                        <div class="col-md-2">
+                            <span style="vertical-align: middle;">
+                            {% if Auth.CanWriteContent %}
+                                <a href="{{ cpLink('articles') }}">{{ ArticleDesc }}</a>
+                            {% else %}
+                                {{ ArticleDesc }}
+                            {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-2">
+                            <span class="lead">{{ Page.UserCount }}</span>
+                        </div>
+                        <div class="col-md-2">
+                            <span style="vertical-align: middle;">
+                            {% if Auth.IsAdmin %}
+                                <a href="{{ cpLink('users', {'action': 'showall'}) }}">{{ UserDesc }}</a>
+                            {% else %}
+                                {{ ArticleDesc }}
+                            {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-2">
+                            <span class="lead">{{ Page.SiteFileCount }}</span>
+                        </div>
+                        <div class="col-md-2">
+                            <span style="vertical-align: middle;">
+                                {{ SiteFileDesc }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2><i class="fa fa-wrench"></i> Tools</h2>
+                </div>
+                <div class="panel-body">
+                    <ul>
+                        <li><a href="{{ Page.SitemapUrl }}" target="_blank">Sitemap</a> <i class="fa fa-external-link"></i></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h2><i class="fa fa-user"></i> My Profile</h2>
+                </div>
+                <div class="panel-body">
+                    <ul>
+                        <li><a href="{{ cpLink('edit_profile') }}">Edit Profile</a></li>
+                        <li><a href="{{ cpLink('change_password') }}">Change Password</a></li>
+                        <li><a href="{{ cpLink('manage_avatars') }}">Manage Avatars</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+{#
     <table width="100%">
         <tr>
             <td style="vertical-align: top; width: 48%;">
@@ -94,7 +146,7 @@
             </td>
         </tr>
     </table>
-
+#}
     <p>
         <a href="http://www.jewelcms.com/" target="_blank">Jewel CMS {{ Page.CmsVersion }}</a> |
         <a href="https://github.com/benbarden/jewelcms" title="Github" target="_blank">Github</a> |
@@ -104,7 +156,7 @@
         <a href="http://getbootstrap.com" target="_blank">Bootstrap</a> |
         <a href="http://twig.sensiolabs.org/" target="_blank">Twig</a> |
         <a href="http://www.doctrine-project.org/" target="_blank">Doctrine</a> |
-        <a href="http://glyphicons.com/" target="_blank">Glyphicons</a>
+        <a href="http://fortawesome.github.io/Font-Awesome/" target="_blank">Font Awesome</a>
     </p>
 
 {% endblock cp_content %}

@@ -17,7 +17,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-  class UserSession extends Helper {
+  class UserSession extends Helper
+  {
     // ** Database writes ** //
     function Create($intUserID, $dteTodaysDate, $dteExpiryDate) {
       $intSessionID = password_hash($intUserID.mt_rand().time(), PASSWORD_BCRYPT);
@@ -28,7 +29,10 @@
     }
     function Delete($intSessionID) {
       global $CMS;
-      $arrSData = $this->ResultQuery("SELECT u.username FROM ({IFW_TBL_USERS} u, {IFW_TBL_USER_SESSIONS} us) WHERE u.id = us.user_id AND us.id = $intSessionID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+      $arrSData = $this->ResultQuery("
+          SELECT u.username FROM ({IFW_TBL_USERS} u, {IFW_TBL_USER_SESSIONS} us)
+          WHERE u.id = us.user_id AND us.id = $intSessionID
+      ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       $strUser = $arrSData[0]['username'];
       $this->Query("DELETE FROM {IFW_TBL_USER_SESSIONS} WHERE id = $intSessionID", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       $CMS->AL->Build(AL_TAG_USER_SESSION_DELETE, $intSessionID, $strUser);
@@ -47,7 +51,11 @@
     }
     // ** Select ** //
     function GetAll() {
-      $arrSessions = $this->ResultQuery("SELECT us.id, us.session_id, us.user_id, u.display_name, u.seo_username, us.user_agent, us.login_date, us.expiry_date, us.ip_address FROM {IFW_TBL_USER_SESSIONS} us LEFT JOIN {IFW_TBL_USERS} u ON us.user_id = u.id ORDER BY u.username ASC, us.id ASC", __CLASS__ . "::" . __FUNCTION__, __LINE__);
+      $arrSessions = $this->ResultQuery("
+          SELECT us.id, us.session_id, us.user_id, u.display_name, us.user_agent, us.login_date,
+          us.expiry_date, us.ip_address FROM {IFW_TBL_USER_SESSIONS} us
+          LEFT JOIN {IFW_TBL_USERS} u ON us.user_id = u.id ORDER BY u.display_name ASC, us.id ASC
+      ", __CLASS__ . "::" . __FUNCTION__, __LINE__);
       return $arrSessions;
     }
   }

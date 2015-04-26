@@ -37,14 +37,11 @@ Deleting a session will require the user to login again at that location.</p>
 MainContentStart;
 
   $strMySessionID = $CMS->RES->GetSessionIDCookie();
-	for ($i=0; $i<count($arrSessions); $i++) {
+    for ($i=0; $i<count($arrSessions); $i++) {
     $intSID        = $arrSessions[$i]['id'];
     $strSessionID  = $arrSessions[$i]['session_id'];
     $intUserID     = $arrSessions[$i]['user_id'];
-        $displayName   = $arrSessions[$i]['display_name'];
-    $strSEOName    = $arrSessions[$i]['seo_username'];
-    $CMS->PL->SetTitle($strSEOName);
-    $strViewUser = $CMS->PL->ViewUser($intUserID);
+    $displayName   = $arrSessions[$i]['display_name'];
     $intUserIP     = $arrSessions[$i]['ip_address'];
     $dteLoginDate  = $arrSessions[$i]['login_date'];
     $dteExpiryDate = $arrSessions[$i]['expiry_date'];
@@ -55,12 +52,12 @@ MainContentStart;
 <table class="table table-striped">
   <thead>
     <tr class="separator-row">
-      <td>Name</td>
-      <td>IP</td>
-      <td>Login Date</td>
-      <td>Expiry Date</td>
+      <td style="width: 10%;">Name</td>
+      <td style="width: 10%;">IP</td>
+      <td style="width: 10%;">Login Date</td>
+      <td style="width: 10%;">Expiry Date</td>
       <td>User Agent</td>
-      <td>Options</td>
+      <td style="width: 10%;">Options</td>
     </tr>
   </thead>
   <tbody>
@@ -79,7 +76,7 @@ TableHeader;
     }
     $strHTML .= <<<TableRow
     <tr class="$strRowClass">
-      <td class="Centre"><a href="$strViewUser">$displayName</a></td>
+      <td class="Centre">$displayName</td>
       <td class="Centre">$intUserIP</td>
       <td class="Centre">$dteLoginDate</td>
       <td class="Centre">$dteExpiryDate</td>

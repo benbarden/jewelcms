@@ -213,9 +213,6 @@ TableHeader;
       }
       $intUserID   = $arrUsers[$i]['id'];
         $displayName = $arrUsers[$i]['display_name'];
-      $strSEOName  = $arrUsers[$i]['seo_username'];
-      $CMS->PL->SetTitle($strSEOName);
-      $strViewUser = $CMS->PL->ViewUser($intUserID);
       $intUserIP   = $arrUsers[$i]['ip_address'];
       $strDeleted  = $arrUsers[$i]['user_deleted'];
       if (!$intUserIP) {
@@ -236,7 +233,7 @@ TableHeader;
       $strHTML .= <<<TableRow
     <tr$strRowStyle class="$strRowClass">
       <td class="Centre">$intUserID</td>
-      <td class="Left"><a href="$strViewUser">$displayName</a></td>
+      <td class="Left">$displayName</td>
       <td class="Centre">$intUserIP</td>
       <td class="Centre">$strEditDelete</td>
       <td class="Centre"><a href="{FN_ADM_USER_CONTACT}?id=$intUserID">Contact</a></td>

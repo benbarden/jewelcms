@@ -85,7 +85,8 @@
                 </div>
                 <div class="panel-body">
                     <ul>
-                        <li><a href="{{ Page.SitemapUrl }}" target="_blank">Sitemap</a> <i class="fa fa-external-link"></i></li>
+                        <li><a href="{{ cmsDomainFull()~'/'~'feed/main.xml' }}" target="_blank">Feed</a> <i class="fa fa-external-link"></i></li>
+                        <li><a href="{{ cmsDomainFull()~'/'~'sitemap/index.xml' }}" target="_blank">Sitemap</a> <i class="fa fa-external-link"></i></li>
                     </ul>
                 </div>
             </div>
@@ -111,42 +112,6 @@
 
     </div>
 
-{#
-    <table width="100%">
-        <tr>
-            <td style="vertical-align: top; width: 48%;">
-                <h2 class="sub-header">Recent Drafts</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        {% if Auth.CanWriteContent %}
-                            {% if Page.RecentDrafts %}
-                                {% for Item in Page.RecentDrafts %}
-                                    <tr>
-                                        <td><a href="{{ cpLink('write', {'action': 'edit', 'id': Item.id}) }}">{{ Item.title }}</a></td>
-                                        <td>{{ Item.create_date|date('d M Y H:i') }}</td>
-                                    </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td><em>No drafts</em></td>
-                                    <td>-</td>
-                                </tr>
-                            {% endif %}
-                        {% else %}
-                            <tr>
-                                <td><em>Not authorised</em></td>
-                                <td>-</td>
-                            </tr>
-                        {% endif %}
-                    </table>
-                </div>
-            </td>
-            <td style="vertical-align: top; width: 48%;">
-                <h2 class="sub-header">&nbsp;</h2>
-            </td>
-        </tr>
-    </table>
-#}
     <p>
         <a href="http://www.jewelcms.com/" target="_blank">Jewel CMS {{ Page.CmsVersion }}</a> |
         <a href="https://github.com/benbarden/jewelcms" title="Github" target="_blank">Github</a> |

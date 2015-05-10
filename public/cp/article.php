@@ -203,6 +203,7 @@ if ($_POST) {
 
         if (!$formErrors) {
             try {
+                // Update DB
                 if ($isCreate) {
                     $newArticleId = $repoArticle->save($modelArticle);
                     $modelUrlMapping->setArticleId($newArticleId);
@@ -219,6 +220,14 @@ if ($_POST) {
                     $repoArticle->delete($modelArticle);
                     $repoUrlMapping->deleteAllByArticle($getId);
                 }
+                // Syndication
+                $entityManager = $cmsContainer->getServiceLocator()->getCmsEntityManager();
+                $themeEngine = $cmsContainer->getService('Theme.Engine');
+                $cmsFeed = new \Cms\Content\Feed($entityManager, $themeEngine);
+                $cmsFeed->generate();
+                $cmsSitemap = new \Cms\Content\Sitemap($entityManager, $themeEngine);
+                $cmsSitemap->generateAll();
+                // Results page
                 if ($isCreate) {
                     $resultMsg = '?msg=addsuccess';
                 } elseif ($isEdit) {

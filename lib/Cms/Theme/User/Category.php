@@ -107,8 +107,6 @@ class Category
         $bindings['Area']['IsTypeSmart'] = $this->area->isSmartArea();
         */
 
-        $bindings['Area']['FeedUrl'] = sprintf('%s?name=articles&id=%s', FN_FEEDS, $categoryId);
-
         // Wrapper IDs and classes
         $bindings['Page']['WrapperId'] = sprintf('area-index-%s', $categoryId);
         $bindings['Page']['WrapperClass'] = 'area-index';

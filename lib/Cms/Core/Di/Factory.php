@@ -87,11 +87,12 @@ class Factory
 
         $themeBinding = new \Cms\Theme\Binding();
 
+        $themeDomain  = $config->getByKey('Theme.Domain');
         $themeCurrent = $config->getByKey('Theme.Current');
         $themeCache   = $config->getByKey('Theme.Cache');
         $engineCache  = ($themeCache == 'On') ? 1 : 0;
 
-        $cmsThemeEngine = new \Cms\Theme\Engine($themeCurrent, $engineCache);
+        $cmsThemeEngine = new \Cms\Theme\Engine($themeDomain, $themeCurrent, $engineCache);
         $cmsThemeEngine->setIALinkCategory($iaLinkCategory);
         $cmsThemeEngine->setIALinkArticle($iaLinkArticle);
         $cmsThemeEngine->setIALinkUser($iaLinkUser);

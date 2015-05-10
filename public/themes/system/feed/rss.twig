@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <title>{{ Feed.Title }}</title>
+        <link>{{ cmsDomainFull()~'/feeds/main.xml' }}</link>
+        <description>{{ Feed.Desc }}</description>
+        <language>en</language>
+        {% for Item in FeedItems %}
+        <item>
+            <title><![CDATA[{{ Item.getTitle }}]]></title>
+            <link>{{ cmsDomainFull()~Item.getPermalink }}</link>
+            <description><![CDATA[{{ Item.getExcerpt }}]]></description>
+            <content:encoded><![CDATA[{{ Item.getContent|raw }}]]></content:encoded>
+            <pubDate>{{ Item.getCreateDate.format('r') }}</pubDate>
+            <dc:creator>{{ Item.getAuthor.getDisplayName }}</dc:creator>
+            <guid isPermaLink="true">{{ cmsDomainFull()~Item.getPermalink }}</guid>
+        </item>
+        {% endfor %}
+    </channel>
+</rss>

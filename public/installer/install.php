@@ -284,6 +284,7 @@ DBVARS;
       // Also create config file
       $configIniUrl = '../../config/config.ini';
       touch($configIniUrl);
+      $themeDomain = 'http://'.$_SERVER['HTTP_HOST'].'/';
       $configIniData = <<<configIni
 [Database]
 DSN = 'mysql:host=$installDbHost;dbname=$installDbSchema'
@@ -292,6 +293,7 @@ User = $installDbUser
 Pass = $installDbPass
 
 [Theme]
+Domain = $themeDomain
 Current = jewelcms
 Cache = Off
 

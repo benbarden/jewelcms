@@ -16,6 +16,11 @@ use Cms\Ia\Link\CategoryLink,
 class Engine
 {
     /**
+     * @var string
+     */
+    private $themeDomain;
+
+    /**
      * @var array
      */
     private $pathsArray;
@@ -76,12 +81,15 @@ class Engine
     private $dateFormat;
 
     /**
+     * @param string $themeDomain
      * @param string $current
      * @param integer $cache
      * @throws \Exception
      */
-    public function __construct($current = "", $cache = 1)
+    public function __construct($themeDomain, $current = "", $cache = 1)
     {
+        $this->themeDomain = $themeDomain;
+
         // Validate theme path
         if (!$current) {
             throw new EngineException('Current theme not defined!');
@@ -238,7 +246,7 @@ class Engine
 
     public function cmsDomainFull()
     {
-        return 'http://'.$_SERVER['HTTP_HOST'];
+        return $this->themeDomain;
     }
 
     public function cmsFormatDate(\DateTime $date, $format = '')

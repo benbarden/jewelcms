@@ -59,7 +59,6 @@
     }
     // ** Post Buttons ** //
     function PostButtons($strContentField) {
-      $strCMSCodes = FN_INF_CMS_CODES;
       $strHTML = <<<PostButtons
       <input type="button" value="B" onclick="doSimpleCMSCode('$strContentField', 'bold', 'b');" style="font-weight: bold;" />
       <input type="button" value="i" onclick="doSimpleCMSCode('$strContentField', 'italic', 'i');" style="font-style: italic;" />
@@ -67,7 +66,6 @@
       <input type="button" value="image" onclick="doImageCMSCode('$strContentField');" />
       <input type="button" value="quote" onclick="doSimpleCMSCode('$strContentField', 'quote', 'quote');" />
       <input type="button" value="code" onclick="doSimpleCMSCode('$strContentField', 'code', 'code');" />
-      <a href="#" onclick="window.open('$strCMSCodes');" title="Help with CMS codes"><span style="white-space: nowrap;">Help</span></a>
 PostButtons;
       return $strHTML;
     }

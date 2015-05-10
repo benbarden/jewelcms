@@ -293,7 +293,7 @@ class Renderer
         /* @var \Cms\Data\Category\CategoryRepository $repoCategory */
 
         // Default RSS URL
-        $siteRSSArticlesUrl = FN_FEEDS."?name=articles";
+        $siteRSSArticlesUrl = "/feed/main.xml";
 
         // Core styles URL
         $siteStylesCoreUrl = URL_ROOT."sys/core.css";

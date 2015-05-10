@@ -32,6 +32,27 @@ class Article
         return $this->category;
     }
 
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+    /**
+     * @ORM\OneToOne(targetEntity="Cms\Entity\User")
+     * @ORM\JoinColumn(name="author_id", referencedColumnName="id")
+     **/
+    private $author;
+
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+    }
+
     /**
      * @var integer
      *

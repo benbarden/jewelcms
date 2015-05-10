@@ -117,7 +117,8 @@ class GetUrl
             $authorId = $this->authCurrentUser->getId();
             $modelArticle = new Article;
             $modelArticle->setTitle($this->title);
-            $modelArticle->setAuthorId($authorId);
+            //$modelArticle->setAuthorId($authorId);
+            $modelArticle->setAuthor($this->authCurrentUser);
             $modelArticle->setCreateDate(new \DateTime("now"));
             $modelArticle->setLastUpdated(new \DateTime("now"));
             $modelArticle->setStatusAutosave();

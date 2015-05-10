@@ -80,7 +80,6 @@ $cpBindings['Auth']['CanWriteContent'] = $CMS->RES->CanAddContent();
   $cpBindings['Page']['RecentDrafts'] = $recentDrafts;
 
     // Build the page
-    $cpBindings['Page']['SitemapUrl'] = "http://".SVR_HOST.FN_SITEMAPINDEX;
     $cpBindings['Page']['CmsVersion'] = $CMS->SYS->GetSysPref(C_PREF_CMS_VERSION);
     $cpBindings['Page']['ThisYear'] = date('Y'); // Current year
     $cpBindings['Page']['SiteTitle'] = $CMS->SYS->GetSysPref(C_PREF_SITE_TITLE);

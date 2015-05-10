@@ -18,7 +18,6 @@
 */
 
     // Root
-    define('FN_FEEDS',          URL_ROOT.'feeds.php');
     define('FN_FILE_DOWNLOAD',  URL_ROOT.'file_download.php');
     define('FN_FORGOT_PW',      URL_ROOT.'forgot_pw.php');
     define('FN_INDEX',          URL_ROOT);
@@ -27,8 +26,6 @@
     define('FN_REGISTER',       URL_ROOT.'register.php');
     define('FN_RESET_PW',       URL_ROOT.'reset_pw.php');
     define('FN_SEARCH',         URL_ROOT.'search.php');
-    define('FN_SITEMAP',        URL_ROOT.'sitemap.php');
-    define('FN_SITEMAPINDEX',   URL_ROOT.'sitemapindex.php');
 
     // Admin
     define('FN_ADM_ACCESS_LOG',          URL_ROOT.'cp/access_log.php');
@@ -64,7 +61,3 @@
     define('FN_USER_TOOLS',              URL_ROOT.'cp/user_tools.php');
     define('FN_ADM_USERS',               URL_ROOT.'cp/users.php');
     define('FN_ADM_WRITE',               URL_ROOT.'cp/write.php');
-
-    // Info
-    define('FN_INF_CMS_CODES',     URL_ROOT.'info/cms_codes.php');
-    define('FN_INF_COOKIES',       URL_ROOT.'info/cookies.php');

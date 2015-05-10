@@ -105,13 +105,17 @@ class Article extends EntityRepository
         if ($mode != 'all') {
             $qb->where("a.contentStatus = 'Published'");
         }
-        if ($categoryId) {
+        if (is_null($categoryId)) {
+            $qb->where("a.categoryId IS NULL");
+        } elseif ($categoryId) {
             $qb->where("a.categoryId = :categoryId");
             $qb->setParameter('categoryId', $categoryId, Type::INTEGER);
         }
         $qb->orderBy($this->getSortField($sortField), $this->getSortDir($sortDirection));
         $qb->setFirstResult($offset);
-        $qb->setMaxResults($limit);
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
         return $qb->getQuery()->getResult();
     }
 }

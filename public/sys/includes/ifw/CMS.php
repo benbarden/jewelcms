@@ -31,7 +31,6 @@ class CMS extends Helper {
     // Top-level
     var $CK; // Cookie
     var $FMT; // Formatting
-    var $MV; // View
     var $MSG; // Messaging
     var $PL; // PageLink
     var $PN; // PageNumber
@@ -75,7 +74,6 @@ class CMS extends Helper {
         // Top level
         $this->CK    = new Cookie;
         $this->FMT   = new Formatting;
-        $this->MV    = new View;
         $this->MSG   = new Messaging;
         $this->PL    = new PageLink;
         $this->PN    = new PageNumber;

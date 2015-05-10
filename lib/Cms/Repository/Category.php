@@ -28,4 +28,18 @@ class Category extends EntityRepository
             ->where('Category.parentId IS NULL');
         return $qb->getQuery()->getResult();
     }
+
+    public function getStatsByCategory()
+    {
+        $conn = $this->_em->getConnection();
+        $result = $conn->fetchAll('
+            SELECT a.category_id, count(*) AS count
+            FROM Cms_Content a
+            LEFT JOIN Cms_Categories c ON a.category_id = c.id
+            WHERE a.content_status = "Published"
+            GROUP BY a.category_id
+            ORDER BY a.category_id
+        ');
+        return $result;
+    }
 }

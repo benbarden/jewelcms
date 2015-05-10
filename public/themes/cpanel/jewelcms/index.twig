@@ -4,6 +4,16 @@
 
     <h1 class="page-header">Dashboard</h1>
 
+    {% if Page.NewerVersion %}
+        <div class="alert alert-danger" role="alert">
+            You've recently upgraded from Jewel CMS {{ Page.CmsVersion }} to {{ Page.NewerVersion }}.
+            <br>
+            <strong>To complete the upgrade, we need to run a quick database update.</strong>
+            <br>
+            <a href="/cp/db_update.php">Start the update here</a>.
+        </div>
+    {% endif %}
+
     {% if Page.ArticleCount == 1 %}
         {% set ArticleDesc = 'article' %}
     {% else %}

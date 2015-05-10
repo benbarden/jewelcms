@@ -1,5 +1,33 @@
 # Jewel CMS changelog
 
+## 1.1.0
+
+* NEW: Database update - will prompt you if you need to update your database following an upgrade.
+* NEW: Dashboard refresh
+* NEW: Added Twitter tweet button
+* NEW: Added Facebook Like button
+* NEW: RSS feed (rebuilt from Injader)
+* NEW: Google XML sitemaps (rebuilt from Injader)
+* BUGFIX: Fixed errors when editing articles with single or double quotes in the title
+* BUGFIX: Fixed error on Site Files
+* BUGFIX: Fixed error on User Sessions
+* BUGFIX: Fixed path errors on Error Log
+* BUGFIX: Fixed errors on Access Log
+* THEME: Reorder metadata on articles
+* MINOR: Moved “My Profile” links from menu to Dashboard
+* MINOR: Categories: use Bootstrap style for New Category
+* MINOR: Articles: change Create Article to New Article
+* MINOR: Show category in Articles CP list
+* MINOR: Disable user profile link on articles
+* MINOR: Disable linked usernames in View Users
+* MINOR: Removed View Profile from My Settings
+* CODE: Set up Doctrine proxy autoloading
+* CODE: Set up Article associations
+* CODE: Update paths in Constants/System.php
+* CODE: Update ICacheFile to use WWW_ROOT
+* CODE: Replaced Glyphicons in admin navbar with Font Awesome
+* CODE: Renamed autoloader
+
 ## 1.0.0
 
 Initial fork of Injader 2.5.0.

@@ -80,11 +80,15 @@ $cpBindings['Auth']['CanWriteContent'] = $CMS->RES->CanAddContent();
   $cpBindings['Page']['RecentDrafts'] = $recentDrafts;
 
     // Build the page
-    $cpBindings['Page']['CmsVersion'] = $CMS->SYS->GetSysPref(C_PREF_CMS_VERSION);
+    $cmsDbVersion = $CMS->SYS->GetSysPref(C_PREF_CMS_VERSION);
+    $cpBindings['Page']['CmsVersion'] = $cmsDbVersion;
     $cpBindings['Page']['ThisYear'] = date('Y'); // Current year
     $cpBindings['Page']['SiteTitle'] = $CMS->SYS->GetSysPref(C_PREF_SITE_TITLE);
 
-  //$CMS->AP->Display($strHTML);
+// Database update
+if ($cmsDbVersion != C_SYS_LATEST_VERSION) {
+    $cpBindings['Page']['NewerVersion'] = C_SYS_LATEST_VERSION;
+}
 
 // Twig templating for CPanel
 $engine = $cmsContainer->getService('Theme.EngineCPanel');

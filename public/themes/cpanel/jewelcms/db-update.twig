@@ -1,0 +1,21 @@
+{% extends "core/base.twig" %}
+
+{% block cp_content %}
+
+<h1 class="page-header">Database update</h1>
+
+    {% if CP.Error %}
+        <div class="alert alert-warning" role="alert">
+            {{ CP.Error }} <a href="/cp/index.php">Back to the Dashboard</a>
+        </div>
+    {% elseif CP.Msg %}
+        <div class="alert alert-success" role="alert">
+            {{ CP.Msg }} <a href="/cp/index.php">Back to the Dashboard</a>
+        </div>
+    {% else %}
+        <p>Your database needs to be updated.</p>
+        <button onclick="top.location.href = '/cp/db_update.php?do=update';" class="btn btn-primary btn-lg">Update database</button>
+    {% endif %}
+
+
+{% endblock cp_content %}

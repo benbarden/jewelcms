@@ -18,7 +18,7 @@
 */
 
   // Latest version
-  define('C_SYS_LATEST_VERSION', '1.0.0');
+  define('C_SYS_LATEST_VERSION', '1.1.0');
 
   // Product
   define('PRD_PRODUCT_NAME', 'Jewel CMS');

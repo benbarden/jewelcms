@@ -46,9 +46,9 @@ $errorMsg = "";
       $blnSubmitForm = false;
         $errorMsg .= $CMS->AC->InvalidFormData("");
     }
-    $formReferrer = empty($_POST['form-referrer']) ? "" : $CMS->FilterAlphanumeric($_POST['form-referrer'], "\:\/\.");
+    $formReferrer = empty($_POST['form-referrer']) ? "" : $CMS->FilterAlphanumeric($_POST['form-referrer'], "\:\/\.\-");
   } else {
-    $formReferrer = empty($_SERVER['HTTP_REFERER']) ? "" : $CMS->FilterAlphanumeric($_SERVER['HTTP_REFERER'], "\:\/\.");
+    $formReferrer = empty($_SERVER['HTTP_REFERER']) ? "" : $CMS->FilterAlphanumeric($_SERVER['HTTP_REFERER'], "\:\/\.\-");
     if (strpos($formReferrer, 'install.php') !== false) {
       $formReferrer = "";
     }

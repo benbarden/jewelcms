@@ -12,8 +12,9 @@
             <a href="{{ Item.Permalink }}">{{ Item.Title }}</a>
         </h2>
         <p class="blog-post-meta">
-            {{ Item.Date }} |
-            By <a href="{{ cmsLinkUser(Item.AuthorId) }}">{{ Item.AuthorUsername }}</a>
+            by {{ Item.AuthorUsername }}
+            | <a href="{{ Item.Permalink }}">Permalink</a>
+            | {{ Item.Date }}
         </p>
         {{ Item.Body|raw }}
     </div>

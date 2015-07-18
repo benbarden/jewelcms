@@ -3,7 +3,7 @@
 
 namespace Cms\Access;
 
-use Cms\Data\User\User;
+use Cms\Entity\User;
 
 
 class Login

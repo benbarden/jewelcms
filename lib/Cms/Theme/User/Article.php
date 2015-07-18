@@ -88,7 +88,7 @@ class Article
         $bindings['Article']['Date'] = $this->article->getCreateDate()->format($dateFormat);
 
         $articleAuthorId = $this->article->getAuthorId();
-        $articleAuthor = $this->container->getServiceLocator()->getCmsEntityManager()->getRepository('Cms\Entity\User')->getById($articleAuthorId);
+        $articleAuthor = $this->container->getDoctrineRepository('Cms\Entity\User')->getById($articleAuthorId);
         /* @var \Cms\Entity\User $articleAuthor */
         $bindings['Article']['Author']['Id'] = $articleAuthor->getId();
         $bindings['Article']['Author']['Username'] = $articleAuthor->getDisplayName();

@@ -3,7 +3,7 @@
 
 namespace Cms\Ia\Link;
 
-use Cms\Data\User\User;
+use Cms\Entity\User;
 
 
 class UserLink extends Base
@@ -36,7 +36,7 @@ class UserLink extends Base
     protected function generateLinkStyleClassic()
     {
         return URL_ROOT.sprintf('index.php/profile/%s/%s/',
-            $this->user->getUserId(), $this->getOptimisedUserUrl());
+            $this->user->getId(), $this->getOptimisedUserUrl());
     }
 
     /**
@@ -47,7 +47,7 @@ class UserLink extends Base
     protected function generateLinkStyleLong()
     {
         return URL_ROOT.sprintf('profile/%s/%s/',
-            $this->user->getUserId(), $this->getOptimisedUserUrl());
+            $this->user->getId(), $this->getOptimisedUserUrl());
     }
 
     /**

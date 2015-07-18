@@ -58,4 +58,14 @@ class Container
     {
         return $this->serviceLocator;
     }
+
+    public function getEntityManager()
+    {
+        return $this->serviceLocator->getCmsEntityManager();
+    }
+
+    public function getDoctrineRepository($repositoryName)
+    {
+        return $this->serviceLocator->getCmsEntityManager()->getRepository($repositoryName);
+    }
 }

@@ -116,7 +116,8 @@ class Category
         $iaLink = $this->container->getServiceLocator()->getIALinkArticle();
 
         // Content
-        $repoUser = $this->container->getService('Repo.User');
+        /* @var \Cms\Repository\User $repoUser */
+        $repoUser = $this->container->getDoctrineRepository('Cms\Entity\User');
 
         if ($this->areaContent) {
 
@@ -168,8 +169,8 @@ class Category
                 $articleId = $article->getId();
                 // Author
                 $articleAuthor = $repoUser->getById($article->getAuthorId());
-                /* @var \Cms\Data\User\User $articleAuthor */
-                $authorId = $articleAuthor->getUserId();
+                /* @var \Cms\Entity\User $articleAuthor */
+                $authorId = $articleAuthor->getId();
                 $authorUsername = $articleAuthor->getDisplayName();
                 // Setup array
                 $contentRow = array(

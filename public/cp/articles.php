@@ -29,8 +29,7 @@ if (!$accessPermission->canCreateArticle()) {
     $cpBindings['Auth']['IsAdmin'] = $CMS->RES->IsAdmin();
     $cpBindings['Auth']['CanWriteContent'] = $CMS->RES->CanAddContent();
 
-    $em = $cmsContainer->getServiceLocator()->getCmsEntityManager();
-    $cpBindings['Page']['ArticleList'] = $em->getRepository('Cms\Entity\Article')->getAll();
+    $cpBindings['Page']['ArticleList'] = $cmsContainer->getDoctrineRepository('Cms\Entity\Article')->getAll();
 
     if (isset($_GET['msg'])) {
         $getMsg = $_GET['msg'];

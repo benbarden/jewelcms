@@ -38,7 +38,7 @@
     }
     if ($blnSubmitForm) {
         // Check if user exists
-        $repoUser = $cmsContainer->getServiceLocator()->getCmsEntityManager()->getRepository('Cms\Entity\User');
+        $repoUser = $cmsContainer->getDoctrineRepository('Cms\Entity\User');
         $validUserEntity = $repoUser->getByEmail($strEmail);
         if ($validUserEntity) {
             $CMS->LP->SetTitle("Forgot Password - Results");

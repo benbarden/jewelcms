@@ -6,10 +6,10 @@ namespace Cms\Theme;
 use Cms\Ia\Link\CategoryLink,
     Cms\Ia\Link\ArticleLink,
     Cms\Ia\Link\UserLink,
-    Cms\Data\User\UserRepository,
     Cms\Entity\User,
     Cms\Repository\Category as RepoCategory,
     Cms\Repository\Article as RepoArticle,
+    Cms\Repository\User as RepoUser,
     Cms\Exception\Theme\EngineException;
 
 
@@ -66,7 +66,7 @@ class Engine
     private $repoCategory;
 
     /**
-     * @var UserRepository
+     * @var RepoUser
      */
     private $repoUser;
 
@@ -145,7 +145,7 @@ class Engine
         $this->repoArticle = $repoArticle;
     }
 
-    public function setRepoUser(UserRepository $repoUser)
+    public function setRepoUser(RepoUser $repoUser)
     {
         $this->repoUser = $repoUser;
     }

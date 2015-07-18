@@ -74,7 +74,7 @@ class Factory
         $repoPermission = new PermissionRepository($pdo);
         $repoSetting = new SettingRepository($pdo);
         $repoUrlMapping = new UrlMappingRepository($pdo);
-        $repoUser = new UserRepository($pdo);
+        //$repoUser = new UserRepository($pdo);
         $repoUserSession = new UserSessionRepository($pdo);
 
         $dateFormat = $repoSetting->getDateFormat();
@@ -98,7 +98,7 @@ class Factory
         $cmsThemeEngine->setIALinkUser($iaLinkUser);
         $cmsThemeEngine->setRepoCategory($entityManager->getRepository('Cms\Entity\Category'));
         $cmsThemeEngine->setRepoArticle($entityManager->getRepository('Cms\Entity\Article'));
-        $cmsThemeEngine->setRepoUser($repoUser);
+        $cmsThemeEngine->setRepoUser($entityManager->getRepository('Cms\Entity\User'));
         if ($this->currentUser) {
             $cmsThemeEngine->setLoggedInUser($this->currentUser);
         }
@@ -123,7 +123,7 @@ class Factory
         $serviceLocator->set('Repo.Permission', $repoPermission);
         $serviceLocator->set('Repo.Setting', $repoSetting);
         $serviceLocator->set('Repo.UrlMapping', $repoUrlMapping);
-        $serviceLocator->set('Repo.User', $repoUser);
+        //$serviceLocator->set('Repo.User', $repoUser);
         $serviceLocator->set('Repo.UserSession', $repoUserSession);
         $serviceLocator->set('Theme.Engine', $themeEngine);
         $serviceLocator->set('Theme.EngineCPanel', $themeEngineCPanel);

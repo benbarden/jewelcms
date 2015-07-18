@@ -177,8 +177,6 @@ class Renderer
 
     private function setupRenderer()
     {
-        $em = $this->container->getServiceLocator()->getCmsEntityManager();
-
         switch ($this->objectType) {
             case self::OBJECT_TYPE_HOMEPAGE:
                 $this->renderer = new \Cms\Theme\User\Homepage($this->container);
@@ -186,9 +184,9 @@ class Renderer
             case self::OBJECT_TYPE_AREA:
             case self::OBJECT_TYPE_CATEGORY:
 
-                $categoryRepo = $em->getRepository('Cms\Entity\Category');
+                $categoryRepo = $this->container->getDoctrineRepository('Cms\Entity\Category');
                 /* @var \Cms\Repository\Category $categoryRepo */
-                $articleRepo = $em->getRepository('Cms\Entity\Article');
+                $articleRepo = $this->container->getDoctrineRepository('Cms\Entity\Article');
                 /* @var \Cms\Repository\Article $articleRepo */
 
                 // Category setup
@@ -231,9 +229,9 @@ class Renderer
             break;
             case self::OBJECT_TYPE_ARTICLE:
 
-                $categoryRepo = $em->getRepository('Cms\Entity\Category');
+                $categoryRepo = $this->container->getDoctrineRepository('Cms\Entity\Category');
                 /* @var \Cms\Repository\Category $categoryRepo */
-                $articleRepo = $em->getRepository('Cms\Entity\Article');
+                $articleRepo = $this->container->getDoctrineRepository('Cms\Entity\Article');
                 /* @var \Cms\Repository\Article $articleRepo */
 
                 $article = $articleRepo->getById($this->itemId);

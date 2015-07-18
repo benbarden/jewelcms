@@ -22,7 +22,7 @@ if (!$CMS->RES->IsAdmin()) {
     showCpErrorPage($cmsContainer, $cpBindings, "You do not have access to do this");
 }
 
-$em = $cmsContainer->getServiceLocator()->getCmsEntityManager();
+$em = $cmsContainer->getEntityManager();
 
     $cpBindings = array();
 
@@ -45,7 +45,7 @@ $em = $cmsContainer->getServiceLocator()->getCmsEntityManager();
             }
             switch ($nextVersion) {
                 case '1.1.0':
-                    $setting = $em->getRepository('Cms\Entity\Setting')->getCMSVersion();
+                    $setting = $em->getRepository('Cms\Entity\Setting')->getSettingCMSVersion();
                     if (!$setting) {
                         throw new \Cms\Exception\Cp\PageException('Cannot find setting: CMSVersion');
                     }

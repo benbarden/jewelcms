@@ -72,13 +72,15 @@ class Factory
         $repoArticle = new ArticleRepository($pdo);
         $repoCategory = new CategoryRepository($pdo);
         $repoPermission = new PermissionRepository($pdo);
-        $repoSetting = new SettingRepository($pdo);
+        //$repoSetting = new SettingRepository($pdo);
         //$repoUrlMapping = new UrlMappingRepository($pdo);
         //$repoUser = new UserRepository($pdo);
         //$repoUserSession = new UserSessionRepository($pdo);
 
-        $dateFormat = $repoSetting->getDateFormat();
-        $linkStyle  = $repoSetting->getSettingLinkStyle();
+        $cmsSettingHelper = new \Cms\Helper\EntityValue\Setting($entityManager);
+
+        $dateFormat = $cmsSettingHelper->getDisplayDateFormat();
+        $linkStyle  = $cmsSettingHelper->getLinkStyle();
 
         $iaOptimiser    = new \Cms\Ia\Tools\OptimiseUrl();
         $iaLinkArticle  = new \Cms\Ia\Link\ArticleLink($linkStyle, $iaOptimiser);
@@ -121,7 +123,7 @@ class Factory
         $serviceLocator->set('Repo.Article', $repoArticle);
         $serviceLocator->set('Repo.Category', $repoCategory);
         $serviceLocator->set('Repo.Permission', $repoPermission);
-        $serviceLocator->set('Repo.Setting', $repoSetting);
+        //$serviceLocator->set('Repo.Setting', $repoSetting);
         //$serviceLocator->set('Repo.UrlMapping', $repoUrlMapping);
         //$serviceLocator->set('Repo.User', $repoUser);
         //$serviceLocator->set('Repo.UserSession', $repoUserSession);

@@ -275,13 +275,12 @@ class Renderer
         $cmsThemeEngine = $this->container->getServiceLocator()->getCmsThemeEngine();
         $publicThemePath = $cmsThemeEngine->getPublicThemePath();
 
-        $repoSetting = $this->container->getService('Repo.Setting');
-        /* @var \Cms\Data\Setting\SettingRepository $repoSetting */
-        $siteTitle = $repoSetting->getSettingSiteTitle();
-        $siteDesc = $repoSetting->getSettingSiteDesc();
-        $siteKeywords = $repoSetting->getSettingSiteKeywords();
-        $siteCustomHeader = $repoSetting->getSettingSiteHeader();
-        $siteDisqusId = $repoSetting->getSettingDisqusId();
+        $cmsSettingHelper = new \Cms\Helper\EntityValue\Setting($this->container->getEntityManager());
+        $siteTitle = $cmsSettingHelper->getSiteTitle();
+        $siteDesc = $cmsSettingHelper->getSiteDesc();
+        $siteKeywords = $cmsSettingHelper->getSiteKeywords();
+        $siteCustomHeader = $cmsSettingHelper->getSiteHeader();
+        $siteDisqusId = $cmsSettingHelper->getDisqusId();
 
         $repoArticle = $this->container->getService('Repo.Article');
         /* @var \Cms\Data\Article\ArticleRepository $repoArticle */

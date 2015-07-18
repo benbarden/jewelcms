@@ -20,7 +20,7 @@ class Setting extends EntityRepository
         return $qb->getQuery()->getOneOrNullResult();
     }
 
-    public function getCMSVersion()
+    public function getSettingCMSVersion()
     {
         return $this->getByName(\Cms\Entity\Setting::SETTING_CMS_VERSION);
     }

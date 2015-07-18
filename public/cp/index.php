@@ -26,10 +26,8 @@
   $strPageTitle = "Dashboard";
 
 // Purge access log
-// @todo move this to a cron
+// @todo rebuild this and move it to a cron
 $cpLogLimit = $cmsContainer->getServiceLocator()->getCmsConfig()->getByKey('CP.LogLimit');
-$repoAccessLog = $cmsContainer->getService('Repo.AccessLog');
-$repoAccessLog->purgeEntries($cpLogLimit);
 
 // Twig templating for CPanel
 $cpBindings = array(); //array_merge($globalBindings, $userBindings);

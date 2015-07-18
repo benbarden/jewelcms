@@ -10,5 +10,5 @@ use Doctrine\DBAL\Types\Type;
 
 class AccessLog extends EntityRepository
 {
-    
+
 }

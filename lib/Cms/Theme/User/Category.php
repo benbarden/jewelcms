@@ -121,11 +121,6 @@ class Category
 
         if ($this->areaContent) {
 
-            // Area URL
-            //$area = $this->container->getService('Repo.Area')->getById($areaId);
-            //$iaLinkArea = $this->container->getServiceLocator()->getIALinkArea();
-            //$iaLinkArea->setArea($area);
-
             if ($this->currentPageNo == 1) {
                 $bindings['Page']['CanonicalUrl'] = $areaUrl;
             } else {

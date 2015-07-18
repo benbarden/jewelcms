@@ -65,10 +65,10 @@
 
     $repoCategory = $cmsContainer->getService('Repo.Category');
     $repoArticle = $cmsContainer->getService('Repo.Article');
-    $repoUrlMapping = $cmsContainer->getService('Repo.UrlMapping');
+    $repoUrlMapping = $cmsContainer->getDoctrineRepository('Cms\Entity\UrlMapping');
     /* @var \Cms\Data\Category\CategoryRepository $repoCategory */
     /* @var \Cms\Data\Article\ArticleRepository $repoArticle */
-    /* @var \Cms\Data\UrlMapping\UrlMappingRepository $repoUrlMapping */
+    /* @var \Cms\Repository\UrlMapping $repoUrlMapping */
 
     if ($isDelete) {
         if ($repoArticle->countByCategoryAll($getId) > 0) {
@@ -106,7 +106,7 @@
     }
 
     if ($_POST) {
-        $modelUrlMapping = null;
+        $entityUrlMapping = null;
         if ($isDelete) {
             $postId = $_POST['category-id'];
             if ($postId != $getId) {
@@ -133,14 +133,14 @@
             }
             // Validate permalink
             if (!$isDelete) {
-                $modelUrlMapping = $repoUrlMapping->getByUrl($postPermalink);
-                if ($modelUrlMapping) {
+                $entityUrlMapping = $repoUrlMapping->getByUrl($postPermalink);
+                if ($entityUrlMapping) {
                     if ($isCreate) {
                         $formErrors[] = array('Field' => 'permalink', 'Message' => 'Permalink is already in use [1]');
                     } elseif ($isEdit) {
-                        if ($modelUrlMapping->getCategoryId() != $getId) {
+                        if ($entityUrlMapping->getCategoryId() != $getId) {
                             $formErrors[] = array('Message' => 'Permalink is already in use. Please choose another.');
-                        } elseif ($modelUrlMapping->getArticleId()) {
+                        } elseif ($entityUrlMapping->getArticleId()) {
                             $formErrors[] = array('Message' => 'Permalink is already in use. Please choose another.');
                         }
                     }
@@ -166,8 +166,8 @@
             if ($isCreate) {
                 $addUrlMapping = true;
             } elseif ($isEdit) {
-                if ($modelUrlMapping) {
-                    $urlRowId = $modelUrlMapping->getId();
+                if ($entityUrlMapping) {
+                    $urlRowId = $entityUrlMapping->getId();
                 } else {
                     $addUrlMapping = true;
                 }
@@ -175,26 +175,31 @@
 
             if ($addUrlMapping) {
                 // ok to set up the new model
-                $modelUrlMapping = new \Cms\Data\UrlMapping\UrlMapping();
-                $modelUrlMapping->setRelativeUrl($postPermalink);
-                $modelUrlMapping->setArticleId(0);
+                $entityUrlMapping = new \Cms\Entity\UrlMapping();
+                $entityUrlMapping->setRelativeUrl($postPermalink);
+                $entityUrlMapping->setArticleId(0);
                 if ($getId) {
-                    $modelUrlMapping->setCategoryId($getId);
+                    $entityUrlMapping->setCategoryId($getId);
                 }
-                $modelUrlMapping->setIsActive('Y');
+                $entityUrlMapping->setIsActive('Y');
             }
 
             if (!$formErrors) {
                 try {
                     if ($isCreate) {
                         $newCatId = $repoCategory->save($modelCategory);
-                        $modelUrlMapping->setCategoryId($newCatId);
-                        $repoUrlMapping->create($modelUrlMapping);
+                        $entityUrlMapping->setCategoryId($newCatId);
+                        if ($addUrlMapping) {
+                            $cmsContainer->getEntityManager()->persist($entityUrlMapping);
+                        }
+                        $cmsContainer->getEntityManager()->flush();
                     } elseif ($isEdit) {
                         $repoCategory->save($modelCategory);
                         if ($addUrlMapping) {
-                            $urlRowId = $repoUrlMapping->create($modelUrlMapping);
-                        } elseif ($modelUrlMapping) {
+                            $cmsContainer->getEntityManager()->persist($entityUrlMapping);
+                            $cmsContainer->getEntityManager()->flush();
+                            $urlRowId = $entityUrlMapping->getId();
+                        } elseif ($entityUrlMapping) {
                             $repoUrlMapping->activateById($urlRowId);
                         }
                         $repoUrlMapping->deactivateByCategory($getId, $urlRowId);

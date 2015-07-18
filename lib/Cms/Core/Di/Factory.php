@@ -75,7 +75,7 @@ class Factory
         $repoSetting = new SettingRepository($pdo);
         $repoUrlMapping = new UrlMappingRepository($pdo);
         //$repoUser = new UserRepository($pdo);
-        $repoUserSession = new UserSessionRepository($pdo);
+        //$repoUserSession = new UserSessionRepository($pdo);
 
         $dateFormat = $repoSetting->getDateFormat();
         $linkStyle  = $repoSetting->getSettingLinkStyle();
@@ -124,7 +124,7 @@ class Factory
         $serviceLocator->set('Repo.Setting', $repoSetting);
         $serviceLocator->set('Repo.UrlMapping', $repoUrlMapping);
         //$serviceLocator->set('Repo.User', $repoUser);
-        $serviceLocator->set('Repo.UserSession', $repoUserSession);
+        //$serviceLocator->set('Repo.UserSession', $repoUserSession);
         $serviceLocator->set('Theme.Engine', $themeEngine);
         $serviceLocator->set('Theme.EngineCPanel', $themeEngineCPanel);
         $serviceLocator->set('Theme.EngineUT', $themeEngineUT);

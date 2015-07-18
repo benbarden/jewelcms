@@ -49,5 +49,48 @@ class UrlMapping
      */
     private $categoryId = '0';
 
+    public function getId()
+    {
+        return $this->id;
+    }
 
+    public function getRelativeUrl()
+    {
+        return $this->relativeUrl;
+    }
+
+    public function setRelativeUrl($url)
+    {
+        $this->relativeUrl = $url;
+    }
+
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive($active)
+    {
+        $this->isActive = $active;
+    }
+
+    public function getArticleId()
+    {
+        return $this->articleId;
+    }
+
+    public function setArticleId($articleId)
+    {
+        $this->articleId = $articleId;
+    }
+
+    public function getCategoryId()
+    {
+        return $this->categoryId;
+    }
+
+    public function setCategoryId($categoryId)
+    {
+        $this->categoryId = $categoryId;
+    }
 }

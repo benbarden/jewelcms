@@ -66,10 +66,10 @@ $cpBindings['Form']['Action'] = $formAction;
 
 $repoCategory = $cmsContainer->getService('Repo.Category');
 $repoArticle = $cmsContainer->getService('Repo.Article');
-$repoUrlMapping = $cmsContainer->getService('Repo.UrlMapping');
+$repoUrlMapping = $cmsContainer->getDoctrineRepository('Cms\Entity\UrlMapping');
 /* @var \Cms\Data\Category\CategoryRepository $repoCategory */
 /* @var \Cms\Data\Article\ArticleRepository $repoArticle */
-/* @var \Cms\Data\UrlMapping\UrlMappingRepository $repoUrlMapping */
+/* @var \Cms\Repository\UrlMapping $repoUrlMapping */
 
 $cpBindings['Data']['CategoryList'] = $repoCategory->getTopLevel();
 
@@ -139,14 +139,14 @@ if ($_POST) {
         }
         // Validate permalink
         if (!$isDelete) {
-            $modelUrlMapping = $repoUrlMapping->getByUrl($postPermalink);
-            if ($modelUrlMapping) {
+            $entityUrlMapping = $repoUrlMapping->getByUrl($postPermalink);
+            if ($entityUrlMapping) {
                 if ($isCreate) {
                     $formErrors[] = array('Field' => 'permalink', 'Message' => 'Permalink is already in use [1]');
                 } elseif ($isEdit) {
-                    if ($modelUrlMapping->getArticleId() != $getId) {
+                    if ($entityUrlMapping->getArticleId() != $getId) {
                         $formErrors[] = array('Message' => 'Permalink is already in use. Please choose another.');
-                    } elseif ($modelUrlMapping->getCategoryId()) {
+                    } elseif ($entityUrlMapping->getCategoryId()) {
                         $formErrors[] = array('Message' => 'Permalink is already in use. Please choose another.');
                     }
                 }
@@ -183,8 +183,8 @@ if ($_POST) {
         if ($isCreate) {
             $addUrlMapping = true;
         } elseif ($isEdit) {
-            if ($modelUrlMapping) {
-                $urlRowId = $modelUrlMapping->getId();
+            if ($entityUrlMapping) {
+                $urlRowId = $entityUrlMapping->getId();
             } else {
                 $addUrlMapping = true;
             }
@@ -192,13 +192,13 @@ if ($_POST) {
 
         if ($addUrlMapping) {
             // ok to set up the new model
-            $modelUrlMapping = new \Cms\Data\UrlMapping\UrlMapping();
-            $modelUrlMapping->setRelativeUrl($postPermalink);
+            $entityUrlMapping = new \Cms\Entity\UrlMapping();
+            $entityUrlMapping->setRelativeUrl($postPermalink);
             if ($getId) {
-                $modelUrlMapping->setArticleId($getId);
+                $entityUrlMapping->setArticleId($getId);
             }
-            $modelUrlMapping->setCategoryId(0);
-            $modelUrlMapping->setIsActive('Y');
+            $entityUrlMapping->setCategoryId(0);
+            $entityUrlMapping->setIsActive('Y');
         }
 
         if (!$formErrors) {
@@ -206,13 +206,16 @@ if ($_POST) {
                 // Update DB
                 if ($isCreate) {
                     $newArticleId = $repoArticle->save($modelArticle);
-                    $modelUrlMapping->setArticleId($newArticleId);
-                    $repoUrlMapping->create($modelUrlMapping);
+                    $entityUrlMapping->setArticleId($newArticleId);
+                    $cmsContainer->getEntityManager()->persist($entityUrlMapping);
+                    $cmsContainer->getEntityManager()->flush();
                 } elseif ($isEdit) {
                     $repoArticle->save($modelArticle);
                     if ($addUrlMapping) {
-                        $urlRowId = $repoUrlMapping->create($modelUrlMapping);
-                    } elseif ($modelUrlMapping) {
+                        $cmsContainer->getEntityManager()->persist($entityUrlMapping);
+                        $cmsContainer->getEntityManager()->flush();
+                        $urlRowId = $entityUrlMapping->getId();
+                    } elseif ($entityUrlMapping) {
                         $repoUrlMapping->activateById($urlRowId);
                     }
                     $repoUrlMapping->deactivateByArticle($getId, $urlRowId);

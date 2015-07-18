@@ -73,7 +73,7 @@ class Factory
         $repoCategory = new CategoryRepository($pdo);
         $repoPermission = new PermissionRepository($pdo);
         $repoSetting = new SettingRepository($pdo);
-        $repoUrlMapping = new UrlMappingRepository($pdo);
+        //$repoUrlMapping = new UrlMappingRepository($pdo);
         //$repoUser = new UserRepository($pdo);
         //$repoUserSession = new UserSessionRepository($pdo);
 
@@ -122,7 +122,7 @@ class Factory
         $serviceLocator->set('Repo.Category', $repoCategory);
         $serviceLocator->set('Repo.Permission', $repoPermission);
         $serviceLocator->set('Repo.Setting', $repoSetting);
-        $serviceLocator->set('Repo.UrlMapping', $repoUrlMapping);
+        //$serviceLocator->set('Repo.UrlMapping', $repoUrlMapping);
         //$serviceLocator->set('Repo.User', $repoUser);
         //$serviceLocator->set('Repo.UserSession', $repoUserSession);
         $serviceLocator->set('Theme.Engine', $themeEngine);
